@@ -13,6 +13,7 @@ brew 'exa'
 brew 'fzf'
 brew 'gawk'
 brew 'git'
+brew 'gitleaks'
 brew 'git-delta'
 brew 'gpg'
 brew 'jq'
@@ -20,6 +21,7 @@ brew 'mas'
 brew 'rcm'
 brew 'starship'
 brew 'the_silver_searcher'
+brew 'tldr'
 brew 'tmux'
 brew 'reattach-to-user-namespace'
 brew 'zoxide'
@@ -30,12 +32,14 @@ cask 'alacritty'
 cask 'android-studio'
 cask 'firefox'
 cask 'flutter'
-cask 'font-fira-mono-nerd-font'
 cask 'google-chrome'
 cask 'slack'
 cask 'visual-studio-code'
 cask 'vlc'
 
 # AppStore
-
 mas "XCode", id: 497799835
+
+# Fonts 
+cask 'font-fira-mono-nerd-font'
+cask 'font-fira-code'
