@@ -103,7 +103,7 @@ alias scripts='jq ".scripts | to_entries | sort_by(.key) | from_entries" package
 alias ios='xcrun simctl getenv booted SIMULATOR_UDID | xargs yarn ios --udid'
 
 # setup asdf
-source /usr/local/opt/asdf/libexec/asdf.sh
+source $(brew --prefix asdf)/libexec/asdf.sh
 
 # java home
 source ~/.asdf/plugins/java/set-java-home.zsh
