@@ -8,6 +8,7 @@ tap 'homebrew/cask-versions' || true
 # install packages
 brew 'asdf'
 brew 'bat'
+brew 'cocoapods'
 brew 'dust'
 brew 'exa'
 brew 'fzf'
