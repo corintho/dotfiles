@@ -29,11 +29,11 @@ brew 'zoxide'
 brew 'watchman'
 
 # Casks
-cask 'alacritty'
 cask 'android-studio'
 cask 'firefox'
 cask 'flutter'
 cask 'google-chrome'
+cask 'iterm2'
 cask 'slack'
 cask 'visual-studio-code'
 cask 'vlc'
@@ -44,3 +44,5 @@ mas "XCode", id: 497799835
 # Fonts 
 cask 'font-fira-mono-nerd-font'
 cask 'font-fira-code'
+cask 'font-iosevka'
+cask 'font-iosevka-nerd-font'
