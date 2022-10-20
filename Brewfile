@@ -4,6 +4,7 @@ cask_args appdir: '/Applications'
 tap 'homebrew/cask' || true
 tap 'homebrew/cask-fonts' || true
 tap 'homebrew/cask-versions' || true
+tap 'microsoft/git' || true
 
 # install packages
 brew 'asdf'
@@ -37,6 +38,7 @@ cask 'iterm2'
 cask 'slack'
 cask 'visual-studio-code'
 cask 'vlc'
+cask 'git-credential-manager-core'
 
 # AppStore
 mas "XCode", id: 497799835
