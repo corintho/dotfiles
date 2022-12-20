@@ -9,6 +9,7 @@ tap 'microsoft/git' || true
 # install packages
 brew 'asdf'
 brew 'bat'
+brew 'bundletool'
 brew 'cocoapods'
 brew 'dust'
 brew 'exa'
