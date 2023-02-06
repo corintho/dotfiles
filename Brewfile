@@ -10,6 +10,7 @@ tap 'microsoft/git' || true
 brew 'asdf'
 brew 'bat'
 brew 'bundletool'
+brew 'cargo-watch'
 brew 'cocoapods'
 brew 'dust'
 brew 'exa'
