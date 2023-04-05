@@ -8,4 +8,5 @@
 ./30_shell.sh
 ./40_asdf.sh
 ./50_tools.sh
+./55_additional_tools.sh
 ./90_env.sh
