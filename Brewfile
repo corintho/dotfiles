@@ -9,23 +9,30 @@ tap 'microsoft/git' || true
 # install packages
 brew 'asdf'
 brew 'bat'
+brew 'bottom'
 brew 'bundletool'
 brew 'cargo-watch'
 brew 'cocoapods'
 brew 'dust'
 brew 'exa'
+brew 'fd'
 brew 'fzf'
 brew 'gawk'
 brew 'git'
 brew 'gitleaks'
 brew 'git-delta'
 brew 'gpg'
+brew 'grex'
 brew 'jq'
 brew 'mas'
+brew 'procs'
 brew 'rcm'
+brew 'ripgrep'
+brew 'sd'
 brew 'starship'
 brew 'the_silver_searcher'
 brew 'tldr'
+brew 'tokei'
 brew 'tmux'
 brew 'reattach-to-user-namespace'
 brew 'zoxide'
@@ -43,7 +50,8 @@ cask 'vlc'
 cask 'git-credential-manager-core'
 
 # AppStore
-mas "XCode", id: 497799835
+# Do not do this, install manually from developer portal, to avoid auto-updates
+# mas "XCode", id: 497799835
 
 # Fonts 
 cask 'font-fira-mono-nerd-font'
