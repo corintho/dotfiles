@@ -29,7 +29,8 @@ brew 'procs'
 brew 'rcm'
 brew 'ripgrep'
 brew 'sd'
-brew 'starship'
+# Dropped in favor of powerlevel 10k
+#brew 'starship'
 brew 'the_silver_searcher'
 brew 'tldr'
 brew 'tokei'
@@ -39,7 +40,8 @@ brew 'zoxide'
 brew 'watchman'
 
 # Casks
-cask 'android-studio'
+# Being handled through Jetbrains Toolbox
+#cask 'android-studio'
 cask 'firefox'
 cask 'flutter'
 cask 'google-chrome'

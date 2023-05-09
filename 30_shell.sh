@@ -16,3 +16,6 @@ git clone https://github.com/gpakosz/.tmux.git
 ln -s -f .tmux/.tmux.conf
 #This is handled in the rc symlink setup
 #cp .tmux/.tmux.conf.local .
+
+echo "Installing Powerlevel 10k"
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k

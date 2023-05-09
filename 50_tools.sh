@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 # install yarn
 npm install --global yarn

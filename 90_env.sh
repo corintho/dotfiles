@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 echo "Setting up ~/.rcrc file"
 echo "DOTFILES_DIRS=\"$(pwd)/dotfiles\"" > ~/.rcrc
 

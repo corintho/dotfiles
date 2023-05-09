@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 cargo install sauce
 cargo install cargo-make
