@@ -111,9 +111,8 @@ source $ZSH/oh-my-zsh.sh
 alias scripts='jq ".scripts | to_entries | sort_by(.key) | from_entries" package.json'
 alias ios='xcrun simctl getenv booted SIMULATOR_UDID | xargs yarn ios --udid'
 alias check='yarn lint && yarn typescript && yarn test'
-alias cat='bat'
 alias less='bat'
-
+alias p10kupdate='git -C ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k pull'
 
 # setup asdf
 source $(brew --prefix asdf)/libexec/asdf.sh
