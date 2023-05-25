@@ -113,6 +113,7 @@ alias ios='xcrun simctl getenv booted SIMULATOR_UDID | xargs yarn ios --udid'
 alias check='yarn lint && yarn typescript && yarn test'
 alias less='bat'
 alias p10kupdate='git -C ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k pull'
+alias join_img='convert -background black +smush 16'
 
 # setup asdf
 source $(brew --prefix asdf)/libexec/asdf.sh
