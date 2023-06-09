@@ -36,6 +36,7 @@ brew 'sd'
 # Dropped in favor of powerlevel 10k
 #brew 'starship'
 brew 'the_silver_searcher'
+brew 'thefuck'
 brew 'tldr'
 brew 'tokei'
 brew 'tmux'
