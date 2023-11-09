@@ -81,6 +81,9 @@ setopt HIST_IGNORE_SPACE
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(docker docker-compose git rust thefuck yarn)
 
+#setup fpath
+fpath+=~/.zfunc
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -114,6 +117,7 @@ alias check='yarn lint && yarn typescript && yarn test'
 alias less='bat'
 alias p10kupdate='git -C ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k pull'
 alias join_img='convert -background black +smush 16'
+alias chad='NVIM_APPNAME="nvim-nvchad" nvim'
 
 # setup asdf
 source $(brew --prefix asdf)/libexec/asdf.sh
@@ -131,6 +135,7 @@ setopt histignorespace
 export ANDROID_SDK_ROOT=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_SDK_ROOT/emulator
 export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
+export PATH=$PATH:$ANDROID_SDK_ROOT/tools/bin
 
 # setup starship
 # eval "$(starship init zsh)"
@@ -156,3 +161,5 @@ fi
 # Key bindings
 # ------------
 source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
