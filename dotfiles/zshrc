@@ -117,7 +117,8 @@ alias check='yarn lint && yarn typescript && yarn test'
 alias less='bat'
 alias p10kupdate='git -C ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k pull'
 alias join_img='convert -background black +smush 16'
-alias chad='NVIM_APPNAME="nvim-nvchad" nvim'
+alias chad="nvim"
+alias lazy='NVIM_APPNAME="nvim-lazy" nvim'
 alias klingon='say -v Xander "QgaplA"'
 
 # setup asdf
