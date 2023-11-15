@@ -11,3 +11,7 @@ asdf global java zulu-11.56.19
 asdf plugin-add dotnet-core https://github.com/emersonsoares/asdf-dotnet-core.git
 asdf install dotnet-core latest
 asdf global dotnet-core latest
+
+asdf plugin add cocoapods https://github.com/ronnnnn/asdf-cocoapods.git
+asdf install cocoapods 1.12.1
+asdf global cocoapods 1.12.1
