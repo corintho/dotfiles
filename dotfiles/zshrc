@@ -120,6 +120,8 @@ alias join_img='convert -background black +smush 16'
 alias chad="nvim"
 alias lazy='NVIM_APPNAME="nvim-lazy" nvim'
 alias klingon='say -v Xander "QgaplA"'
+alias listening='lsof -iTCP -sTCP:LISTEN -n -P'
+alias vim='nvim'
 
 # setup asdf
 source $(brew --prefix asdf)/libexec/asdf.sh
