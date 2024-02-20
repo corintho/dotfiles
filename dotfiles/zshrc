@@ -171,3 +171,6 @@ source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
 # setup bob path
 export PATH=$HOME/.local/share/bob/nvim-bin:$PATH
 
+# setup python path
+export PATH=$PATH:~/Library/Python/3.9/bin
+
