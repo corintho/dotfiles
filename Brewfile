@@ -6,8 +6,12 @@ tap "homebrew/cask-fonts" || true
 tap "homebrew/cask-versions" || true
 tap "jesseduffield/lazygit" || true
 tap "microsoft/git" || true
+tap "ggozad/formulas" || true
+tap "wix/brew" || true
 
 # install packages
+brew "ack"
+brew "applesimutils"
 brew "asdf"
 brew "bat"
 brew "bottom"
@@ -22,6 +26,7 @@ brew "exa"
 brew "fd"
 brew "fzf"
 brew "gawk"
+brew "ggozad/formulas/oterm"
 brew "git"
 brew "git-delta"
 brew "git-gui"
@@ -33,12 +38,21 @@ brew "grex"
 brew "imagemagick"
 brew "jesseduffield/lazygit/lazygit"
 brew "jq"
+brew "ltex-ls"
 brew "mas"
+brew "portaudio"
 brew "pre-commit"
 brew "procs"
+brew "pstree"
+brew "python-distlib"
+brew "python-filelock"
+brew "python-platformdirs"
+brew "python-setuptools"
+brew "pyyaml"
 brew "rcm"
 brew "reattach-to-user-namespace"
 brew "ripgrep"
+brew "ruby"
 brew "scrcpy"
 brew "sd"
 # Dropped in favor of powerlevel 10k
@@ -48,6 +62,7 @@ brew "thefuck"
 brew "tldr"
 brew "tmux"
 brew "tokei"
+brew "virtualenv"
 brew "watchman"
 brew "zoxide"
 
