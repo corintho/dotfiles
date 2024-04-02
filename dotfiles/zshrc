@@ -153,6 +153,7 @@ eval "$(sauce --shell zsh shell init)"
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+### FZF
 # setup fzf
 if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
   PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"
@@ -165,8 +166,11 @@ fi
 # Key bindings
 # ------------
 source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+### /FZF
+
+# setup asdf node for legacy file support
+export ASDF_NODEJS_LEGACY_FILE_DYNAMIC_STRATEGY=latest_installed
 
 # setup bob path
 export PATH=$HOME/.local/share/bob/nvim-bin:$PATH
