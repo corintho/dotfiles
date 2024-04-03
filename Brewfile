@@ -13,6 +13,7 @@ tap "wix/brew" || true
 brew "ack"
 brew "applesimutils"
 brew "asdf"
+brew "bash"
 brew "bat"
 brew "bottom"
 brew "bundletool"

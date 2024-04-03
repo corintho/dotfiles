@@ -1,2 +1,3 @@
 FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 PATH="$(brew --prefix python)/libexec/bin:${PATH}"
+PATH="$(brew --prefix bash)/bin:${PATH}"
