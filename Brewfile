@@ -66,6 +66,7 @@ brew "tmux"
 brew "tokei"
 brew "virtualenv"
 brew "watchman"
+brew "yq"
 brew "zoxide"
 
 # Casks
