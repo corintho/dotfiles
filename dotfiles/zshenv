@@ -1,0 +1,24 @@
+eval $(/opt/homebrew/bin/brew shellenv)
+. "$HOME/.cargo/env"
+
+# setup asdf
+source $(brew --prefix asdf)/libexec/asdf.sh
+
+# java home
+source ~/.asdf/plugins/java/set-java-home.zsh
+
+# setup sauce
+eval "$(sauce --shell zsh shell init)"
+
+# setup asdf node for legacy file support
+export ASDF_NODEJS_LEGACY_FILE_DYNAMIC_STRATEGY=latest_installed
+
+# setup bob path
+export PATH=$HOME/.local/share/bob/nvim-bin:$PATH
+
+# setup python path
+export PATH=$PATH:~/Library/Python/3.9/bin
+
+# setup default editor
+export EDITOR=nvim
+

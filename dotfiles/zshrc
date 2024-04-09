@@ -123,12 +123,6 @@ alias klingon='say -v Xander "QgaplA"'
 alias listening='lsof -iTCP -sTCP:LISTEN -n -P'
 alias vim='nvim'
 
-# setup asdf
-source $(brew --prefix asdf)/libexec/asdf.sh
-
-# java home
-source ~/.asdf/plugins/java/set-java-home.zsh
-
 # setup zoxide
 eval "$(zoxide init zsh)"
 
@@ -146,9 +140,6 @@ export PATH=$PATH:$ANDROID_SDK_ROOT/tools/bin
 
 # setup dotnet
 source ~/.asdf/plugins/dotnet-core/set-dotnet-home.zsh
-
-# setup sauce
-eval "$(sauce --shell zsh shell init)"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
@@ -168,16 +159,4 @@ fi
 source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 ### /FZF
-
-# setup asdf node for legacy file support
-export ASDF_NODEJS_LEGACY_FILE_DYNAMIC_STRATEGY=latest_installed
-
-# setup bob path
-export PATH=$HOME/.local/share/bob/nvim-bin:$PATH
-
-# setup python path
-export PATH=$PATH:~/Library/Python/3.9/bin
-
-# setup default editor
-export EDITOR=nvim
 
