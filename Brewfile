@@ -54,7 +54,8 @@ brew "pyyaml"
 brew "rcm"
 brew "reattach-to-user-namespace"
 brew "ripgrep"
-brew "ruby"
+# Ruby versioning is now handled through asdf
+#brew "ruby"
 brew "scrcpy"
 brew "sd"
 # Dropped in favor of powerlevel 10k
