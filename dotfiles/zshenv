@@ -22,3 +22,5 @@ export PATH=$PATH:~/Library/Python/3.9/bin
 # setup default editor
 export EDITOR=nvim
 
+# setup global rg options
+export RIPGREP_CONFIG_PATH=$HOME/.config/.rgrc
