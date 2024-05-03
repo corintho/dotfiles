@@ -18,6 +18,6 @@ asdf install ruby 3.2.3
 asdf global ruby 3.2.3
 
 asdf plugin add cocoapods https://github.com/ronnnnn/asdf-cocoapods.git
-asdf install cocoapods 1.12.1
-asdf global cocoapods 1.12.1
+asdf install cocoapods 1.15.2
+asdf global cocoapods 1.15.2
 
