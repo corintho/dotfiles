@@ -5,3 +5,6 @@ PATH="$(brew --prefix bash)/bin:${PATH}"
 # setup asdf
 ASDF_FORCE_PREPEND=yes
 source $(brew --prefix asdf)/libexec/asdf.sh
+
+# Created by `pipx` on 2024-05-26 11:54:15
+export PATH="$PATH:/Users/corintho/.local/bin"

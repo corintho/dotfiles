@@ -160,4 +160,6 @@ source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 ### /FZF
 
-
+# pipx setup
+export PATH="$PATH:/Users/corintho/.local/bin"
+# eval "$(register-python-argcomplete pipx)"
