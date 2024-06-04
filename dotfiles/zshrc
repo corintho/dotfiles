@@ -113,6 +113,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias scripts='jq ".scripts | to_entries | sort_by(.key) | from_entries" package.json'
 alias ios='xcrun simctl getenv booted SIMULATOR_UDID | xargs yarn ios --udid'
+alias ios_device='ios-deploy -c | grep USB | cut -d " " -f 3 | xargs yarn ios --udid'
 alias check='yarn lint && yarn typescript && yarn test'
 alias less='bat'
 alias p10kupdate='git -C ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k pull'
