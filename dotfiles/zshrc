@@ -165,3 +165,4 @@ source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
 # pipx setup
 export PATH="$PATH:/Users/corintho/.local/bin"
 # eval "$(register-python-argcomplete pipx)"
+export PATH="/opt/homebrew/opt/curl/bin:$PATH"

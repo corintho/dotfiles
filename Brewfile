@@ -20,6 +20,7 @@ brew "bundletool"
 brew "cargo-watch"
 # Cocoapods versioning is now handled through asdf
 #brew "cocoapods"
+brew "curl"
 brew "docker"
 brew "docker-compose"
 brew "dust"
