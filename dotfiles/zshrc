@@ -124,6 +124,7 @@ alias klingon='say -v Xander "QgaplA"'
 alias listening='lsof -iTCP -sTCP:LISTEN -n -P'
 alias vim='nvim'
 alias bad_watchman="watchman watch-del '$PWD' ; watchman watch-project '$PWD'"
+alias n=neohub
 
 # setup zoxide
 eval "$(zoxide init zsh)"
