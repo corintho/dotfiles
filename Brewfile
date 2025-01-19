@@ -6,11 +6,13 @@ tap "homebrew/cask-fonts" || true
 tap "homebrew/cask-versions" || true
 tap "jesseduffield/lazygit" || true
 tap "microsoft/git" || true
+tap "nikitabobko/tap" || true
 tap "ggozad/formulas" || true
 tap "wix/brew" || true
 
 # install packages
 brew "ack"
+brew "aerospace"
 brew "applesimutils"
 brew "asdf"
 brew "bash"
