@@ -1,6 +1,7 @@
 # https://github.com/Homebrew/homebrew-bundle
 # specify a directory to install
 cask_args appdir: "/Applications"
+tap "FelixKratz/formulae" || true
 tap "homebrew/cask" || true
 tap "homebrew/cask-fonts" || true
 tap "homebrew/cask-versions" || true
@@ -65,6 +66,7 @@ brew "ripgrep"
 #brew "ruby"
 brew "scrcpy"
 brew "sd"
+brew "sketchybar"
 # Dropped in favor of powerlevel 10k
 #brew "starship"
 brew "the_silver_searcher"
