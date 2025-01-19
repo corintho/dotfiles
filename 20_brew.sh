@@ -17,3 +17,7 @@ echo "Installing brew environment variables in .zshenv"
 # Find where brew was installed. This currently works because as soon as it is installed it is put in the path
 bc=$(which brew)
 echo "eval \$($bc shellenv)" >> $HOME/.zshenv
+
+#Setup services
+brew services start aerospace
+brew services start sketchybar
