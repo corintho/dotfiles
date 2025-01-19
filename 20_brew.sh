@@ -20,4 +20,5 @@ echo "eval \$($bc shellenv)" >> $HOME/.zshenv
 
 #Setup services
 brew services start aerospace
+brew services start borders
 brew services start sketchybar

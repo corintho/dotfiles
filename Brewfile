@@ -19,6 +19,7 @@ brew "asdf"
 brew "bash"
 brew "bat"
 brew "bottom"
+brew "borders"
 brew "bundletool"
 brew "cargo-watch"
 # Cocoapods versioning is now handled through asdf
