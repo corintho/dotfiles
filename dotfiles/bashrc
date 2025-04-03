@@ -1,4 +1,0 @@
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-. "$HOME/.cargo/env"
-PATH="$(brew --prefix python)/libexec/bin:${PATH}"
-PATH="$(brew --prefix bash)/bin:${PATH}"

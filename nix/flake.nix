@@ -33,6 +33,7 @@
 
   outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, home-manager, homebrew-bundle, homebrew-cask, homebrew-core, homebrew-xcodesorg }:
   let
+    # nixpkgs.config.allowUnfree = true;
     # Home-manager
     # Reading from environment variables need impure mode, but makes this completely automated for the current user
     username = (builtins.getEnv "USER");
@@ -42,6 +43,7 @@
       environment.systemPackages =
         [ 
 	  # Tools
+	  pkgs.bat
 	  pkgs.curl
 	  pkgs.neovim
 	  pkgs.tmux
@@ -146,6 +148,8 @@
 
       # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";
+      # May be needed for some packages. Not for now
+      # nixpkgs.config.allowUnfree = true;
 
       # Home-manager
       users = {
