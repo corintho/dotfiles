@@ -1,3 +1,3 @@
 #!/bin/bash
 
-darwin-rebuild switch --flake .#shield
+darwin-rebuild switch --impure --flake .#shield

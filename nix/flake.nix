@@ -3,8 +3,14 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/release-24.11";
-    nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-24.11";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/nix-darwin-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    home-manager = {
+      url = "github:nix-community/home-manager/release-24.11";
+      inputs.nixpkgs.follows = "nix-darwin";
+    }; 
     # Enable homebrew management through nix
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     homebrew-bundle = {
@@ -25,8 +31,11 @@
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, homebrew-bundle, homebrew-cask, homebrew-core, homebrew-xcodesorg }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew, home-manager, homebrew-bundle, homebrew-cask, homebrew-core, homebrew-xcodesorg }:
   let
+    # Home-manager
+    # Reading from environment variables need impure mode, but makes this completely automated for the current user
+    username = (builtins.getEnv "USER");
     configuration = { lib, pkgs, ... }: {
       # List packages installed in system profile. To search by name, run:
       # $ nix-env -qaP | grep wget
@@ -137,11 +146,20 @@
 
       # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";
+
+      # Home-manager
+      users = {
+        users.${username} = {
+	  # This makes this impure, but makes it fully automated for the current user
+	  home = (builtins.getEnv "HOME");
+          name = "${username}";
+        };
+      };
     };
   in
   {
     # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#shield
+    # darwin-rebuild build --flake .#shield
     darwinConfigurations."shield" = nix-darwin.lib.darwinSystem {
       modules = [ configuration
         nix-homebrew.darwinModules.nix-homebrew
@@ -163,6 +181,11 @@
 	    };
           };
         }
+	home-manager.darwinModules.home-manager {
+	  home-manager.useGlobalPkgs = true;
+	  home-manager.useUserPackages = true;
+	  home-manager.users.${username} = import ./home.nix;
+	}
       ];
     };
 
