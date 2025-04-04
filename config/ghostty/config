@@ -1,0 +1,4 @@
+theme = gruvbox-material-hard-dark
+font-family = FiraCode Nerd Font Mono
+font-size = 14
+font-feature = -calt, -liga, -dlig

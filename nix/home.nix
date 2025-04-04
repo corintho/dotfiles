@@ -12,7 +12,17 @@
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
-  home.file = {};
+  home.file = {
+    # Dirty, impure, but creates the direct link we want for some things. It needs to be a absolute path to work. If it is relative, it creates a file in the store with the contents of the linked file
+    ".config/ghostty/" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../. + "/config/ghostty/";
+      # In order to do folders, we need to do it recursive
+      recursive = true;
+    };
+  };
+
+  # Link files into XDG dirs
+  # xdg.configFile = {};
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
