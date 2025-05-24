@@ -1,0 +1,23 @@
+/* Global colors */
+@define-color bar-bg rgba(0, 0, 0, 0);
+
+@define-color main-bg #11111b;
+@define-color main-fg #cdd6f4;
+
+/* Workspace buttons */
+/* Current workspace button */
+@define-color wb-current-bg #a6e3a1;
+@define-color wb-current-fg #313244;
+
+/* Active button (in another monitor) */
+@define-color wb-act-bg @main-bg;
+@define-color wb-act-fg #a6e3a1;
+
+/* Visible button */
+@define-color wb-vis-bg @main-bg;
+@define-color wb-vis-fg #89b4fa;
+
+/* Hovered button */
+@define-color wb-hvr-bg #f5c2e7;
+@define-color wb-hvr-fg #313244;
+/* /Workspace buttons */
