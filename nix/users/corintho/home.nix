@@ -82,7 +82,7 @@
       settings = {
         color = "161429";
         # TODO: Make the folder reference dynamic through a variable
-        image = "~/.local/share/wallpapers/973563.jpg";
+        image = "~/.local/share/wallpapers/973571.jpg";
       };
     };
 
