@@ -1,8 +1,12 @@
-{ config, dotFiles, pkgs, pkgs-unstable, ... }:
+{ config, dotFiles, pkgs, pkgs-unstable, rootPath, ... }:
 
 {
-  imports =
-    [ ../../home/core.nix ../../modules/hyprland.nix ../../modules/waybar.nix ];
+  imports = [
+    ../../home/core.nix
+    ../../modules/hyprland.nix
+    ../../modules/waybar.nix
+    ../../modules/hyprpaper.nix
+  ];
   home.sessionVariables = { EDITOR = "nvim"; };
   home.packages = with pkgs; [
     htop
@@ -22,6 +26,14 @@
     statix
     # /nvim
   ];
+
+  home.file = {
+    # TODO: Make the folder reference dynamic through a variable
+    ".local/share/wallpapers/" = {
+      source = rootPath + /wallpapers;
+      recursive = true;
+    };
+  };
 
   xsession = { numlock.enable = true; };
 
@@ -67,7 +79,11 @@
 
     swaylock = {
       enable = true;
-      settings = { color = "161429"; };
+      settings = {
+        color = "161429";
+        # TODO: Make the folder reference dynamic through a variable
+        image = "~/.local/share/wallpapers/973563.jpg";
+      };
     };
 
     zoxide = { enable = true; };
