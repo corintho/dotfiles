@@ -3,6 +3,10 @@
 default:
   @just --list --unsorted
 
+#
+# NixOS specific
+#
+
 # Standard deploy
 [group('build')]
 [linux]
@@ -10,22 +14,38 @@ deploy:
   nixos-rebuild switch --flake ./nix --use-remote-sudo
   @just workaround-waybar
 
+#TODO: Only needed for waybar because of a bug
+[private]
+workaround-waybar:
+  @killall -SIGUSR2 -r waybar
+
 # Dry run. Makes it easy to catch errors without generating a new profile and boot entry
 [group('build')]
 [linux]
-dry-build:
+check:
   nixos-rebuild dry-build --flake ./nix
+
+#
+# Darwin specific
+#
+
+# Standard deploy
+[group('build')]
+[macos]
+deploy:
+  darwin-rebuild switch --impure --flake ./nix#shield
+
+# Dry run. Makes it easy to catch errors without generating a new profile
+[group('build')]
+[macos]
+check:
+  darwin-rebuild check --impure --flake ./nix#shield
 
 # Standard deploy with extended debug enabled
 [group('build')]
 [linux]
 verbose:
   nixos-rebuild switch --flake ./nix --use-remote-sudo --show-trace --verbose
-
-#TODO: Only needed for waybar because of a bug
-[private]
-workaround-waybar:
-  @killall -SIGUSR2 -r waybar
 
 # Loads up the current flake in the repl
 [group('debug')]
