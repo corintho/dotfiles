@@ -10,45 +10,8 @@
   };
 
   outputs = inputs@{ nixpkgs, nixpkgs-unstable, home-manager, ... }: {
-    nixosConfigurations = {
-      ncc-1701-d = let
-        username = "corintho";
-        system = "x86_64-linux";
-        rootPath = ../.;
-        # Passes these parameters to other nix modules
-        specialArgs = {
-          inherit username;
-          dotFiles = rootPath + /dotfiles;
-          libFiles = rootPath + /lib;
-          pkgs-unstable = import nixpkgs-unstable {
-            # Recursively inherits system from the outer scope
-            inherit system;
-            # TODO: synchronize this to a host set variable. Is it possible?
-            # Allow unfree packages
-            config.allowUnfree = true;
-          };
-        };
-      in nixpkgs.lib.nixosSystem {
-        inherit specialArgs;
-
-        modules = [
-          ./hosts/ncc-1701-d
-          ./users/${username}/nixos.nix
-
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.${username} =
-              import ./users/${username}/home.nix;
-
-            # Optionally, use home-manager.extraSpecialArgs to pass
-            # arguments to home.nix
-            # Sets home manager to use the same special args as flakes
-            home-manager.extraSpecialArgs = inputs // specialArgs;
-          }
-        ];
-      };
-    };
+    nixosConfigurations = (import ./hosts {
+      inherit inputs nixpkgs nixpkgs-unstable home-manager;
+    });
   };
 }
