@@ -1,4 +1,4 @@
-{ lib, pkgs, pkgs-unstable, ... }:
+{ inputs, lib, pkgs, pkgs-unstable, ... }:
 
 {
   imports = [
@@ -126,6 +126,7 @@
     # /nvim
     kitty
     rofi
+    inputs.zen-browser.packages.${pkgs.system}.default
     #  wget
   ];
 

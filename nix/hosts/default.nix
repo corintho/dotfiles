@@ -7,7 +7,7 @@ let
   nixPath = rootPath + /nix;
   # Passes these parameters to other nix modules
   specialArgs = {
-    inherit username nixPath rootPath;
+    inherit inputs username nixPath rootPath;
     dotFiles = rootPath + /dotfiles;
     libFiles = rootPath + /lib;
     pkgs-unstable = import nixpkgs-unstable {

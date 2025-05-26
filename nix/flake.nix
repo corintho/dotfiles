@@ -33,6 +33,15 @@
       url = "github:xcodesorg/homebrew-made";
       flake = false;
     };
+    # Custom packages for software from other sources
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+
+      # optional, but recommended if you closely follow NixOS unstable so it shares
+      # system libraries, and improves startup time
+      # NOTE: if you experience a build failure with Zen, the first thing to check is to remove this line!
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, nix-darwin

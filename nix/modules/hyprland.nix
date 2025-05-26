@@ -29,7 +29,7 @@
           "name:Gaming"
         ];
         windowrulev2 = [
-          "workspace name:Browsers, class:Vivaldi.*"
+          "workspace name:Browsers, class:zen"
           "workspace name:Dev, class:neovide"
           "workspace name:Dev, class:kitty"
           "workspace name:cOmms, class:Proton Mail"
@@ -41,7 +41,7 @@
         "$super" = "ALT_CTRL_SHIFT_SUPER";
         "$launcher" = "SUPER";
         "$terminal" = "kitty";
-        "$browser" = "vivaldi";
+        "$browser" = "zen";
         "$menu" = "rofi -show drun";
       };
       extraConfig = ''
