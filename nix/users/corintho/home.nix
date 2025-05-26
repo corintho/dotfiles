@@ -17,6 +17,7 @@
     pkgs-unstable.vivaldi
     font-awesome
     psmisc
+    vlc
     # Gaming
     pkgs-unstable.prismlauncher
     # TODO:More nvim
