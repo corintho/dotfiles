@@ -26,6 +26,11 @@
     deadnix
     statix
     # /nvim
+    # Terminal tools
+    fd
+    bat
+    tlrc
+    # /Terminal tools
   ];
 
   home.file = {
@@ -44,6 +49,13 @@
   };
 
   programs = {
+    eza = {
+      enable = true;
+      colors = "auto";
+      git = true;
+      icons = "auto";
+    };
+
     fzf = { enable = true; };
 
     git = {
