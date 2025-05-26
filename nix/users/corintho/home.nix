@@ -31,6 +31,9 @@
     bat
     tlrc
     # /Terminal tools
+    # Coding tools
+    devenv
+    # /Coding tools
   ];
 
   home.file = {
@@ -49,6 +52,7 @@
   };
 
   programs = {
+    direnv = { enable = true; };
     eza = {
       enable = true;
       colors = "auto";
