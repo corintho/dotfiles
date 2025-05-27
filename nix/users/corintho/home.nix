@@ -94,15 +94,15 @@
       };
     };
 
+    mpv = {
+      enable = true;
+      package = pkgs-unstable.mpv;
+    };
+
     neovide = {
       enable = true;
       package = pkgs-unstable.neovide;
       settings = { fork = true; };
-    };
-
-    nnn = {
-      enable = true;
-      package = pkgs-unstable.nnn.override { withNerdIcons = true; };
     };
 
     oh-my-posh = {
@@ -120,6 +120,22 @@
         # TODO: Make the folder reference dynamic through a variable
         image = "~/.local/share/wallpapers/973571.jpg";
       };
+    };
+
+    yazi = {
+      enable = true;
+      settings = {
+        manager = {
+          show_hidden = true;
+          sort_by = "natural";
+        };
+        preview = {
+          max_width = 1600;
+          max_height = 1000;
+        };
+      };
+      package = pkgs-unstable.yazi;
+      shellWrapperName = "y";
     };
 
     zoxide = { enable = true; };
