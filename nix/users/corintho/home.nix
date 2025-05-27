@@ -34,6 +34,11 @@
     # Coding tools
     devenv
     # /Coding tools
+    # Screen capturing
+    hyprshot
+    grim
+    slurp
+    # /Screen capturing
   ];
 
   home.file = {

@@ -38,7 +38,7 @@
         "$mod" = "ALT";
         "$mod2" = "ALT_SHIFT";
         "$meh" = "ALT_CTRL_SHIFT";
-        "$super" = "ALT_CTRL_SHIFT_SUPER";
+        "$hyper" = "ALT_CTRL_SHIFT_SUPER";
         "$launcher" = "SUPER";
         "$terminal" = "kitty";
         "$browser" = "zen";
@@ -62,8 +62,8 @@
                 bind = $mod, F, fullscreen
                 bind = $meh, LEFT, focusmonitor, -1
                 bind = $meh, RIGHT, focusmonitor, +1
-                bind = $super, LEFT, movewindow, mon:-1
-        	      bind = $super, RIGHT, movewindow, mon:+1
+                bind = $hyper, LEFT, movewindow, mon:-1
+                bind = $hyper, RIGHT, movewindow, mon:+1
                 bind = $mod, TAB, workspace, previous
                 bind = $mod2, TAB, movecurrentworkspacetomonitor, +1
                 # Launcher
@@ -85,6 +85,8 @@
                 bind = $mod2, M, movetoworkspace, name:Misc
                 bind = $mod, S, togglespecialworkspace, magic
                 bind = $mod2, S, movetoworkspace, special:magic
+                # Screenshots
+                bind = $hyper, S, exec, hyprshot -m region --clipboard-only
         	      # Service mode
       '';
     };
