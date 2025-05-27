@@ -66,6 +66,16 @@
       enable = true;
       userName = "Corintho Assunção";
       userEmail = "github@corintho.eu";
+      difftastic = {
+        enable = true;
+        enableAsDifftool = true;
+        display = "inline";
+        package = pkgs-unstable.difftastic;
+      };
+      extraConfig = {
+        difftool = { prompt = false; };
+        pager = { difftool = true; };
+      };
     };
 
     kitty = {
