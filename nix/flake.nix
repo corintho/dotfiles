@@ -42,17 +42,19 @@
       # NOTE: if you experience a build failure with Zen, the first thing to check is to remove this line!
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    paths.url = ./paths;
   };
 
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, home-manager, nix-darwin
-    , homebrew-bundle, homebrew-cask, homebrew-core, homebrew-xcodesorg
-    , nix-homebrew, ... }: {
+  outputs = inputs@{ self, paths, nixpkgs, nixpkgs-unstable, home-manager
+    , nix-darwin, homebrew-bundle, homebrew-cask, homebrew-core
+    , homebrew-xcodesorg, nix-homebrew, ... }: {
+      # imports = [ ./paths2.nix ];
       nixosConfigurations = (import ./hosts {
-        inherit inputs nixpkgs nixpkgs-unstable home-manager;
+        inherit inputs nixpkgs nixpkgs-unstable home-manager paths;
       });
       darwinConfigurations = (import ./darwin {
         inherit self nix-darwin nixpkgs nix-homebrew home-manager
-          homebrew-bundle homebrew-cask homebrew-core homebrew-xcodesorg;
+          homebrew-bundle homebrew-cask homebrew-core homebrew-xcodesorg paths;
       });
     };
 }

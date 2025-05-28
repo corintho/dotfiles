@@ -222,6 +222,17 @@
         "type": "github"
       }
     },
+    "paths": {
+      "locked": {
+        "path": "paths",
+        "type": "path"
+      },
+      "original": {
+        "path": "paths",
+        "type": "path"
+      },
+      "parent": []
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
@@ -233,6 +244,7 @@
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "paths": "paths",
         "zen-browser": "zen-browser"
       }
     },
