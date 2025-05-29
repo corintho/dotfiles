@@ -18,6 +18,10 @@
     font-awesome
     psmisc
     vlc
+    mediainfo
+    exiftool
+    p7zip
+    file-roller
     # Gaming
     pkgs-unstable.prismlauncher
     # TODO:More nvim
@@ -118,6 +122,8 @@
     };
 
     ripgrep = { enable = true; };
+
+    swayimg = { enable = true; };
 
     swaylock = {
       enable = true;
