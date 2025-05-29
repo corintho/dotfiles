@@ -26,6 +26,7 @@
       "alignment": "left",
       "segments": [
         {
+          "type": "session",
           "properties": {
             "cache_duration": "none"
           },
@@ -34,10 +35,10 @@
           "template": " {{ if .SSHSession }}\ueba9 {{ end }}{{ .UserName }} ",
           "foreground": "p:black",
           "background": "p:yellow",
-          "type": "session",
           "style": "diamond"
         },
         {
+          "type": "path",
           "properties": {
             "cache_duration": "none",
             "style": "letter"
@@ -47,10 +48,10 @@
           "foreground": "p:white",
           "powerline_symbol": "\ue0b0",
           "background": "p:orange",
-          "type": "path",
           "style": "diamond"
         },
         {
+          "type": "git",
           "properties": {
             "branch_max_length": 25,
             "cache_duration": "none",
@@ -61,7 +62,6 @@
           "foreground": "p:black",
           "leading_diamond": "<parentBackground,background>\ue0b0</>",
           "background": "p:green",
-          "type": "git",
           "style": "diamond",
           "foreground_templates": [
             "{{ if or (.Working.Changed) (.Staging.Changed) }}p:black{{ end }}",
@@ -76,6 +76,7 @@
           ]
         },
         {
+          "type": "root",
           "properties": {
             "cache_duration": "none"
           },
@@ -83,10 +84,10 @@
           "leading_diamond": "<parentBackground,background>\ue0b0</>",
           "foreground": "p:white",
           "background": "p:yellow",
-          "type": "root",
           "style": "diamond"
         },
         {
+          "type": "status",
           "properties": {
             "always_enabled": true,
             "cache_duration": "none"
@@ -96,9 +97,10 @@
           "template": " {{ if gt .Code 0 }}\uf00d{{ else }}\uf00c{{ end }} ",
           "foreground": "p:white",
           "background": "p:blue",
-          "type": "status",
           "style": "diamond",
-          "background_templates": ["{{ if gt .Code 0 }}p:red{{ end }}"]
+          "background_templates": [
+            "{{ if gt .Code 0 }}p:red{{ end }}"
+          ]
         }
       ]
     },
@@ -106,30 +108,54 @@
       "type": "rprompt",
       "segments": [
         {
+          "type": "executiontime",
+          "properties": {
+            "cache_duration": "none",
+            "style": "austin",
+            "threshold": 0
+          },
+          "template": "{{ .FormattedMs }} ",
+          "foreground": "p:blue",
+          "background": "transparent",
+          "style": "plain"
+        },
+        {
+          "type": "node",
           "properties": {
             "cache_duration": "none",
             "display_mode": "files",
             "fetch_package_manager": false,
             "home_enabled": false
           },
-          "template": "\ue718 ",
+          "template": "\ue74e ",
           "foreground": "p:green",
           "background": "transparent",
-          "type": "node",
           "style": "plain"
         },
         {
+          "type": "lua",
           "properties": {
             "cache_duration": "none",
             "fetch_version": false
           },
-          "template": "\ue626 ",
+          "template": "\ue620 ",
           "foreground": "p:blue",
           "background": "transparent",
-          "type": "go",
           "style": "plain"
         },
         {
+          "type": "go",
+          "properties": {
+            "cache_duration": "none",
+            "fetch_version": false
+          },
+          "template": "\ue65e ",
+          "foreground": "p:blue",
+          "background": "transparent",
+          "style": "plain"
+        },
+        {
+          "type": "python",
           "properties": {
             "cache_duration": "none",
             "display_mode": "files",
@@ -139,37 +165,48 @@
           "template": "\ue235 ",
           "foreground": "p:yellow",
           "background": "transparent",
-          "type": "python",
           "style": "plain"
         },
         {
+          "type": "rust",
+          "properties": {
+            "cache_duration": "none",
+            "display_mode": "files",
+            "fetch_version": false
+          },
+          "template": "\ue7a8 ",
+          "foreground": "p:white",
+          "background": "transparent",
+          "style": "plain"
+        },
+        {
+          "type": "nix-shell",
           "properties": {
             "cache_duration": "none"
           },
           "template": "\udb84\udd05 ",
           "foreground": "p:blue",
           "background": "transparent",
-          "type": "nix-shell",
           "style": "plain"
         },
         {
+          "type": "shell",
           "properties": {
             "cache_duration": "none"
           },
           "template": "in <p:blue><b>{{ .Name }}</b></> ",
           "foreground": "p:white",
           "background": "transparent",
-          "type": "shell",
           "style": "plain"
         },
         {
+          "type": "time",
           "properties": {
             "cache_duration": "none"
           },
           "template": "at <p:blue><b>{{ .CurrentDate | date \"15:04:05\" }}</b></>",
           "foreground": "p:white",
           "background": "transparent",
-          "type": "time",
           "style": "plain"
         }
       ]
@@ -177,6 +214,7 @@
   ],
   "tooltips": [
     {
+      "type": "aws",
       "properties": {
         "display_default": true
       },
@@ -185,11 +223,13 @@
       "template": " \ue7ad {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} ",
       "foreground": "p:white",
       "background": "p:orange",
-      "type": "aws",
       "style": "diamond",
-      "tips": ["aws"]
+      "tips": [
+        "aws"
+      ]
     },
     {
+      "type": "az",
       "properties": {
         "display_default": true
       },
@@ -198,9 +238,10 @@
       "template": " \uebd8 {{ .Name }} ",
       "foreground": "p:white",
       "background": "p:blue",
-      "type": "az",
       "style": "diamond",
-      "tips": ["az"]
+      "tips": [
+        "az"
+      ]
     }
   ],
   "version": 3,
