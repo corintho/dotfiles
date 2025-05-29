@@ -1,4 +1,4 @@
-{ config, paths, dotFiles, pkgs, pkgs-unstable, rootPath, ... }:
+{ config, lib, dotFiles, pkgs, pkgs-unstable, rootPath, ... }:
 
 {
   imports = [
@@ -150,6 +150,7 @@
       enable = true;
       autocd = true;
       enableCompletion = true;
+      autosuggestion.enable = true;
       history = {
         ignoreDups = true;
         ignoreSpace = true;
@@ -167,7 +168,14 @@
         scripts = ''
           jq ".scripts | to_entries | sort_by(.key) | from_entries" package.json'';
         n = "neovide";
+        gitskipped = "git ls-files -v|grep '^S'";
       };
+      initContent = lib.mkAfter ''
+        # add --skip-worktree flag to file
+        gitskip() {  git update-index --skip-worktree "$@";  git status; }
+        # remove --skip-worktree flag from file
+        gitunskip() {  git update-index --no-skip-worktree "$@";  git status; }
+      '';
     };
   };
 
