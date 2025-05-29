@@ -125,14 +125,7 @@
 
     swayimg = { enable = true; };
 
-    swaylock = {
-      enable = true;
-      settings = {
-        color = "161429";
-        # TODO: Make the folder reference dynamic through a variable
-        image = "~/.local/share/wallpapers/973571.jpg";
-      };
-    };
+    swaylock = { enable = true; };
 
     yazi = {
       enable = true;

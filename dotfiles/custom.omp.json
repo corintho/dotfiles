@@ -1,5 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "___comment": "Make this work with my current stylix theme",
   "palette": {
     "black": "#262B44",
     "blue": "#4B95E9",

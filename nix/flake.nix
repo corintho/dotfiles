@@ -8,6 +8,11 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Global styling through stylix
+    stylix = {
+      url = "github:nix-community/stylix/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # Custom pkgs for some modules
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     # Darwin specific packages
@@ -42,6 +47,7 @@
       # NOTE: if you experience a build failure with Zen, the first thing to check is to remove this line!
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Workaround for absolute path requirements
     paths.url = ./paths;
   };
 

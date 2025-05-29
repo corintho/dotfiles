@@ -23,6 +23,7 @@ in {
     inherit specialArgs;
 
     modules = [
+      inputs.stylix.nixosModules.stylix
       ./ncc-1701-d
       "${nixPath}/users/${username}/nixos.nix"
 

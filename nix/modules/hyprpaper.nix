@@ -1,5 +1,5 @@
-# TODO: Make the folder reference dynamic through a variable
-let wallpaper = "~/.local/share/wallpapers/973571.jpg";
+{ config, ... }:
+let wallpaper = config.stylix.image;
 in {
   config = {
 

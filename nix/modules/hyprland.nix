@@ -1,11 +1,11 @@
-{
+{ ... }: {
   config = {
     wayland.windowManager.hyprland = {
       enable = true;
       settings = {
         general = {
           border_size = 2;
-          "col.active_border" = "0xff3c2bd0";
+          # "col.active_border" = lib.mkForce "0xff3c2bd0";
         };
         decoration = { rounding = 10; };
         input = {

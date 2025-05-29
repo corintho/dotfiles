@@ -112,6 +112,15 @@
   # Install firefox.
   programs.firefox.enable = true;
 
+  # Enable system wide styling
+  stylix = {
+    enable = true;
+    polarity = "dark";
+    base16Scheme =
+      "${pkgs.base16-schemes}/share/themes/synth-midnight-dark.yaml";
+    image = ../../../wallpapers/973571.jpg;
+  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
