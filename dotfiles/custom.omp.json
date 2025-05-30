@@ -67,13 +67,14 @@
           "foreground_templates": [
             "{{ if or (.Working.Changed) (.Staging.Changed) }}p:black{{ end }}",
             "{{ if and (gt .Ahead 0) (gt .Behind 0) }}p:white{{ end }}",
-            "{{ if gt .Ahead 0 }}p:white{{ end }}"
+            "{{ if gt .Ahead 0 }}p:black{{ end }}",
+            "{{ if gt .Behind 0 }}p:white{{ end }}"
           ],
           "background_templates": [
             "{{ if or (.Working.Changed) (.Staging.Changed) }}p:yellow{{ end }}",
             "{{ if and (gt .Ahead 0) (gt .Behind 0) }}p:red{{ end }}",
-            "{{ if gt .Ahead 0 }}#49416D{{ end }}",
-            "{{ if gt .Behind 0 }}#7A306C{{ end }}"
+            "{{ if gt .Ahead 0 }}p:green{{ end }}",
+            "{{ if gt .Behind 0 }}p:blue{{ end }}"
           ]
         },
         {
@@ -127,7 +128,7 @@
             "home_enabled": false
           },
           "template": "\ue74e ",
-          "foreground": "p:green",
+          "foreground": "p:orange",
           "background": "transparent",
           "style": "plain"
         },
