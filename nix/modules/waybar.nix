@@ -12,6 +12,7 @@
       openpomodoro-cli
     ];
 
+    #TODO: Use stylix colors with waybar as well
     home.file = {
       ".config/waybar/" = {
         source = dotFiles + /waybar;

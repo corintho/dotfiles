@@ -1,4 +1,4 @@
-{ inputs, lib, pkgs, pkgs-unstable, ... }:
+{ dotFiles, inputs, lib, pkgs, pkgs-unstable, ... }:
 
 {
   imports = [
@@ -116,8 +116,7 @@
   stylix = {
     enable = true;
     polarity = "dark";
-    base16Scheme =
-      "${pkgs.base16-schemes}/share/themes/synth-midnight-dark.yaml";
+    base16Scheme = "${dotFiles}/lcars.yaml";
     image = ../../../wallpapers/973571.jpg;
   };
 
