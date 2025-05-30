@@ -112,6 +112,8 @@
 
     ripgrep = { enable = true; };
 
+    rofi = { enable = true; };
+
     swayimg = { enable = true; };
 
     swaylock = { enable = true; };
