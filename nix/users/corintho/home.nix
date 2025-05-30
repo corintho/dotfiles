@@ -66,6 +66,9 @@
     "org/gnome/desktop/peripherals/keyboard" = { numlock-state = true; };
   };
 
+  # Disable modules to handle their style manually
+  stylix = { targets = { waybar.enable = false; }; };
+
   programs = {
     direnv = {
       enable = true;
