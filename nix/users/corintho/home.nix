@@ -45,20 +45,6 @@
     # /Screen capturing
   ];
 
-  home.file = {
-    # TODO: Make the folder reference dynamic through a variable
-    ".local/share/wallpapers/" = {
-      source = rootPath + /wallpapers;
-      recursive = true;
-    };
-    # For oh-my-posh this does not work, we need to re-eval pointing to the file in our project
-    # ".config/oh-my-posh/config.json" = {
-    #   # Needs absolute path to work. Not cool
-    #   source = config.lib.file.mkOutOfStoreSymlink
-    #     "${paths.rootPath}/dotfiles/custom.omp.json";
-    # };
-  };
-
   xsession = { numlock.enable = true; };
 
   dconf.settings = {
