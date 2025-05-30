@@ -56,6 +56,8 @@
   stylix = { targets = { waybar.enable = false; }; };
 
   programs = {
+    bat = { enable = true; };
+
     direnv = {
       enable = true;
       nix-direnv.enable = true;
