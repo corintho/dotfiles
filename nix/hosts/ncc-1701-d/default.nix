@@ -138,9 +138,12 @@
     #  wget
   ];
 
-  # Workaround to enable binaries downloded with mason to work
-  # TODO: Possible to remove when removing mason?
-  programs.nix-ld.enable = true;
+  # Workaround to enable binaries downloaded outside nix to work
+  # Includes nvim mason dependencies and app-image applications
+  programs.nix-ld = {
+    enable = true;
+    package = pkgs-unstable.nix-ld;
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
