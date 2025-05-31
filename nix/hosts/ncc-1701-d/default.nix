@@ -135,7 +135,7 @@
     kitty
     rofi
     inputs.zen-browser.packages.${pkgs.system}.default
-    #  wget
+    hyprpicker
   ];
 
   # Workaround to enable binaries downloaded outside nix to work
