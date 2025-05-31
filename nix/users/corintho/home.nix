@@ -1,4 +1,4 @@
-{ config, lib, dotFiles, pkgs, pkgs-unstable, rootPath, ... }:
+{ config, lib, dotFiles, pkgs, pkgs-unstable, ... }:
 
 {
   imports = [
@@ -43,6 +43,12 @@
     grim
     slurp
     # /Screen capturing
+    # Custom scripts on path
+    (writeShellApplication {
+      name = "windows_junctions";
+      text = builtins.readFile ./scripts/windows_junctions;
+    })
+    # /Custom scripts on path
   ];
 
   xsession = { numlock.enable = true; };

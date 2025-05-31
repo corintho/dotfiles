@@ -1,0 +1,5 @@
+# Creates directory for junction mapping
+mkdir -p /windows/c/.NTFS-3G
+
+# Creates mappings
+ln -sf /windows/f /windows/c/.NTFS-3G/F:
