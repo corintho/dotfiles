@@ -1,6 +1,9 @@
 { config, lib, modulesPath, ... }:
 
-let ntfsOptions = [ "rw" "uid=1000" "allow_other" "default_permissions" ];
+let
+  ntfsOptions = [ "rw" "uid=1000" "allow_other" "default_permissions" ];
+  cifsOptions =
+    "uid=1000,gid=100,x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
 in {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
@@ -24,6 +27,10 @@ in {
     options = [ "fmask=0077" "dmask=0077" ];
   };
 
+  swapDevices =
+    [{ device = "/dev/disk/by-uuid/4c55dccc-a012-419a-8e7e-1eea368233eb"; }];
+
+  # Windows shares
   fileSystems."/windows/c" = {
     device = "/dev/disk/by-uuid/289ABCE09ABCAC26";
     fsType = "ntfs-3g";
@@ -48,8 +55,20 @@ in {
     options = ntfsOptions;
   };
 
-  swapDevices =
-    [{ device = "/dev/disk/by-uuid/4c55dccc-a012-419a-8e7e-1eea368233eb"; }];
+  # SMB shares
+  fileSystems."/smb/home" = {
+    device = "//192.168.2.250/home";
+    fsType = "cifs";
+    options =
+      [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
+  };
+
+  fileSystems."/smb/ai" = {
+    device = "//192.168.2.250/ai";
+    fsType = "cifs";
+    options =
+      [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
+  };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's

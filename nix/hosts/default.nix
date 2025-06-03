@@ -1,4 +1,4 @@
-{ inputs, nixpkgs, nixpkgs-unstable, home-manager, ... }:
+{ inputs, nixpkgs, nixpkgs-unstable, home-manager, secrets, ... }:
 
 let
   username = "corintho";
@@ -7,7 +7,7 @@ let
   nixPath = rootPath + /nix;
   # Passes these parameters to other nix modules
   specialArgs = {
-    inherit inputs username nixPath rootPath;
+    inherit inputs username nixPath rootPath secrets;
     dotFiles = rootPath + /dotfiles;
     libFiles = rootPath + /lib;
     pkgs-unstable = import nixpkgs-unstable {
@@ -24,6 +24,8 @@ in {
 
     modules = [
       inputs.stylix.nixosModules.stylix
+      inputs.agenix.nixosModules.default
+      ../modules/secrets.nix
       ./ncc-1701-d
       "${nixPath}/users/${username}/nixos.nix"
 

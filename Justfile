@@ -57,6 +57,11 @@ repl:
 up:
   nix flake update --flake ./nix 
 
+# Update secrets. Remember to redeploy
+[group('maintenance')]
+up-secrets:
+  nix flake update secrets --flake ./nix 
+
 # Update flake lock file and redeploy
 [group('maintenance')]
 update: up deploy

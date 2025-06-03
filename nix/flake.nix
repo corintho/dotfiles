@@ -38,6 +38,15 @@
       url = "github:xcodesorg/homebrew-made";
       flake = false;
     };
+    # Enable agenix for secrets encryption
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    secrets = {
+      url = "git+ssh://git@github.com/corintho/nix-secrets.git?ref=main";
+      flake = false;
+    };
     # Custom packages for software from other sources
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
@@ -53,10 +62,9 @@
 
   outputs = inputs@{ self, paths, nixpkgs, nixpkgs-unstable, home-manager
     , nix-darwin, homebrew-bundle, homebrew-cask, homebrew-core
-    , homebrew-xcodesorg, nix-homebrew, ... }: {
-      # imports = [ ./paths2.nix ];
+    , homebrew-xcodesorg, nix-homebrew, secrets, ... }: {
       nixosConfigurations = (import ./hosts {
-        inherit inputs nixpkgs nixpkgs-unstable home-manager paths;
+        inherit inputs nixpkgs nixpkgs-unstable home-manager paths secrets;
       });
       darwinConfigurations = (import ./darwin {
         inherit self nix-darwin nixpkgs nix-homebrew home-manager

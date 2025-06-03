@@ -123,6 +123,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    inputs.agenix.packages.${pkgs.system}.default
     coreutils-full
     # Requirements for nvim
     gcc
@@ -136,6 +137,8 @@
     rofi
     inputs.zen-browser.packages.${pkgs.system}.default
     hyprpicker
+    cifs-utils
+    samba
   ];
 
   # Workaround to enable binaries downloaded outside nix to work
