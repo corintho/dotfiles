@@ -1,6 +1,7 @@
 { config, lib, modulesPath, ... }:
 
-{
+let ntfsOptions = [ "rw" "uid=1000" "allow_other" "default_permissions" ];
+in {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
   boot.initrd.availableKernelModules =
@@ -26,25 +27,25 @@
   fileSystems."/windows/c" = {
     device = "/dev/disk/by-uuid/289ABCE09ABCAC26";
     fsType = "ntfs-3g";
-    options = [ "rw" "uid=1000" ];
+    options = ntfsOptions;
   };
 
   fileSystems."/windows/d" = {
     device = "/dev/disk/by-uuid/9410022310020D44";
     fsType = "ntfs-3g";
-    options = [ "rw" "uid=1000" ];
+    options = ntfsOptions;
   };
 
   fileSystems."/windows/e" = {
     device = "/dev/disk/by-uuid/AE26A28A26A2535F";
     fsType = "ntfs-3g";
-    options = [ "rw" "uid=1000" ];
+    options = ntfsOptions;
   };
 
   fileSystems."/windows/f" = {
     device = "/dev/disk/by-uuid/3C240C2C240BE7AA";
     fsType = "ntfs-3g";
-    options = [ "rw" "uid=1000" ];
+    options = ntfsOptions;
   };
 
   swapDevices =
