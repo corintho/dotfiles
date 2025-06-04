@@ -144,6 +144,45 @@
 
     zoxide = { enable = true; };
 
+    nushell = {
+      enable = true;
+      # settings = { completions.external = { enable = true; }; };
+      extraConfig = ''
+        let carapace_completer = {|spans|
+        carapace $spans.0 nushell ...$spans | from json
+        }
+        $env.config = {
+          show_banner: true,
+          completions: {
+            case_sensitive: false # case-sensitive completions
+            quick: false    # set to false to prevent auto-selecting completions
+            partial: true    # set to false to prevent partial filling of the prompt
+            algorithm: "fuzzy"    # prefix or fuzzy
+            external: {
+              # set to false to prevent nushell looking into $env.PATH to find more suggestions
+              enable: true 
+              # set to lower can improve completion performance at the cost of omitting some options
+              max_results: 100 
+              completer: null # check 'carapace_completer' 
+            }
+          }
+        } 
+        $env.CARAPACE_LENIENT = 1
+        $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
+        #FIXME: This is wrong. Although it works
+        mkdir ~/.cache/carapace
+        carapace _carapace nushell | save --force ~/.cache/carapace/init.nu
+        source ~/.cache/carapace/init.nu
+      '';
+    };
+
+    zellij = { enable = true; };
+
+    carapace = {
+      enable = true;
+      package = pkgs-unstable.carapace;
+    };
+
     zsh = {
       enable = true;
       autocd = true;
