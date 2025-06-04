@@ -137,8 +137,6 @@
     rofi
     inputs.zen-browser.packages.${pkgs.system}.default
     hyprpicker
-    cifs-utils
-    samba
   ];
 
   # Workaround to enable binaries downloaded outside nix to work

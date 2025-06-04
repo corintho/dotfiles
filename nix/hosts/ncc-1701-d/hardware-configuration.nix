@@ -1,9 +1,5 @@
 { config, lib, modulesPath, ... }:
-
-let
-  ntfsOptions = [ "rw" "uid=1000" "allow_other" "default_permissions" ];
-  cifsOptions =
-    "uid=1000,gid=100,x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+let ntfsOptions = [ "rw" "uid=1000" "allow_other" "default_permissions" ];
 in {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
@@ -53,21 +49,6 @@ in {
     device = "/dev/disk/by-uuid/3C240C2C240BE7AA";
     fsType = "ntfs-3g";
     options = ntfsOptions;
-  };
-
-  # SMB shares
-  fileSystems."/smb/home" = {
-    device = "//192.168.2.250/home";
-    fsType = "cifs";
-    options =
-      [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
-  };
-
-  fileSystems."/smb/ai" = {
-    device = "//192.168.2.250/ai";
-    fsType = "cifs";
-    options =
-      [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
   };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
