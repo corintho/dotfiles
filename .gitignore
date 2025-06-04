@@ -1,1 +1,3 @@
 Brewfile.lock.json
+# Used to bootstrap new systems
+bootstrap.age

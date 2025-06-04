@@ -1,4 +1,4 @@
-{ inputs, nixpkgs, nixpkgs-unstable, home-manager, secrets, ... }:
+{ inputs, nixpkgs, nixpkgs-unstable, home-manager, secrets, paths, ... }:
 
 let
   username = "corintho";
@@ -7,7 +7,7 @@ let
   nixPath = rootPath + /nix;
   # Passes these parameters to other nix modules
   specialArgs = {
-    inherit inputs username nixPath rootPath secrets;
+    inherit inputs username nixPath rootPath secrets paths;
     dotFiles = rootPath + /dotfiles;
     libFiles = rootPath + /lib;
     pkgs-unstable = import nixpkgs-unstable {
