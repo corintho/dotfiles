@@ -1,0 +1,21 @@
+layout {
+  pane size=1 borderless=true {
+      plugin location="tab-bar"
+  }
+  pane split_direction="vertical" {
+    pane command="nvim"
+    pane split_direction="horizontal" {
+      pane command="just" {
+        start_suspended true
+        args "check"
+      }
+      pane command="just" {
+        start_suspended true
+        args "deploy"
+      }
+    }
+  }
+  pane size=1 borderless=true {
+      plugin location="status-bar"
+  }
+}

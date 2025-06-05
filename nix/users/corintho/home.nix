@@ -151,6 +151,7 @@
         let carapace_completer = {|spans|
         carapace $spans.0 nushell ...$spans | from json
         }
+        # Settings
         $env.config = {
           completions: {
             case_sensitive: false # case-sensitive completions
@@ -166,8 +167,27 @@
             }
           }
         } 
+        $env.config.buffer_editor = "nvim"
+        # Environment variables
+        $env.EDITOR = "nvim"
         $env.CARAPACE_LENIENT = 1
-        $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
+        $env.CARAPACE_BRIDGES = "zsh,fish,bash,inshellisense" # optional
+        # Aliases
+        # Custom commands
+
+        # Opens zellij with a layout, if present.
+        #
+        # It will look for the layout named, or the default one.
+        # If its not found, will open zellij without a custom layout.
+        def ze [
+          name = "zellij.kdl" # The layout file name
+        ] {
+          if ($name | path exists) {
+            zellij --layout $name
+          } else {
+            zellij
+          }
+        }
         #FIXME: This is wrong. Although it works
         mkdir ~/.cache/carapace
         carapace _carapace nushell | save --force ~/.cache/carapace/init.nu
