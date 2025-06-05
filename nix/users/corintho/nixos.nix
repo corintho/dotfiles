@@ -1,4 +1,4 @@
-{ config, pkgs-unstable, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 let
   cifsOptions =
     "uid=1000,gid=100,x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
@@ -48,5 +48,6 @@ in {
   users.users.corintho = {
     uid = 1000;
     extraGroups = [ "input" ];
+    shell = pkgs.nushell;
   };
 }

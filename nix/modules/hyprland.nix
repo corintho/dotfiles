@@ -35,7 +35,7 @@
           "workspace name:cOmms, class:Proton Mail"
           "workspace special:magic, class:Proton Pass"
         ];
-        "$mod" = "ALT";
+        "$mod" = "SUPER";
         "$mod2" = "ALT_SHIFT";
         "$meh" = "ALT_CTRL_SHIFT";
         "$hyper" = "ALT_CTRL_SHIFT_SUPER";
@@ -67,7 +67,7 @@
                 bind = $mod, TAB, workspace, previous
                 bind = $mod2, TAB, movecurrentworkspacetomonitor, +1
                 # Launcher
-                bind = $launcher, B, exec, $browser
+                bind = $launcher, R, exec, $browser
                 bind = $launcher, T, exec, $terminal
                 bind = $launcher, K, killactive
                 bind = $launcher, SPACE, exec, $menu

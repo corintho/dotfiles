@@ -146,13 +146,12 @@
 
     nushell = {
       enable = true;
-      # settings = { completions.external = { enable = true; }; };
+      settings = { show_banner = false; };
       extraConfig = ''
         let carapace_completer = {|spans|
         carapace $spans.0 nushell ...$spans | from json
         }
         $env.config = {
-          show_banner: true,
           completions: {
             case_sensitive: false # case-sensitive completions
             quick: false    # set to false to prevent auto-selecting completions

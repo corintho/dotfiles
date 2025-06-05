@@ -6,7 +6,6 @@
     isNormalUser = true;
     description = username;
     extraGroups = [ "networkmanager" "wheel" ];
-    shell = pkgs.zsh;
   };
 
   # customise /etc/nix/nix.conf declaratively via `nix.settings`
