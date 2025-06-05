@@ -1,5 +1,15 @@
-{ ... }: {
+{ pkgs, ... }: {
   config = {
+    home.packages = with pkgs;
+      [
+        # Custom scripts on path
+        (writeShellApplication {
+          name = "h_switch_window_mode";
+          text = ''
+            hyprctl dispatch focuswindow "$(if [[ $(hyprctl activewindow -j | jq .'floating') == 'true' ]]; then echo 'tiled'; else echo 'floating'; fi;)"'';
+        })
+        # /Custom scripts on path
+      ];
     wayland.windowManager.hyprland = {
       enable = true;
       settings = {
@@ -60,6 +70,8 @@
         	      # Resizing
         	      # Layouting
                 bind = $mod, F, fullscreen
+                bind = $mod2, F, togglefloating
+                bind = $mod2, T, exec, h_switch_window_mode
                 bind = $meh, LEFT, focusmonitor, -1
                 bind = $meh, RIGHT, focusmonitor, +1
                 bind = $hyper, LEFT, movewindow, mon:-1
