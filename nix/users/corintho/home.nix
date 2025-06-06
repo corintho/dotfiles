@@ -179,7 +179,7 @@
         #
         # It will look for the layout named, or the default one.
         # If its not found, will open zellij without a custom layout.
-        def ze [
+        def zz [
           name = "zellij.kdl" # The layout file name
         ] {
           if ($name | path exists) {
