@@ -21,8 +21,18 @@ in {
   environment.systemPackages = with pkgs-unstable; [
     cryptomator
     cifs-utils
+    lsof
     samba
   ];
+
+  # Global aliases for all shells
+  environment.shellAliases = {
+    listening = "lsof -iTCP -sTCP:LISTEN -n -P";
+    scripts = ''
+      jq ".scripts | to_entries | sort_by(.key) | from_entries" package.json'';
+    n = "neovide";
+    gitskipped = "git ls-files -v|grep '^S'";
+  };
 
   programs = {
     appimage = {
