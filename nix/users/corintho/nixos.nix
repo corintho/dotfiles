@@ -43,11 +43,13 @@ in {
       enable = true;
       package = pkgs-unstable.bazecor;
     };
+
+    fish = { enable = true; };
   };
 
   users.users.corintho = {
     uid = 1000;
     extraGroups = [ "input" ];
-    shell = pkgs.nushell;
+    shell = pkgs.fish;
   };
 }
