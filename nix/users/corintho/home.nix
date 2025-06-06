@@ -77,7 +77,40 @@
       icons = "auto";
     };
 
-    fish = { enable = true; };
+    fish = {
+      enable = true;
+      plugins = [
+        {
+          name = "autopair";
+          src = pkgs.fishPlugins.autopair.src;
+        }
+        {
+          name = "bang-bang";
+          src = pkgs.fishPlugins.bang-bang.src;
+        }
+        {
+          name = "fish-colored-man";
+          src = pkgs.fetchFromGitHub {
+            owner = "decors";
+            repo = "fish-colored-man";
+            rev = "1ad8fff696d48c8bf173aa98f9dff39d7916de0e";
+            sha256 = "sha256-uoZ4eSFbZlsRfISIkJQp24qPUNqxeD0JbRb/gVdRYlA=";
+          };
+        }
+        {
+          name = "done";
+          src = pkgs.fishPlugins.done.src;
+        }
+        {
+          name = "forgit";
+          src = pkgs.fishPlugins.forgit.src;
+        }
+        {
+          name = "sponge";
+          src = pkgs.fishPlugins.sponge.src;
+        }
+      ];
+    };
 
     fzf = { enable = true; };
 
@@ -244,13 +277,6 @@
       syntaxHighlighting = {
         enable = true;
         highlighters = [ "brackets" ];
-      };
-      shellAliases = {
-        listening = "lsof -iTCP -sTCP:LISTEN -n -P";
-        scripts = ''
-          jq ".scripts | to_entries | sort_by(.key) | from_entries" package.json'';
-        n = "neovide";
-        gitskipped = "git ls-files -v|grep '^S'";
       };
       initContent = lib.mkAfter ''
         # add --skip-worktree flag to file
