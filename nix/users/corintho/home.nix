@@ -6,6 +6,7 @@
     ../../modules/hyprland.nix
     ../../modules/waybar.nix
     ../../modules/hyprpaper.nix
+    ../../modules/zellij.nix
   ];
   home.sessionVariables = { EDITOR = "nvim"; };
   home.packages = with pkgs; [
@@ -76,6 +77,8 @@
       icons = "auto";
     };
 
+    fish = { enable = true; };
+
     fzf = { enable = true; };
 
     git = {
@@ -111,6 +114,8 @@
       package = pkgs-unstable.neovide;
       settings = { fork = true; };
     };
+
+    nix-index = { enable = true; };
 
     oh-my-posh = {
       enable = true;
@@ -217,8 +222,6 @@
         source ~/.cache/carapace/init.nu
       '';
     };
-
-    zellij = { enable = true; };
 
     carapace = {
       enable = true;
