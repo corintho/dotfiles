@@ -188,6 +188,29 @@
             zellij
           }
         }
+
+        #Git functions
+
+        # Show currently ignored files
+        def gitskipped [] { 
+          git ls-files -v|grep '^S'
+        }
+
+        # Ignore the named file in the current git repository
+        def gitskip [
+          name # the file name
+        ] {
+          git update-index --skip-worktree $name
+          git status
+        }
+
+        # Stop ignoring the named file in the current git repository
+        def gitunskip [
+          name # the file name
+        ] {
+          git update-index --no-skip-worktree $name
+          git status
+        }
         #FIXME: This is wrong. Although it works
         mkdir ~/.cache/carapace
         carapace _carapace nushell | save --force ~/.cache/carapace/init.nu
