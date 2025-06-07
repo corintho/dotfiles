@@ -1,6 +1,7 @@
 { pkgs, ... }: {
   config = {
 
+    xdg.configFile = { "fish/functions/zz.fish".source = ./fish/zz.fish; };
     programs = {
       fish = {
         enable = true;
