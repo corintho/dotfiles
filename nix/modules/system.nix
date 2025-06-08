@@ -1,4 +1,4 @@
-{ pkgs, pkgs-unstable, lib, username, ... }: {
+{ pkgs, lib, username, ... }: {
   # ============================= User related =============================
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -61,7 +61,7 @@
     neovim = {
       enable = true;
       defaultEditor = true;
-      package = pkgs-unstable.neovim-unwrapped;
+      package = pkgs.unstable.neovim-unwrapped;
     };
 
     git = {

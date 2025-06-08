@@ -1,4 +1,4 @@
-{ dotFiles, inputs, lib, pkgs, pkgs-unstable, ... }:
+{ dotFiles, inputs, lib, pkgs, ... }:
 
 {
   imports = [
@@ -143,7 +143,7 @@
   # Includes nvim mason dependencies and app-image applications
   programs.nix-ld = {
     enable = true;
-    package = pkgs-unstable.nix-ld;
+    package = pkgs.unstable.nix-ld;
   };
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -156,8 +156,8 @@
   programs.hyprland = {
     enable = true;
     withUWSM = true;
-    package = pkgs-unstable.hyprland;
-    portalPackage = pkgs-unstable.xdg-desktop-portal-hyprland;
+    package = pkgs.unstable.hyprland;
+    portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
   };
 
   # List services that you want to enable:

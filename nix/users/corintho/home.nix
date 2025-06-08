@@ -1,4 +1,4 @@
-{ config, lib, dotFiles, pkgs, pkgs-unstable, ... }:
+{ config, lib, dotFiles, pkgs, ... }:
 
 {
   imports = [
@@ -14,9 +14,9 @@
     htop
     jq
     libnotify
-    pkgs-unstable.proton-pass
-    pkgs-unstable.protonmail-desktop
-    pkgs-unstable.vivaldi
+    pkgs.unstable.proton-pass
+    pkgs.unstable.protonmail-desktop
+    pkgs.unstable.vivaldi
     font-awesome
     psmisc
     vlc
@@ -25,7 +25,7 @@
     p7zip
     file-roller
     # Gaming
-    pkgs-unstable.prismlauncher
+    pkgs.unstable.prismlauncher
     # TODO:More nvim
     nixd
     nixfmt-classic
@@ -88,7 +88,7 @@
         enable = true;
         enableAsDifftool = true;
         display = "inline";
-        package = pkgs-unstable.difftastic;
+        package = pkgs.unstable.difftastic;
       };
       extraConfig = {
         difftool = { prompt = false; };
@@ -105,12 +105,12 @@
 
     mpv = {
       enable = true;
-      package = pkgs-unstable.mpv;
+      package = pkgs.unstable.mpv;
     };
 
     neovide = {
       enable = true;
-      package = pkgs-unstable.neovide;
+      package = pkgs.unstable.neovide;
       settings = { fork = true; };
     };
 
@@ -142,7 +142,7 @@
           max_height = 1000;
         };
       };
-      package = pkgs-unstable.yazi;
+      package = pkgs.unstable.yazi;
       shellWrapperName = "y";
     };
 
@@ -224,7 +224,7 @@
 
     carapace = {
       enable = true;
-      package = pkgs-unstable.carapace;
+      package = pkgs.unstable.carapace;
     };
 
     zsh = {

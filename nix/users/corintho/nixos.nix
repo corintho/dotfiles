@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-unstable, ... }:
+{ config, pkgs, ... }:
 let
   cifsOptions =
     "uid=1000,gid=100,x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
@@ -18,7 +18,7 @@ in {
       [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
   };
 
-  environment.systemPackages = with pkgs-unstable; [
+  environment.systemPackages = with pkgs.unstable; [
     cryptomator
     cifs-utils
     lsof
@@ -38,9 +38,9 @@ in {
     appimage = {
       enable = true;
       binfmt = true;
-      package = pkgs-unstable.appimage-run.override {
-        extraPkgs = pkgs-unstable:
-          with pkgs-unstable; [
+      package = pkgs.unstable.appimage-run.override {
+        extraPkgs = _:
+          with pkgs.unstable; [
             icu
             libxcrypt-legacy
             python312
@@ -51,7 +51,7 @@ in {
 
     bazecor = {
       enable = true;
-      package = pkgs-unstable.bazecor;
+      package = pkgs.unstable.bazecor;
     };
 
     fish = { enable = true; };

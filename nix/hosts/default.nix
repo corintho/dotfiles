@@ -2,7 +2,6 @@
 
 let
   username = "corintho";
-  system = "x86_64-linux";
   rootPath = ../../.;
   nixPath = rootPath + /nix;
   # Passes these parameters to other nix modules
@@ -10,19 +9,20 @@ let
     inherit inputs username nixPath rootPath secrets paths;
     dotFiles = rootPath + /dotfiles;
     libFiles = rootPath + /lib;
-    pkgs-unstable = import nixpkgs-unstable {
-      # Recursively inherits system from the outer scope
-      inherit system;
-      # TODO: synchronize this to a host set variable. Is it possible?
-      # Allow unfree packages
-      config.allowUnfree = true;
-    };
   };
 in {
   ncc-1701-d = nixpkgs.lib.nixosSystem {
     inherit specialArgs;
 
     modules = [
+      {
+        nixpkgs.overlays = [
+          (final: _prev: {
+            unstable =
+              import nixpkgs-unstable { inherit (final) system config; };
+          })
+        ];
+      }
       inputs.stylix.nixosModules.stylix
       inputs.agenix.nixosModules.default
       ../modules/secrets.nix
