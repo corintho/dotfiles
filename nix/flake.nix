@@ -56,6 +56,7 @@
       # NOTE: if you experience a build failure with Zen, the first thing to check is to remove this line!
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    zjstatus = { url = "github:dj95/zjstatus"; };
     # Workaround for absolute path requirements
     paths.url = ./paths;
   };
