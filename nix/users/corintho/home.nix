@@ -14,9 +14,9 @@
     htop
     jq
     libnotify
-    pkgs.unstable.proton-pass
-    pkgs.unstable.protonmail-desktop
-    pkgs.unstable.vivaldi
+    unstable.proton-pass
+    unstable.protonmail-desktop
+    unstable.vivaldi
     font-awesome
     psmisc
     vlc
@@ -25,7 +25,7 @@
     p7zip
     file-roller
     # Gaming
-    pkgs.unstable.prismlauncher
+    unstable.prismlauncher
     # TODO:More nvim
     nixd
     nixfmt-classic
