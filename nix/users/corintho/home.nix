@@ -17,6 +17,7 @@
     unstable.proton-pass
     unstable.protonmail-desktop
     unstable.vivaldi
+    unstable.telegram-desktop
     font-awesome
     psmisc
     vlc
