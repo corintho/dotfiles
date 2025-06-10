@@ -64,7 +64,10 @@ in {
     lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # Enable OpenGL
-  hardware.graphics = { enable = true; };
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
 
   # Load nvidia drivers
   services.xserver.videoDrivers = [ "nvidia" ];

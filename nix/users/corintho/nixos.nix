@@ -23,6 +23,12 @@ in {
     cifs-utils
     lsof
     samba
+    # Gaming
+    mangohud
+    protonup-qt
+    lutris
+    bottles
+    heroic
   ];
 
   # Global aliases for all shells
@@ -55,6 +61,15 @@ in {
     };
 
     fish = { enable = true; };
+
+    # Gaming
+    steam = {
+      enable = true;
+      gamescopeSession.enable = true;
+      remotePlay.openFirewall = true;
+      dedicatedServer.openFirewall = true;
+    };
+    gamemode = { enable = true; };
   };
 
   users.users.corintho = {
