@@ -4,5 +4,6 @@ function zz --argument layout
     zellij --layout $layout
   else
     echo "Layout file: '$layout' not found"
+    zellij
   end
 end
