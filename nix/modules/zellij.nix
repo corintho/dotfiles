@@ -52,7 +52,7 @@ in {
                     color_bg "${colors.base03}"
 
                     format_left   "{mode}#[bg=#${colors.base00}] {tabs}"
-                    # format_center "{pipe_zjstatus_hints}" # A lot of potential, but needs more customization options
+                    // format_center "{pipe_zjstatus_hints}" // A lot of potential, but needs more customization options
                     format_center ""
          
                     format_right  "#[bg=#${colors.base00},fg=#${colors.base0D}]#[bg=#${colors.base0D},fg=#${colors.base01},bold] #[bg=#${colors.base02},fg=#${colors.base05},bold] {session} #[bg=#${colors.base03},fg=#${colors.base05},bold]"
