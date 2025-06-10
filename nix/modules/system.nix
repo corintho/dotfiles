@@ -1,4 +1,6 @@
-{ pkgs, lib, username, ... }: {
+{ self, pkgs, lib, username, ... }: {
+  system.configurationRevision =
+    if (self ? rev) then self.rev else self.dirtyRev;
   # ============================= User related =============================
 
   # Define a user account. Don't forget to set a password with ‘passwd’.

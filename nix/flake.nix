@@ -65,7 +65,7 @@
     , nix-darwin, homebrew-bundle, homebrew-cask, homebrew-core
     , homebrew-xcodesorg, nix-homebrew, secrets, ... }: {
       nixosConfigurations = (import ./hosts {
-        inherit inputs nixpkgs nixpkgs-unstable home-manager paths secrets;
+        inherit self inputs nixpkgs nixpkgs-unstable home-manager paths secrets;
       });
       darwinConfigurations = (import ./darwin {
         inherit self nix-darwin nixpkgs nix-homebrew home-manager
