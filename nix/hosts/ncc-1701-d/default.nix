@@ -137,6 +137,9 @@
     rofi
     inputs.zen-browser.packages.${pkgs.system}.default
     hyprpicker
+    # Sound control
+    pamixer
+    ncpamixer
   ];
 
   # Workaround to enable binaries downloaded outside nix to work

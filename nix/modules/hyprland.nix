@@ -99,6 +99,10 @@
                 bind = $mod2, S, movetoworkspace, special:magic
                 # Screenshots
                 bind = $hyper, S, exec, hyprshot -m region --clipboard-only
+                # Volume control
+                binde = , XF86AudioRaiseVolume, exec, pamixer --increase 5
+                binde = , XF86AudioLowerVolume, exec, pamixer --decrease 5
+                bind = , XF86AudioMute, exec, pamixer --toggle-mute
         	      # Service mode
       '';
     };
