@@ -157,6 +157,11 @@ keybinds clear-defaults=true {
         bind "Alt o" { MoveTab "right"; }
         bind "PageUp" { GoToPreviousTab; }
         bind "PageDown" { GoToNextTab; }
+        bind "Alt s" { 
+            LaunchOrFocusPlugin "zellij_forgot" {
+                floating true
+            } 
+        }
     }
     shared_except "locked" "renametab" "renamepane" {
         bind "Ctrl q" { Quit; }

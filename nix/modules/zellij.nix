@@ -3,8 +3,18 @@ let inherit (config.lib.stylix) colors;
 in {
   config = {
 
-    xdg.configFile."zellij/config.kdl".text =
-      builtins.readFile ./zellij/config.kdl + ''
+    xdg.configFile = {
+      "zellij/plugins/zellij_forgot.wasm".source = pkgs.fetchurl {
+        url =
+          "https://github.com/karimould/zellij-forgot/releases/download/0.4.2/zellij_forgot.wasm";
+        sha256 = "sha256-MRlBRVGdvcEoaFtFb5cDdDePoZ/J2nQvvkoyG6zkSds=";
+      };
+      "zellij/plugins/zjstatus-hints.wasm".source = pkgs.fetchurl {
+        url =
+          "https://github.com/b0o/zjstatus-hints/releases/download/v0.1.4/zjstatus-hints.wasm";
+        sha256 = "sha256-k2xV6QJcDtvUNCE4PvwVG9/ceOkk+Wa/6efGgr7IcZ0=";
+      };
+      "zellij/config.kdl".text = builtins.readFile ./zellij/config.kdl + ''
 
         // Plugin aliases - can be used to change the implementation of Zellij
         // changing these requires a restart to take effect
@@ -23,11 +33,28 @@ in {
             welcome-screen location="zellij:session-manager" {
                 welcome_screen true
             }
+            zjstatus-hints location="file:~/.config/zellij/plugins/zjstatus-hints.wasm" {
+              // Maximum number of characters to display
+              max_length 0 // 0 = unlimited
+              // String to append when truncated
+              overflow_str "..." // default
+              // Name of the pipe for zjstatus integration
+              pipe_name "zjstatus_hints" // default
+              // Hide hints in base mode (a.k.a. default mode)
+              // E.g. if you have set default_mode to "locked", then
+              // you can hide hints in the locked mode by setting this to true
+              hide_in_base_mode false // default
+            }
+            zellij_forgot location="file:~/.config/zellij/plugins/zellij_forgot.wasm" {
+
+            }
             zjstatus location="file://${pkgs.zjstatus}/bin/zjstatus.wasm" {
                     color_bg "${colors.base03}"
 
                     format_left   "{mode}#[bg=#${colors.base00}] {tabs}"
+                    # format_center "{pipe_zjstatus_hints}" # A lot of potential, but needs more customization options
                     format_center ""
+         
                     format_right  "#[bg=#${colors.base00},fg=#${colors.base0D}]#[bg=#${colors.base0D},fg=#${colors.base01},bold] #[bg=#${colors.base02},fg=#${colors.base05},bold] {session} #[bg=#${colors.base03},fg=#${colors.base05},bold]"
                     format_space  ""
                     format_hide_on_overlength "true"
@@ -78,6 +105,8 @@ in {
                     datetime        "#[fg=#6C7086,bold] {format} "
                     datetime_format "%A, %d %b %Y %H:%M"
                     datetime_timezone "Europe/Amsterdam"
+                    // Note: this is necessary or else zjstatus won't render the pipe:
+                    pipe_zjstatus_hints_format "{output}"
                 }
         }
 
@@ -85,11 +114,12 @@ in {
         // eg. "file:/path/to/my-plugin.wasm"
         // eg. "https://example.com/my-plugin.wasm"
         load_plugins {
-            "file://${pkgs.zjstatus}/bin/zjstatus.wasm" 
+            zjstatus
+            zjstatus-hints
         }
-         
 
       '';
+    };
 
     programs = {
       zellij = { enable = true; };
