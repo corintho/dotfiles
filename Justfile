@@ -14,6 +14,12 @@ deploy:
   nixos-rebuild switch --flake ./nix --use-remote-sudo
   @just workaround-waybar
 
+# Standard deploy with extended debug enabled
+[group('build')]
+[linux]
+verbose:
+  nixos-rebuild switch --flake ./nix --use-remote-sudo --show-trace --verbose
+
 #TODO: Only needed for waybar because of a bug
 [private]
 workaround-waybar:
@@ -24,6 +30,32 @@ workaround-waybar:
 [linux]
 check:
   nixos-rebuild dry-build --flake ./nix
+
+# Remove dirty generations, except the current one
+[group('cleanup')]
+sanitize:
+  #!/usr/bin/env bash
+  DIRTY_GENS="$(just list |  grep '[0-9]' | grep --invert-match 'current' | grep 'dirty' | awk '{ print $1; }' | tr '\n' ' ')"
+  if [ -z "${DIRTY_GENS}" ];
+  then echo "No dirty generations to clean up";
+  else
+    sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations $DIRTY_GENS;
+  fi
+
+# List all current available generations
+[group('info')]
+list:
+  @nixos-rebuild list-generations
+
+# Keep only 5 generations
+[group('cleanup')]
+keep5:
+  sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations +5
+
+# Remove all generations older than 7 days
+[group('cleanup')]
+clean:
+  sudo nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
 
 #
 # Darwin specific
@@ -41,11 +73,9 @@ deploy:
 check:
   darwin-rebuild check --impure --flake ./nix#shield
 
-# Standard deploy with extended debug enabled
-[group('build')]
-[linux]
-verbose:
-  nixos-rebuild switch --flake ./nix --use-remote-sudo --show-trace --verbose
+#
+# Universal commands
+#
 
 # Loads up the current flake in the repl
 [group('debug')]
@@ -71,21 +101,6 @@ update: up deploy
 tree:
   nix-tree
 
-# List all current available generations
-[group('info')]
-list:
-  nixos-rebuild list-generations
-
-# Keep only 5 generations
-[group('cleanup')]
-keep5:
-  sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations +5
-
-# Remove all generations older than 7 days
-[group('cleanup')]
-clean:
-  sudo nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
-
 # Reclaim unused space after removing older generations. This one is slow to run
 [group('cleanup')]
 gc:
@@ -98,4 +113,3 @@ gc:
 prune:
   # garbage collect all unused nix store generations
   sudo nix-collect-garbage --delete-old
-
