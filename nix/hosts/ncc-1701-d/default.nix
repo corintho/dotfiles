@@ -16,7 +16,8 @@
     systemd-boot = {
       enable = true;
 
-      # There is no way to change the default boot option from configuration. But it can be done through command line with: `bootctl set-default windows_windows.conf`. Not sure how to undo it in the future
+      # There is no way to change the default boot option from configuration. But it can be done through command line with: `bootctl set-default windows_windows.conf`.
+      # It can be undone with `bootctl set-default ""`, then it will revert to whatever nixos sets as the default. Which currently is the latest successful deployment.
       windows = {
         "windows" = let boot-drive = "HD1c";
         in {
