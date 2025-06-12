@@ -92,9 +92,15 @@ up:
 up-secrets:
   nix flake update secrets --flake ./nix 
 
-# Update flake lock file and redeploy
+# Commit after updating
+[private]
+update-commit:
+  git add .
+  git commit -m "chore: update dependencies"
+
+# Update flake lock file, commit changes and redeploy
 [group('maintenance')]
-update: up deploy
+update: up update-commit deploy
 
 # Shows a searcheable dependency tree
 [group('info')]
