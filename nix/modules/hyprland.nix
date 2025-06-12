@@ -40,9 +40,15 @@
         ];
         windowrulev2 = [
           "workspace name:Browsers, class:zen"
+          "workspace name:cOmms, class:Proton Mail"
+          "workspace name:cOmms, class:org.telegram.desktop"
           "workspace name:Dev, class:neovide"
           "workspace name:Dev, class:kitty"
-          "workspace name:cOmms, class:Proton Mail"
+          "workspace name:Gaming, class:steam"
+          "workspace name:Gaming, class:heroic"
+          "workspace name:Gaming, class:net.lutris.Lutris"
+          "workspace name:Gaming, class:net.davidotek.pupgui2"
+          "workspace name:Gaming, class:org.prismlauncher.PrismLauncher"
           "workspace special:magic, class:Proton Pass"
         ];
         "$mod" = "SUPER";
@@ -67,7 +73,6 @@
                 bind = $mod2, right, movewindow, r
                 bind = $mod2, up, movewindow, u
                 bind = $mod2, down, movewindow, d
-        	      # Resizing
         	      # Layouting
                 bind = $mod, F, fullscreen
                 bind = $mod2, F, togglefloating
@@ -79,8 +84,8 @@
                 bind = $mod, TAB, workspace, previous
                 bind = $mod2, TAB, movecurrentworkspacetomonitor, +1
                 # Launcher
-                bind = $launcher, R, exec, $browser
-                bind = $launcher, T, exec, $terminal
+                bind = $launcher, R, submap, launcher
+                bind = $launcher, H, exec, ~/.local/lib/waybar/keybinds_hint.sh
                 bind = $launcher, K, killactive
                 bind = $launcher, SPACE, exec, $menu
                 bind = $launcher, L, exec, swaylock
@@ -103,7 +108,26 @@
                 binde = , XF86AudioRaiseVolume, exec, pamixer --increase 5
                 binde = , XF86AudioLowerVolume, exec, pamixer --decrease 5
                 bind = , XF86AudioMute, exec, pamixer --toggle-mute
+        	      # Resize mode
+        	      submap = resize
+                bind = , escape, submap, reset
+        	      # Launcher mode
+        	      submap = launcher
+                bind = , B, exec, $browser
+                bind = , E, exec, telegram-desktop
+                bind = , H, exec, heroic
+                bind = , L, exec, lutris
+                bind = , M, exec, proton-mail
+                bind = , N, exec, prismlauncher
+                bind = , P, exec, proton-pass
+                bind = , Q, exec, protonup-qt
+                bind = , S, exec, steam
+                bind = , T, exec, $terminal
+                bind = , escape, submap, reset
+                bind = $launcher, escape, submap, reset
         	      # Service mode
+        	      submap = service
+                bind = , escape, submap, reset
       '';
     };
   };

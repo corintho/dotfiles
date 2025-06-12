@@ -36,6 +36,7 @@
     "pulseaudio",
     "pulseaudio#microphone",
     "custom/keybindhint",
+    "hyprland/submap",
     "custom/r_end",
     "custom/l_end",
     "power-profiles-daemon",
@@ -271,6 +272,10 @@
     "tooltip-format": "  Keybinds",
     "rotate": 0,
     "on-click": "~/.local/lib/waybar/keybinds_hint.sh",
+  },
+  "hyprland/submap": {
+    "format": "{}",
+    "rotate": 0,
   },
   // modules for padding //
   "custom/l_end": {
