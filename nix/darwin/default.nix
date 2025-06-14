@@ -1,10 +1,12 @@
 { self, nix-darwin, nix-homebrew, home-manager, homebrew-bundle, homebrew-cask
-, homebrew-core, homebrew-xcodesorg }:
+, homebrew-core, homebrew-xcodesorg, ... }:
 let
   # nixpkgs.config.allowUnfree = true;
   # Home-manager
   username = "zg47ma";
   configuration = { pkgs, ... }: {
+    # Setup primary user. We need to eventually remove this and migrate configurations properly
+    system.primaryUser = "zg47ma";
     # List packages installed in system profile. To search by name, run:
     # $ nix-env -qaP | grep wget
     environment.systemPackages = [
@@ -16,7 +18,6 @@ let
     ];
 
     services = {
-      nix-daemon = { enable = true; };
       aerospace = { enable = false; };
       jankyborders = { enable = false; };
       sketchybar = { enable = false; };
@@ -80,13 +81,16 @@ let
 
     # Fonts
     fonts.packages = with pkgs;
-      [ (nerdfonts.override { fonts = [ "FiraCode" "JetBrainsMono" ]; }) ];
+      [ 
+        nerd-fonts.fira-code
+        nerd-fonts.jetbrains-mono
+      ];
 
     security = {
       # Setup corporate certficates to be trusted
       pki.certificateFiles = [ "/etc/ssl/certs/corporate.crt" ];
       # Enable touch id for console sudo
-      pam.enableSudoTouchIdAuth = true;
+      pam.services.sudo_local.touchIdAuth = true;
     };
 
     # Necessary for using flakes on this system.
@@ -100,7 +104,7 @@ let
 
     # Used for backwards compatibility, please read the changelog before changing.
     # $ darwin-rebuild changelog
-    system.stateVersion = 5;
+    system.stateVersion = 6;
 
     # The platform the configuration will be used on.
     nixpkgs.hostPlatform = "aarch64-darwin";
@@ -118,6 +122,7 @@ let
 
     #TODO: check if this is properly enabling flakes
     nix = {
+      enable = true;
       package = pkgs.nix;
       extraOptions = ''
         # auto-optimise-store = true
@@ -127,9 +132,7 @@ let
   };
 in {
   # Build darwin flake using:
-  # darwin-rebuild build --flake .#shield
-  # FIXME: Replace "shield" with the machine name
-  darwinConfigurations."shield" = nix-darwin.lib.darwinSystem {
+  "MPCE-MBP-Y4TJXCG2JX" = nix-darwin.lib.darwinSystem {
     modules = [
       configuration
       nix-homebrew.darwinModules.nix-homebrew
