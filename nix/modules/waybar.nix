@@ -1,4 +1,4 @@
-{ config, pkgs, dotFiles, libFiles, ... }:
+{ config, pkgs, files, libFiles, ... }:
 
 {
   config = {
@@ -14,9 +14,9 @@
 
     home.file = {
       ".config/waybar/config.jsonc" = {
-        source = dotFiles + /waybar/config.jsonc;
+        source = files + /waybar/config.jsonc;
       };
-      ".config/waybar/style.css" = { source = dotFiles + /waybar/style.css; };
+      ".config/waybar/style.css" = { source = files + /waybar/style.css; };
       ".config/waybar/theme.css" = {
         text = ''
           /* Global colors */

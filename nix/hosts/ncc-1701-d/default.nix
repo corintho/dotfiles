@@ -1,4 +1,4 @@
-{ dotFiles, inputs, lib, pkgs, ... }:
+{ files, inputs, lib, pkgs, ... }:
 
 {
   imports = [
@@ -117,7 +117,7 @@
   stylix = {
     enable = true;
     polarity = "dark";
-    base16Scheme = "${dotFiles}/lcars.yaml";
+    base16Scheme = "${files}/lcars.yaml";
     image = ../../../wallpapers/973571.jpg;
   };
 

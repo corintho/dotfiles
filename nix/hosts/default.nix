@@ -7,7 +7,7 @@ let
   # Passes these parameters to other nix modules
   specialArgs = {
     inherit self inputs username nixPath rootPath secrets paths;
-    dotFiles = rootPath + /dotfiles;
+    files = rootPath + /files;
     libFiles = rootPath + /lib;
   };
 in {

@@ -5,10 +5,7 @@
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = [
-    pkgs.android-tools
-    pkgs.python3
-  ];
+  home.packages = [ pkgs.android-tools pkgs.python3 ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -40,58 +37,46 @@
   #
   #  /etc/profiles/per-user/zg47ma/etc/profile.d/hm-session-vars.sh
   #
-  home.sessionVariables = {
-    EDITOR = "nvim";
-  };
+  home.sessionVariables = { EDITOR = "nvim"; };
 
   # Setup programs options
   programs = {
-    bash = {
-      enable = true;
-    };
+    bash = { enable = true; };
     zsh = {
       enable = true;
       autocd = true;
       enableCompletion = true;
       history = {
-	ignoreDups = true;
-	ignoreSpace = true;
+        ignoreDups = true;
+        ignoreSpace = true;
       };
       oh-my-zsh = {
         enable = true;
-	plugins = [
-	  "git"
-	];
+        plugins = [ "git" ];
       };
       syntaxHighlighting = {
         enable = true;
-	highlighters = [
-	  "brackets"
-	];
+        highlighters = [ "brackets" ];
       };
       shellAliases = {
-        bad_watchman="watchman watch-del '$PWD' ; watchman watch-project '$PWD'";
-        check="yarn lint && yarn typescript && yarn test";
-        ios="xcrun simctl getenv booted SIMULATOR_UDID | xargs yarn ios --udid";
-        ios_device="ios-deploy -c | grep USB | cut -d \" \" -f 3 | xargs yarn ios --udid";
-        join_img="convert -background black +smush 16";
-        klingon="say -v Xander \"QgaplA\"";
-        listening="lsof -iTCP -sTCP:LISTEN -n -P";
-        scripts="jq \".scripts | to_entries | sort_by(.key) | from_entries\" package.json";
+        bad_watchman =
+          "watchman watch-del '$PWD' ; watchman watch-project '$PWD'";
+        check = "yarn lint && yarn typescript && yarn test";
+        ios =
+          "xcrun simctl getenv booted SIMULATOR_UDID | xargs yarn ios --udid";
+        ios_device = ''
+          ios-deploy -c | grep USB | cut -d " " -f 3 | xargs yarn ios --udid'';
+        join_img = "convert -background black +smush 16";
+        klingon = ''say -v Xander "QgaplA"'';
+        listening = "lsof -iTCP -sTCP:LISTEN -n -P";
+        scripts = ''
+          jq ".scripts | to_entries | sort_by(.key) | from_entries" package.json'';
       };
     };
-    fzf = {
-      enable = true;
-    };
-    oh-my-posh = {
-      enable = true;
-    };
-    ripgrep = {
-      enable = true;
-    };
-    zoxide = {
-      enable = true;
-    };
+    fzf = { enable = true; };
+    oh-my-posh = { enable = true; };
+    ripgrep = { enable = true; };
+    zoxide = { enable = true; };
   };
 
   # Let Home Manager install and manage itself.
