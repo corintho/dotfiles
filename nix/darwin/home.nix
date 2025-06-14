@@ -2,10 +2,12 @@
 
 {
   home.stateVersion = "24.11"; # Please read the comment before changing.
-
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = [ pkgs.android-tools pkgs.python3 ];
+  home.packages = with pkgs; [
+    android-tools
+    python3
+  ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -42,6 +44,10 @@
   # Setup programs options
   programs = {
     bash = { enable = true; };
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
     zsh = {
       enable = true;
       autocd = true;

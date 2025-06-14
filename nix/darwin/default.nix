@@ -9,12 +9,16 @@ let
     system.primaryUser = "zg47ma";
     # List packages installed in system profile. To search by name, run:
     # $ nix-env -qaP | grep wget
-    environment.systemPackages = [
+    environment.systemPackages = with pkgs; [
+      # Coding tools
+      devenv
+      just
+      # /Coding tools
       # Tools
-      pkgs.bat
-      pkgs.curl
-      pkgs.neovim
-      pkgs.tmux
+      bat
+      curl
+      neovim
+      tmux
     ];
 
     services = {

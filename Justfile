@@ -33,6 +33,7 @@ check:
 
 # Remove dirty generations, except the current one
 [group('cleanup')]
+[linux]
 sanitize:
   #!/usr/bin/env bash
   DIRTY_GENS="$(just list |  grep '[0-9]' | grep --invert-match 'current' | grep 'dirty' | awk '{ print $1; }' | tr '\n' ' ')"
@@ -44,16 +45,19 @@ sanitize:
 
 # List all current available generations
 [group('info')]
+[linux]
 list:
   @nixos-rebuild list-generations
 
 # Keep only 5 generations
 [group('cleanup')]
+[linux]
 keep5:
   sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations +5
 
 # Remove all generations older than 7 days
 [group('cleanup')]
+[linux]
 clean:
   sudo nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
 
@@ -65,13 +69,19 @@ clean:
 [group('build')]
 [macos]
 deploy:
-  darwin-rebuild switch --impure --flake ./nix#shield
+  sudo darwin-rebuild switch --flake ./nix
 
 # Dry run. Makes it easy to catch errors without generating a new profile
 [group('build')]
 [macos]
 check:
-  darwin-rebuild check --impure --flake ./nix#shield
+  sudo darwin-rebuild check --flake ./nix
+
+# List all current available generations
+[group('info')]
+[macos]
+list:
+  sudo darwin-rebuild --list-generations
 
 #
 # Universal commands
