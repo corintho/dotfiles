@@ -29,6 +29,7 @@ in {
     lutris
     bottles
     heroic
+    itch
   ];
 
   # Global aliases for all shells
