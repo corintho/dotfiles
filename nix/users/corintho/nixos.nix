@@ -37,7 +37,7 @@ in {
     listening = "lsof -iTCP -sTCP:LISTEN -n -P";
     scripts = ''
       jq ".scripts | to_entries | sort_by(.key) | from_entries" package.json'';
-    n = "neovide";
+    n = "nvim";
     gitskipped = "git ls-files -v|grep '^S'";
   };
 
