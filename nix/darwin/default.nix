@@ -46,6 +46,7 @@ let
         "homerow"
         "ghostty" # The one available from nixpkgs is not official, usually outdated and sometimes broken
         "git-credential-manager" # The one from nixpkgs showed issues with finding .NET
+        "tomatobar"
       ];
       masApps = {
         # Don't install XCode from the store, install using xcodes
