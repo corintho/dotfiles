@@ -100,6 +100,11 @@ update-commit:
 [group('maintenance')]
 update: up update-commit deploy
 
+# Update flake lock file, commit changes and redeploy
+[group('maintenance')]
+update-comma:
+  nix run 'nixpkgs#nix-index'
+
 # Shows a searcheable dependency tree
 [group('info')]
 tree:
