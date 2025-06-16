@@ -19,6 +19,10 @@ let
       curl
       neovim
       tmux
+      # Requirements for nvim
+      nodejs_22
+      (lua5_1.withPackages (ps: with ps; [ luarocks ]))
+      # /nvim
     ];
 
     services = {
@@ -84,11 +88,10 @@ let
     };
 
     # Fonts
-    fonts.packages = with pkgs;
-      [ 
-        nerd-fonts.fira-code
-        nerd-fonts.jetbrains-mono
-      ];
+    fonts.packages = with pkgs; [
+      nerd-fonts.fira-code
+      nerd-fonts.jetbrains-mono
+    ];
 
     security = {
       # Setup corporate certficates to be trusted

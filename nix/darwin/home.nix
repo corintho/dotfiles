@@ -7,6 +7,12 @@
   home.packages = with pkgs; [
     android-tools
     python3
+    # TODO:More nvim
+    nixd
+    nixfmt-classic
+    deadnix
+    statix
+    # /nvim
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
