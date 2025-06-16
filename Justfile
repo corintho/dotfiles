@@ -49,18 +49,6 @@ sanitize:
 list:
   @nixos-rebuild list-generations
 
-# Keep only 5 generations
-[group('cleanup')]
-[linux]
-keep5:
-  sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations +5
-
-# Remove all generations older than 7 days
-[group('cleanup')]
-[linux]
-clean:
-  sudo nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
-
 #
 # Darwin specific
 #
@@ -116,6 +104,16 @@ update: up update-commit deploy
 [group('info')]
 tree:
   nix-tree
+
+# Keep only 5 generations
+[group('cleanup')]
+keep5:
+  sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations +5
+
+# Remove all generations older than 7 days
+[group('cleanup')]
+clean:
+  sudo nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
 
 # Reclaim unused space after removing older generations. This one is slow to run
 [group('cleanup')]
