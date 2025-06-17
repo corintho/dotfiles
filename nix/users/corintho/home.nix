@@ -81,6 +81,11 @@
 
     fzf = { enable = true; };
 
+    ghostty = {
+      enable = true;
+      package = pkgs.unstable.ghostty;
+    };
+
     git = {
       enable = true;
       userName = "Corintho Assunção";
