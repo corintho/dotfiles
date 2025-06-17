@@ -1,11 +1,10 @@
 #! /usr/bin/env python3
-import subprocess
-import json
 import argparse
+import json
 import os
-from collections import defaultdict
+import subprocess
 import time
-
+from collections import defaultdict
 
 # filepath: /home/khing/.local/lib/hyde/keybinds.hint.py
 
@@ -223,7 +222,7 @@ def generate_dmenu(binds):
             keys.append(key_display)
         formatted_keys = (
             " + ".join(keys).removeprefix(" + ").removesuffix(" + ")
-        )  # remove leading and trailing " + " WARN: not working in python <3.9
+        )  # remove leading and trailing " + "
         action = bind["description"]
         header1 = bind.get("header1", "")
         header2 = bind.get("header2", "")
@@ -343,14 +342,18 @@ def expand_meta_data(binds_data):
             keys.append(key_display)
         formatted_keys = (
             " + ".join(keys).removeprefix(" + ").removesuffix(" + ")
-        )  # remove leading and trailing " + " WARN: not working in python <3.9
+        )  # remove leading and trailing " + "
 
         if submap in submap_keys:
             submap_mod_display = submap_keys[submap]["mod_display"]
             submap_key_display = submap_keys[submap]["key_display"]
             bind["submap_mod"] = submap_mod_display
             bind["submap_key"] = submap_key_display
-            bind["displayed_keys"] = ( f"{submap_mod_display} + {submap_key_display} + " if submap_mod_display else "") + f"{formatted_keys}"
+            bind["displayed_keys"] = (
+                f"{submap_mod_display} + {submap_key_display} + "
+                if submap_mod_display
+                else ""
+            ) + f"{formatted_keys}"
             bind["description"] = f"[{submap}] {bind['description']}"
         else:
             bind["submap_mod"] = ""

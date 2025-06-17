@@ -129,7 +129,6 @@ util_lv="90:, 60:󰓅, 30:󰾅, 󰾆"
 # Get dynamic CPU information
 sensors_json=$(sensors -j 2>/dev/null)
 
-# TODO: Add support for more sensor chips
 cpu_temps="$(jq -r '[
 .["coretemp-isa-0000"], 
 .["k10temp-pci-00c3"]

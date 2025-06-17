@@ -27,7 +27,7 @@
     file-roller
     # Gaming
     unstable.prismlauncher
-    # TODO:More nvim
+    # nvim
     nixd
     nixfmt-classic
     deadnix
