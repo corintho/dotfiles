@@ -94,6 +94,7 @@ in {
           "workspace name:cOmms, class:org.telegram.desktop"
           "workspace name:Dev, class:neovide"
           "workspace name:Dev, class:kitty"
+          "workspace name:Dev, class:com.mitchellh.ghostty"
           "workspace name:Gaming, class:steam"
           "workspace name:Gaming, class:heroic"
           "workspace name:Gaming, class:net.lutris.Lutris"
