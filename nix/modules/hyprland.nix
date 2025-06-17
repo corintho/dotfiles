@@ -4,6 +4,7 @@ in {
   config = {
     home.packages = with pkgs; [
       unstable.wl-kbptr
+      unstable.wlrctl
       # Custom scripts on path
       (writeShellApplication {
         name = "h_switch_window_mode";
@@ -27,7 +28,7 @@ in {
         selectable_border_color=#${colors.base0D}
         label_font_family=sans-serif
         #label_font_size=8 50% 100
-        label_symbols=arstneiodhzxcgmqwfpyulbjvk
+        label_symbols=arstneiodhzxcgmqwfpbjvk
 
         [mode_floating]
         source=detect
@@ -38,7 +39,7 @@ in {
         selectable_border_color=#${colors.base0D}
         label_font_family=JetBrainsMonoNL Nerd Font Propo
         # label_font_size=12 50% 100
-        label_symbols=arstneiodhzxcgmqwfpyulbjvk
+        label_symbols=arstneiodhzxcgmqwfpbjvk
 
         [mode_bisect]
         label_color=#${colors.base06}
@@ -141,6 +142,9 @@ in {
         bind = $launcher, SPACE, exec, $menu
         bind = $launcher, L, exec, swaylock
         # Zooming around
+        ## Remove the hide mouse on key press and go into cursor mode
+        bind = $mod, Z, exec, hyprctl keyword cursor:hide_on_key_press false; hyprctl dispatch submap cursor
+        ## Start our picker
         bind = $mod, Z, exec, wl-kbptr
         # Workspaces
         bind = $mod, B, workspace, name:Browsers
@@ -181,6 +185,28 @@ in {
         # Service mode
         submap = service
         bind = , escape, submap, reset
+        # Cursor mode
+        submap = cursor
+        ## To relaunch the picker in cursor mode if necessary
+        bind = $mod, Z, exec, wl-kbptr
+        ## Cursor movement
+        binde = , up, exec, wlrctl pointer move 0 -10
+        binde = , down, exec, wlrctl pointer move 0 10
+        binde = , left, exec, wlrctl pointer move -10 0
+        binde = , right, exec, wlrctl pointer move 10 0
+        ## Mouse click - keep aligned with wl-kbptr settings for consistency
+        ## These cannot be part of the label_symbols specification
+        bind = , L, exec, wlrctl pointer click left
+        bind = , U, exec, wlrctl pointer click middle
+        bind = , Y, exec, wlrctl pointer click right
+        ## Restore hiding mouse cursor on key press, and resets the submap to the default one
+        ## Non consuming, so it can cancel the mode and the picker if it is still open.
+        ## Otherwise, I would need two clicks on cancel to get out of it
+        bindn = , escape, exec, hyprctl keyword cursor:hide_on_key_press true; hyprctl dispatch submap reset
+        ## Also restore and exit when clicking
+        bind = , L, exec, hyprctl keyword cursor:hide_on_key_press true; hyprctl dispatch submap reset
+        bind = , U, exec, hyprctl keyword cursor:hide_on_key_press true; hyprctl dispatch submap reset
+        bind = , Y, exec, hyprctl keyword cursor:hide_on_key_press true; hyprctl dispatch submap reset
       '';
     };
   };
