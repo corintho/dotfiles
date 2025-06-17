@@ -107,7 +107,7 @@ in {
         "$meh" = "ALT_CTRL_SHIFT";
         "$hyper" = "ALT_CTRL_SHIFT_SUPER";
         "$launcher" = "SUPER";
-        "$terminal" = "kitty";
+        "$terminal" = "ghostty";
         "$browser" = "zen";
         "$menu" = "rofi -show drun";
       };
