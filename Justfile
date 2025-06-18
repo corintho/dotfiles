@@ -100,7 +100,7 @@ update-commit:
 [group('maintenance')]
 update: up update-commit deploy
 
-# Update flake lock file, commit changes and redeploy
+# Update comma index information
 [group('maintenance')]
 update-comma:
   nix run 'nixpkgs#nix-index'
