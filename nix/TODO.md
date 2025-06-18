@@ -5,3 +5,5 @@
 - [ ] Setup launcher and workspace for Itch.io
 - [ ] Setup sshfs to edit home-assistant: https://mynixos.com/search?q=sshfs. Or setup git to have push / pull and a history?
 - [ ] Move Neovim configuration to this repo
+- [ ] Move tools like `just` and `agenix` to a devenv for this repo
+- [ ] Update documentation on how to bootstrap
