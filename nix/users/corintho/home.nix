@@ -1,8 +1,10 @@
-{ config, lib, files, pkgs, ... }:
+{ config, inputs, lib, files, pkgs, ... }:
 
 {
   imports = [
+    inputs.agenix.homeManagerModules.default
     ../../home/core.nix
+    ../../modules/user_secrets.nix
     ../../modules/fish.nix
     ../../modules/hyprland.nix
     ../../modules/hyprpaper.nix
@@ -131,6 +133,12 @@
     ripgrep = { enable = true; };
 
     rofi = { enable = true; };
+
+    ssh = {
+      enable = true;
+      matchBlocks = { "*" = { setEnv = { TERM = "xterm-256color"; }; }; };
+      includes = [ "home.conf" ];
+    };
 
     swayimg = { enable = true; };
 

@@ -1,4 +1,5 @@
-{ secrets, options, paths, ... }: {
+{ config, secrets, options, paths, ... }: {
+  # Secrets decrypted with the host secret
   age.identityPaths = options.age.identityPaths.default
     ++ [ "${paths.rootPath}/bootstrap.age" ];
   age.secrets.smb_corintho.file =
