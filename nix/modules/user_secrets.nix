@@ -12,5 +12,15 @@
     # Have to set the path this way, cannot use `home.file` nor `xdg.configFile`
     path = config.home.homeDirectory + "/.ssh/home.conf";
   };
+  age.secrets."id_ed25519.pub" = {
+    file = "${secrets}/encrypted/personal/id_ed25519.pub";
+    # Have to set the path this way, cannot use `home.file` nor `xdg.configFile`
+    path = config.home.homeDirectory + "/.ssh/id_ed25519.pub";
+  };
+  age.secrets."id_ed25519" = {
+    file = "${secrets}/encrypted/personal/id_ed25519";
+    # Have to set the path this way, cannot use `home.file` nor `xdg.configFile`
+    path = config.home.homeDirectory + "/.ssh/id_ed25519";
+  };
 }
 
