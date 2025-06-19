@@ -98,6 +98,7 @@ in {
           "workspace name:Dev, class:com.mitchellh.ghostty"
           "workspace name:Gaming, class:steam"
           "workspace name:Gaming, class:heroic"
+          "workspace name:Gaming, class:itch"
           "workspace name:Gaming, class:net.lutris.Lutris"
           "workspace name:Gaming, class:net.davidotek.pupgui2"
           "workspace name:Gaming, class:org.prismlauncher.PrismLauncher"
@@ -173,6 +174,7 @@ in {
         bind = , B, exec, $browser
         bind = , E, exec, telegram-desktop
         bind = , H, exec, heroic
+        bind = , I, exec, itch
         bind = , L, exec, lutris
         bind = , M, exec, proton-mail
         bind = , N, exec, prismlauncher
