@@ -1,0 +1,245 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "___comment": "Make this work with my current stylix theme",
+  "palette": {
+    "black": "black",
+    "blue": "blue",
+    "green": "green",
+    "orange": "166",
+    "red": "red",
+    "white": "white",
+    "yellow": "yellow"
+  },
+  "secondary_prompt": {
+    "template": "<p:yellow,transparent>\ue0b6</><,p:yellow> > </><p:yellow,transparent>\ue0b0</> ",
+    "foreground": "p:black",
+    "background": "transparent"
+  },
+  "transient_prompt": {
+    "template": "<p:yellow,transparent>\ue0b6</><,p:yellow> {{ .PWD }} </><p:yellow,transparent>\ue0b0</> ",
+    "foreground": "p:black",
+    "background": "transparent"
+  },
+  "console_title_template": "{{ .Shell }} in {{ .Folder }}",
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "type": "session",
+          "properties": {
+            "cache_duration": "none"
+          },
+          "leading_diamond": "\ue0b6",
+          "trailing_diamond": "<background>\ue0b0</>",
+          "template": " {{ if .SSHSession }}\ueba9 {{ end }}{{ .UserName }} ",
+          "foreground": "p:black",
+          "background": "p:yellow",
+          "style": "diamond"
+        },
+        {
+          "type": "path",
+          "properties": {
+            "cache_duration": "none",
+            "style": "letter"
+          },
+          "template": " \uea83 {{ path .Path .Location }} ",
+          "leading_powerline_symbol": "<background>\ue0b0</>",
+          "foreground": "p:white",
+          "powerline_symbol": "\ue0b0",
+          "background": "p:orange",
+          "style": "diamond"
+        },
+        {
+          "type": "git",
+          "properties": {
+            "branch_max_length": 25,
+            "cache_duration": "none",
+            "fetch_status": true,
+            "fetch_upstream_icon": true
+          },
+          "template": " {{ if .UpstreamURL }}{{ url .UpstreamIcon .UpstreamURL }} {{ end }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }} ",
+          "foreground": "p:black",
+          "leading_diamond": "<parentBackground,background>\ue0b0</>",
+          "background": "p:green",
+          "style": "diamond",
+          "foreground_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}p:black{{ end }}",
+            "{{ if and (gt .Ahead 0) (gt .Behind 0) }}p:white{{ end }}",
+            "{{ if gt .Ahead 0 }}p:black{{ end }}",
+            "{{ if gt .Behind 0 }}p:white{{ end }}"
+          ],
+          "background_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}p:yellow{{ end }}",
+            "{{ if and (gt .Ahead 0) (gt .Behind 0) }}p:red{{ end }}",
+            "{{ if gt .Ahead 0 }}p:green{{ end }}",
+            "{{ if gt .Behind 0 }}p:blue{{ end }}"
+          ]
+        },
+        {
+          "type": "root",
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": " \uf0e7 ",
+          "leading_diamond": "<parentBackground,background>\ue0b0</>",
+          "foreground": "p:white",
+          "background": "p:yellow",
+          "style": "diamond"
+        },
+        {
+          "type": "status",
+          "properties": {
+            "always_enabled": true,
+            "cache_duration": "none"
+          },
+          "leading_diamond": "<parentBackground,background>\ue0b0</>",
+          "trailing_diamond": "\ue0b4",
+          "template": " {{ if gt .Code 0 }}\uf00d{{ else }}\uf00c{{ end }} ",
+          "foreground": "p:white",
+          "background": "p:blue",
+          "style": "diamond",
+          "background_templates": ["{{ if gt .Code 0 }}p:red{{ end }}"]
+        }
+      ]
+    },
+    {
+      "type": "rprompt",
+      "segments": [
+        {
+          "type": "executiontime",
+          "properties": {
+            "cache_duration": "none",
+            "style": "austin",
+            "threshold": 0
+          },
+          "template": "{{ .FormattedMs }} ",
+          "foreground": "p:blue",
+          "background": "transparent",
+          "style": "plain"
+        },
+        {
+          "type": "node",
+          "properties": {
+            "cache_duration": "none",
+            "display_mode": "files",
+            "fetch_package_manager": false,
+            "home_enabled": false
+          },
+          "template": "\ue74e ",
+          "foreground": "p:orange",
+          "background": "transparent",
+          "style": "plain"
+        },
+        {
+          "type": "lua",
+          "properties": {
+            "cache_duration": "none",
+            "fetch_version": false
+          },
+          "template": "\ue620 ",
+          "foreground": "p:blue",
+          "background": "transparent",
+          "style": "plain"
+        },
+        {
+          "type": "go",
+          "properties": {
+            "cache_duration": "none",
+            "fetch_version": false
+          },
+          "template": "\ue65e ",
+          "foreground": "p:blue",
+          "background": "transparent",
+          "style": "plain"
+        },
+        {
+          "type": "python",
+          "properties": {
+            "cache_duration": "none",
+            "display_mode": "files",
+            "fetch_version": false,
+            "fetch_virtual_env": false
+          },
+          "template": "\ue235 ",
+          "foreground": "p:yellow",
+          "background": "transparent",
+          "style": "plain"
+        },
+        {
+          "type": "rust",
+          "properties": {
+            "cache_duration": "none",
+            "display_mode": "files",
+            "fetch_version": false
+          },
+          "template": "\ue7a8 ",
+          "foreground": "p:white",
+          "background": "transparent",
+          "style": "plain"
+        },
+        {
+          "type": "nix-shell",
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": "\udb84\udd05 ",
+          "foreground": "p:blue",
+          "background": "transparent",
+          "style": "plain"
+        },
+        {
+          "type": "shell",
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": "in <p:blue><b>{{ .Name }}</b></> ",
+          "foreground": "p:white",
+          "background": "transparent",
+          "style": "plain"
+        },
+        {
+          "type": "time",
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": "at <p:blue><b>{{ .CurrentDate | date \"15:04:05\" }}</b></>",
+          "foreground": "p:white",
+          "background": "transparent",
+          "style": "plain"
+        }
+      ]
+    }
+  ],
+  "tooltips": [
+    {
+      "type": "aws",
+      "properties": {
+        "display_default": true
+      },
+      "leading_diamond": "\ue0b0",
+      "trailing_diamond": "\ue0b4",
+      "template": " \ue7ad {{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }} ",
+      "foreground": "p:white",
+      "background": "p:orange",
+      "style": "diamond",
+      "tips": ["aws"]
+    },
+    {
+      "type": "az",
+      "properties": {
+        "display_default": true
+      },
+      "leading_diamond": "\ue0b0",
+      "trailing_diamond": "\ue0b4",
+      "template": " \uebd8 {{ .Name }} ",
+      "foreground": "p:white",
+      "background": "p:blue",
+      "style": "diamond",
+      "tips": ["az"]
+    }
+  ],
+  "version": 3,
+  "final_space": true
+}
