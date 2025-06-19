@@ -66,6 +66,13 @@
   # Disable modules to handle their style manually
   stylix = { targets = { waybar.enable = false; }; };
 
+  xdg.configFile = {
+    "nvim" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${files}/nvim";
+      # In order to do folders, we need to do it recursive
+      recursive = true;
+    };
+  };
   programs = {
     bat = { enable = true; };
 
