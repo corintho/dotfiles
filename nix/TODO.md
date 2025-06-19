@@ -6,5 +6,5 @@
 - [x] `done: 250619` ~Setup sshfs to edit home-assistant: https://mynixos.com/search?q=sshfs. Or setup git to have push / pull and a history?~
       Setup a dev environment whidh will mount the filesystem with `sshfs` on demand
 - [ ] Move Neovim configuration to this repo
-- [ ] Move tools like `just` and `agenix` to a devenv for this repo
+- [x] `done: 250619` Move tools like `just` and `agenix` to a devenv for this repo
 - [ ] Update documentation on how to bootstrap

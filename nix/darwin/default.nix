@@ -13,7 +13,6 @@ let
       comma
       # Coding tools
       devenv
-      just
       # /Coding tools
       # Tools
       bat
