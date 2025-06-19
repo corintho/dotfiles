@@ -1,7 +1,7 @@
 # TODOs
 
 - [x] `done: 250618` Setup ssh config: https://mynixos.com/home-manager/option/programs.ssh.matchBlocks . Read from the private repo?
-- [x] `done: 250618` Store keys in the private repo?
+- [x] `done: 250618` Store keys in the private repo?. Terrible idea. They are not available during agenix decryption
 - [x] `done: 250619` Setup launcher and workspace for Itch.io
 - [x] `done: 250619` ~Setup sshfs to edit home-assistant: https://mynixos.com/search?q=sshfs. Or setup git to have push / pull and a history?~
       Setup a dev environment whidh will mount the filesystem with `sshfs` on demand
@@ -12,3 +12,4 @@
 - [ ] Better styling for Rofi
 - [ ] Check if I can replace the hyprland launcher with a custom Rofi launcher
 - [ ] Update documentation on how to bootstrap
+- [ ] Find a way to properly bootstrap agenix

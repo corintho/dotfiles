@@ -590,10 +590,10 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1750266224,
-        "narHash": "sha256-u4wJbbnNhgwgvRB0LOmFAhcnPCAJlY4d/tMxCVbIGt8=",
+        "lastModified": 1750341107,
+        "narHash": "sha256-m/cEq5nhsRZ7Xe68BYhjR0KiIpARyJpxv0u/DkEK9b8=",
         "ref": "main",
-        "rev": "603e448a3e9583eca0a865eb8d1186d79c3c333e",
+        "rev": "12855114a824d49c858abe4f84acca0d34174369",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/corintho/nix-secrets.git"
