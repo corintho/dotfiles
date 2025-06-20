@@ -9,6 +9,7 @@
 - [x] `done: 250619` Move tools like `just` and `agenix` to a devenv for this repo
 - [ ] Add git skip helper functions to fish
 - [ ] Add window counter to waybar
+- [ ] Test simplified prompt for omp
 - [ ] Better styling for Rofi
 - [ ] Check if I can replace the hyprland launcher with a custom Rofi launcher
 - [ ] Update documentation on how to bootstrap
