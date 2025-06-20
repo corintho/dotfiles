@@ -14,9 +14,9 @@
 
     home.file = {
       ".config/waybar/config.jsonc" = {
-        source = files + /waybar/config.jsonc;
+        source = "${files}/waybar/config.jsonc";
       };
-      ".config/waybar/style.css" = { source = files + /waybar/style.css; };
+      ".config/waybar/style.css" = { source = "${files}/waybar/style.css"; };
       ".config/waybar/theme.css" = {
         text = ''
           /* Global colors */
@@ -50,7 +50,7 @@
         '';
       };
       ".local/lib/waybar/" = {
-        source = libFiles + /waybar;
+        source = "${libFiles}/waybar";
         recursive = true;
       };
     };

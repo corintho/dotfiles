@@ -2,13 +2,13 @@
 
 let
   username = "corintho";
-  rootPath = ../../.;
-  nixPath = rootPath + /nix;
+  rootPath = paths.rootPath;
+  nixPath = "${rootPath}/nix";
   # Passes these parameters to other nix modules
   specialArgs = {
     inherit self inputs username nixPath rootPath secrets paths;
-    files = rootPath + /files;
-    libFiles = rootPath + /lib;
+    files = "${rootPath}/files";
+    libFiles = "${rootPath}/lib";
   };
 in {
   ncc-1701-d = nixpkgs.lib.nixosSystem {

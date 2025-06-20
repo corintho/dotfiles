@@ -11,7 +11,7 @@ default:
 [group('build')]
 [linux]
 deploy:
-  nixos-rebuild switch --flake ./nix --use-remote-sudo
+  nixos-rebuild switch --flake ./nix --use-remote-sudo --impure
   @just workaround-waybar
 
 # Standard deploy with extended debug enabled
@@ -29,7 +29,7 @@ workaround-waybar:
 [group('build')]
 [linux]
 check:
-  nixos-rebuild dry-build --flake ./nix
+  nixos-rebuild dry-build --flake ./nix --impure
 
 # Remove dirty generations, except the current one
 [group('cleanup')]
