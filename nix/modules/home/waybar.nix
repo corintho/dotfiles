@@ -26,10 +26,10 @@
           @define-color main-fg ${config.lib.stylix.colors.withHashtag.base05};
 
           /* Workspace buttons */
-          @define-color wbar-bg ${config.lib.stylix.colors.withHashtag.base04};
+          @define-color wbar-bg ${config.lib.stylix.colors.withHashtag.base02};
           @define-color bar-active ${config.lib.stylix.colors.withHashtag.base0B};
           @define-color bar-active-other ${config.lib.stylix.colors.withHashtag.base0D};
-          @define-color bar-other ${config.lib.stylix.colors.withHashtag.base08};
+          @define-color bar-other ${config.lib.stylix.colors.withHashtag.base09};
 
           /* Current workspace button */
           @define-color wb-current-bg @bar-active;
