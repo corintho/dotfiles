@@ -7,7 +7,9 @@
       Setup a dev environment whidh will mount the filesystem with `sshfs` on demand
 - [x] `done: 250619` Move Neovim configuration to this repo
 - [x] `done: 250619` Move tools like `just` and `agenix` to a devenv for this repo
+- [ ] Modularize some blocks to share them between Nix and Darwin
 - [ ] Add git skip helper functions to fish
+- [ ] Add language indicator to waybar
 - [ ] Add window counter to waybar
 - [ ] Test simplified prompt for omp
 - [ ] Better styling for Rofi
