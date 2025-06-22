@@ -59,13 +59,6 @@
   };
 
   programs = {
-    #TODO: How to modularize this together with home-manager?
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-      package = pkgs.unstable.neovim-unwrapped;
-    };
-
     git = {
       enable = true;
       lfs.enable = true;
