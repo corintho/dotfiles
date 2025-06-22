@@ -37,6 +37,7 @@
     "pulseaudio#microphone",
     "custom/keybindhint",
     "hyprland/submap",
+    "hyprland/language",
     "custom/r_end",
     "custom/l_end",
     "power-profiles-daemon",
@@ -275,6 +276,13 @@
   },
   "hyprland/submap": {
     "format": "{}",
+    "rotate": 0,
+  },
+  "hyprland/language": {
+    "format-en": "🇬🇧",
+    //FIXME: This will only work correctly after a new release
+    "format-en-intl": "🇧🇷",
+    "on-click": "hyprctl switchxkblayout current next",
     "rotate": 0,
   },
   // modules for padding //
