@@ -119,6 +119,12 @@
     polarity = "dark";
     base16Scheme = "${files}/lcars.yaml";
     image = ../../../wallpapers/973571.jpg;
+    fonts = {
+      monospace = {
+        package = pkgs.nerd-fonts.jetbrains-mono;
+        name = "JetBrainsMono Nerd Font";
+      };
+    };
   };
 
   # List packages installed in system profile. To search, run:
