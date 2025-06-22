@@ -7,8 +7,9 @@
       Setup a dev environment whidh will mount the filesystem with `sshfs` on demand
 - [x] `done: 250619` Move Neovim configuration to this repo
 - [x] `done: 250619` Move tools like `just` and `agenix` to a devenv for this repo
-- [ ] Modularize some blocks to share them between Nix and Darwin
+- [x] `done: 250622` Modularize some blocks to share them between Nix and Darwin
 - [ ] Add git skip helper functions to fish
+- [ ] Adjust colors to enhance contrast on neovim buffer line and status line
 - [ ] Add language indicator to waybar - https://github.com/Alexays/Waybar/issues/3676, check here for styling: https://github.com/Alexays/Waybar/wiki/Module:-Hyprland#language
 - [ ] Add window counter to waybar
 - [ ] Test simplified prompt for omp
