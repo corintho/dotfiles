@@ -59,6 +59,7 @@
   };
 
   programs = {
+    #TODO: How to modularize this together with home-manager?
     neovim = {
       enable = true;
       defaultEditor = true;

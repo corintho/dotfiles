@@ -130,10 +130,8 @@
     # Requirements for nvim
     gcc
     gnumake
-    nodejs_22
     unzip
     wl-clipboard-rs
-    (lua5_1.withPackages (ps: with ps; [ luarocks ]))
     # /nvim
     kitty
     rofi
