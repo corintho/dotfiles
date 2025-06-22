@@ -4,12 +4,12 @@
   imports = [
     inputs.agenix.homeManagerModules.default
     ../../home/core.nix
-    ../../modules/user_secrets.nix
-    ../../modules/fish.nix
-    ../../modules/hyprland.nix
-    ../../modules/hyprpaper.nix
-    ../../modules/waybar.nix
-    ../../modules/zellij.nix
+    ../../modules/home/user_secrets.nix
+    ../../modules/home/fish.nix
+    ../../modules/home/hyprland.nix
+    ../../modules/home/hyprpaper.nix
+    ../../modules/home/waybar.nix
+    ../../modules/home/zellij.nix
   ];
   home.sessionVariables = { EDITOR = "nvim"; };
   home.packages = with pkgs; [
