@@ -9,6 +9,7 @@
     ../../modules/home/hyprland.nix
     ../../modules/home/hyprpaper.nix
     ../../modules/home/neovim.nix
+    ../../modules/home/oh_my_posh.nix
     ../../modules/home/waybar.nix
     ../../modules/home/zellij.nix
   ];
@@ -117,12 +118,6 @@
     };
 
     nix-index = { enable = true; };
-
-    oh-my-posh = {
-      enable = true;
-      settings = builtins.fromJSON (builtins.unsafeDiscardStringContext
-        (builtins.readFile "${files}/custom.omp.json"));
-    };
 
     ripgrep = { enable = true; };
 
