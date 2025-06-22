@@ -9,7 +9,7 @@
 - [x] `done: 250619` Move tools like `just` and `agenix` to a devenv for this repo
 - [ ] Modularize some blocks to share them between Nix and Darwin
 - [ ] Add git skip helper functions to fish
-- [ ] Add language indicator to waybar
+- [ ] Add language indicator to waybar - https://github.com/Alexays/Waybar/issues/3676, check here for styling: https://github.com/Alexays/Waybar/wiki/Module:-Hyprland#language
 - [ ] Add window counter to waybar
 - [ ] Test simplified prompt for omp
 - [ ] Better styling for Rofi
