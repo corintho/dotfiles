@@ -10,7 +10,7 @@ layout {
   }
   tab {
     pane split_direction="vertical" {
-      pane command="nvim" borderless=true
+      pane command="nvim"
       pane split_direction="horizontal" {
         pane command="just" {
           start_suspended true
