@@ -103,6 +103,10 @@
         listening = "lsof -iTCP -sTCP:LISTEN -n -P";
         scripts = ''
           jq ".scripts | to_entries | sort_by(.key) | from_entries" package.json'';
+        n = "nvim";
+        gitskipped = "git ls-files -v|grep '^S'";
+        gitskip = "git update-index --skip-worktree";
+        gitunskip = "git update-index --no-skip-worktree";
       };
     };
     fzf = { enable = true; };
