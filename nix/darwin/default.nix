@@ -108,7 +108,8 @@ let
     # programs.fish.enable = true;
 
     # Set Git commit hash for darwin-version.
-    system.configurationRevision = self.rev or self.dirtyRev or null;
+    system.configurationRevision =
+      if (self ? rev) then self.rev else self.dirtyRev;
 
     # Used for backwards compatibility, please read the changelog before changing.
     # $ darwin-rebuild changelog
@@ -153,6 +154,7 @@ in {
           })
         ];
       }
+      inputs.stylix.darwinModules.stylix
       configuration
       nix-homebrew.darwinModules.nix-homebrew
       {
