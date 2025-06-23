@@ -57,13 +57,13 @@ list:
 [group('build')]
 [macos]
 deploy:
-  sudo darwin-rebuild switch --flake ./nix
+  sudo darwin-rebuild switch --flake ./nix --impure
 
 # Dry run. Makes it easy to catch errors without generating a new profile
 [group('build')]
 [macos]
 check:
-  sudo darwin-rebuild check --flake ./nix
+  sudo darwin-rebuild check --flake ./nix --impure
 
 # List all current available generations
 [group('info')]

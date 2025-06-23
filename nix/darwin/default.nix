@@ -1,12 +1,20 @@
-{ self, inputs, nix-darwin, nix-homebrew, nixpkgs-unstable, home-manager
+{ self, paths, inputs, nix-darwin, nix-homebrew, nixpkgs-unstable, home-manager
 , homebrew-bundle, homebrew-cask, homebrew-core, homebrew-xcodesorg, ... }:
 let
+  rootPath = paths.rootPath;
+  nixPath = "${rootPath}/nix";
+  files = "${rootPath}/files";
+  # Passes these parameters to other nix modules
+  specialArgs = {
+    inherit self files inputs nixPath username rootPath paths;
+    libFiles = "${rootPath}/lib";
+  };
   # nixpkgs.config.allowUnfree = true;
   # Home-manager
   username = "zg47ma";
   configuration = { pkgs, ... }: {
     # Setup primary user. We need to eventually remove this and migrate configurations properly
-    system.primaryUser = "zg47ma";
+    system.primaryUser = username;
     # List packages installed in system profile. To search by name, run:
     # $ nix-env -qaP | grep wget
     environment.systemPackages = with pkgs; [
@@ -105,7 +113,7 @@ let
     nix.settings.experimental-features = "nix-command flakes";
 
     # Enable alternative shell support in nix-darwin.
-    # programs.fish.enable = true;
+    programs.fish.enable = true;
 
     # Set Git commit hash for darwin-version.
     system.configurationRevision =
@@ -120,16 +128,30 @@ let
     # May be needed for some packages. Not for now
     # nixpkgs.config.allowUnfree = true;
 
+    # Enable system wide styling
+    stylix = {
+      enable = true;
+      polarity = "dark";
+      base16Scheme = "${files}/lcars.yaml";
+      # image = ../../../wallpapers/973571.jpg;
+      fonts = {
+        monospace = {
+          package = pkgs.nerd-fonts.jetbrains-mono;
+          name = "JetBrainsMono Nerd Font";
+        };
+      };
+    };
     # Home-manager
     users = {
+      knownUsers = [ username ];
       users.${username} = {
-        # This makes this impure, but makes it fully automated for the current user
         home = "/Users/${username}";
         name = "${username}";
+        uid = 501;
+        shell = pkgs.fish;
       };
     };
 
-    #TODO: check if this is properly enabling flakes
     nix = {
       enable = true;
       package = pkgs.nix;
@@ -140,6 +162,7 @@ let
     };
   };
 in {
+  inherit specialArgs;
   # Build darwin flake using:
   "MPCE-MBP-Y4TJXCG2JX" = nix-darwin.lib.darwinSystem {
     modules = [
@@ -163,7 +186,7 @@ in {
           # Enable rosetta on Apple silicon
           enableRosetta = true;
           # Specify homebrew owner
-          user = "zg47ma";
+          user = username;
           # Disable manual brew installation
           mutableTaps = false;
           # Programatically enable taps
@@ -179,7 +202,11 @@ in {
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.users.${username} = import ./home.nix;
+        home-manager.users.${username} = import "${nixPath}/darwin/home.nix";
+        # Optionally, use home-manager.extraSpecialArgs to pass
+        # arguments to home.nix
+        # Sets home manager to use the same special args as flakes
+        home-manager.extraSpecialArgs = inputs // specialArgs;
       }
     ];
   };
