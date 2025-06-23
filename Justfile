@@ -7,7 +7,7 @@ default:
 # NixOS specific
 #
 
-# Standard deploy
+# Standard deploy for Linux
 [group('build')]
 [linux]
 deploy:
@@ -53,7 +53,7 @@ list:
 # Darwin specific
 #
 
-# Standard deploy
+# Standard deploy for MacOS
 [group('build')]
 [macos]
 deploy:
