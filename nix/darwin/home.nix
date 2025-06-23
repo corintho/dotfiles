@@ -29,6 +29,11 @@
       enable = true;
       nix-direnv.enable = true;
     };
+    ghostty = {
+      enable = true;
+      package = pkgs.unstable.ghostty;
+      settings = { macos-option-as-alt = true; };
+    };
     git = {
       enable = true;
       userName = "Corintho Assunção";
