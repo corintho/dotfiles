@@ -69,8 +69,9 @@
         inherit self inputs nixpkgs nixpkgs-unstable home-manager paths secrets;
       });
       darwinConfigurations = (import ./darwin {
-        inherit self nix-darwin nixpkgs nix-homebrew home-manager
-          homebrew-bundle homebrew-cask homebrew-core homebrew-xcodesorg paths;
+        inherit self inputs nix-darwin nixpkgs nixpkgs-unstable nix-homebrew
+          home-manager homebrew-bundle homebrew-cask homebrew-core
+          homebrew-xcodesorg paths;
       });
     };
 }

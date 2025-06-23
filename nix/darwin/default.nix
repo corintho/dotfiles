@@ -1,5 +1,5 @@
-{ self, nix-darwin, nix-homebrew, home-manager, homebrew-bundle, homebrew-cask
-, homebrew-core, homebrew-xcodesorg, ... }:
+{ self, inputs, nix-darwin, nix-homebrew, nixpkgs-unstable, home-manager
+, homebrew-bundle, homebrew-cask, homebrew-core, homebrew-xcodesorg, ... }:
 let
   # nixpkgs.config.allowUnfree = true;
   # Home-manager
@@ -142,6 +142,17 @@ in {
   # Build darwin flake using:
   "MPCE-MBP-Y4TJXCG2JX" = nix-darwin.lib.darwinSystem {
     modules = [
+      {
+        nixpkgs.overlays = [
+          (final: _prev: {
+            unstable =
+              import nixpkgs-unstable { inherit (final) system config; };
+          })
+          (_final: prev: {
+            zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+          })
+        ];
+      }
       configuration
       nix-homebrew.darwinModules.nix-homebrew
       {

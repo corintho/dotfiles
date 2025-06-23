@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ../modules/fish.nix ];
+  imports = [ ../modules/home/fish.nix ];
   home.stateVersion = "24.11"; # Please read the comment before changing.
   # The home.packages option allows you to install Nix packages into your
   # environment.
@@ -54,6 +54,21 @@
     direnv = {
       enable = true;
       nix-direnv.enable = true;
+    };
+    git = {
+      enable = true;
+      userName = "Corintho Assunção";
+      userEmail = "zg47ma@insim.biz";
+      difftastic = {
+        enable = true;
+        enableAsDifftool = true;
+        display = "inline";
+        package = pkgs.unstable.difftastic;
+      };
+      extraConfig = {
+        difftool = { prompt = false; };
+        pager = { difftool = true; };
+      };
     };
     zsh = {
       enable = true;
