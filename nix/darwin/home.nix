@@ -20,36 +20,6 @@
     # /nvim
   ];
 
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
-  home.file = {
-    # Dirty, impure, but creates the direct link we want for some things. It needs to be a absolute path to work. If it is relative, it creates a file in the store with the contents of the linked file
-    ".config/ghostty/" = {
-      source = config.lib.file.mkOutOfStoreSymlink ../. + "/config/ghostty/";
-      # In order to do folders, we need to do it recursive
-      recursive = true;
-    };
-  };
-
-  # Link files into XDG dirs
-  # xdg.configFile = {};
-
-  # Home Manager can also manage your environment variables through
-  # 'home.sessionVariables'. These will be explicitly sourced when using a
-  # shell provided by Home Manager. If you don't want to manage your shell
-  # through Home Manager then you have to manually source 'hm-session-vars.sh'
-  # located at either
-  #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/zg47ma/etc/profile.d/hm-session-vars.sh
-  #
   home.sessionVariables = { EDITOR = "nvim"; };
 
   # Setup programs options
