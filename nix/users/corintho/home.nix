@@ -1,4 +1,4 @@
-{ config, inputs, lib, files, pkgs, ... }:
+{ config, inputs, pkgs, ... }:
 
 {
   imports = [
@@ -6,6 +6,7 @@
     ../../home/core.nix
     ../../modules/home/user_secrets.nix
     ../../modules/home/fish.nix
+    ../../modules/home/ghostty.nix
     ../../modules/home/hyprland.nix
     ../../modules/home/hyprpaper.nix
     ../../modules/home/neovim.nix
@@ -77,11 +78,6 @@
     };
 
     fzf = { enable = true; };
-
-    ghostty = {
-      enable = true;
-      package = pkgs.unstable.ghostty;
-    };
 
     git = {
       enable = true;

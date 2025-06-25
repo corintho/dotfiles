@@ -1,8 +1,9 @@
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
     ../modules/home/fish.nix
+    ../modules/home/ghostty.nix
     ../modules/home/neovim.nix
     ../modules/home/zellij.nix
   ];
@@ -28,18 +29,6 @@
     direnv = {
       enable = true;
       nix-direnv.enable = true;
-    };
-    ghostty = {
-      enable = true;
-      package = null;
-      settings = {
-        macos-option-as-alt = true;
-        keybind = [ ] ++ lib.optionals pkgs.stdenv.isDarwin [
-          # Fix for MacOS keys
-          "alt+left=unbind"
-          "alt+right=unbind"
-        ];
-      };
     };
     git = {
       enable = true;
