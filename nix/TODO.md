@@ -17,3 +17,4 @@
 - [ ] Check if I can replace the hyprland launcher with a custom Rofi launcher
 - [ ] Update documentation on how to bootstrap
 - [ ] Find a way to properly bootstrap agenix
+- [ ] Adjust Neovim theme. Get some highlight ideas from `monokai-pro-spectrum` and `retrobox`
