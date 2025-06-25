@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports = [
@@ -31,8 +31,15 @@
     };
     ghostty = {
       enable = true;
-      package = pkgs.unstable.ghostty;
-      settings = { macos-option-as-alt = true; };
+      package = null;
+      settings = {
+        macos-option-as-alt = true;
+        keybind = [ ] ++ lib.optionals pkgs.stdenv.isDarwin [
+          # Fix for MacOS keys
+          "alt+left=unbind"
+          "alt+right=unbind"
+        ];
+      };
     };
     git = {
       enable = true;

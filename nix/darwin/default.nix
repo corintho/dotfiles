@@ -52,6 +52,7 @@ let
       ];
       casks = [
         "homerow"
+        "ghostty" # The one available from nixpkgs is marked as broken
         "git-credential-manager" # The one from nixpkgs showed issues with finding .NET
         "tomatobar"
       ];
