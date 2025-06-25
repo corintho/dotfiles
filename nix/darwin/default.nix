@@ -33,6 +33,24 @@ let
       # /nvim
     ];
 
+    environment.shellAliases = {
+      bad_watchman =
+        "watchman watch-del '$PWD' ; watchman watch-project '$PWD'";
+      check = "yarn lint && yarn typescript && yarn test";
+      ios = "xcrun simctl getenv booted SIMULATOR_UDID | xargs yarn ios --udid";
+      ios_device =
+        ''ios-deploy -c | grep USB | cut -d " " -f 3 | xargs yarn ios --udid'';
+      join_img = "convert -background black +smush 16";
+      klingon = ''say -v Xander "QgaplA"'';
+      listening = "lsof -iTCP -sTCP:LISTEN -n -P";
+      scripts = ''
+        jq ".scripts | to_entries | sort_by(.key) | from_entries" package.json'';
+      n = "nvim";
+      gitskipped = "git ls-files -v|grep '^S'";
+      gitskip = "git update-index --skip-worktree";
+      gitunskip = "git update-index --no-skip-worktree";
+    };
+
     services = {
       aerospace = { enable = false; };
       jankyborders = { enable = false; };
