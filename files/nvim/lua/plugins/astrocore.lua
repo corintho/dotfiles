@@ -10,7 +10,6 @@ return {
   opts = {
     -- Configure core features of AstroNvim
     features = {
-      large_buf = { size = 1024 * 256, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
       autopairs = true, -- enable autopairs at start
       cmp = true, -- enable completion at start
       diagnostics = { virtual_text = true, virtual_lines = false }, -- enable or disable diagnostics features on start
@@ -87,7 +86,7 @@ return {
         },
         ["<Leader>c"] = {
           function()
-            local bufs = vim.fn.getbufinfo { buflisted = true }
+            local bufs = vim.fn.getbufinfo { buflisted = 1 }
             require("astrocore.buffer").close(0)
             if not bufs[2] then require("snacks").dashboard() end
           end,
