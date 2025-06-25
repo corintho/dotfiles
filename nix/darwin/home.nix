@@ -30,6 +30,12 @@
       enable = true;
       nix-direnv.enable = true;
     };
+    eza = {
+      enable = true;
+      colors = "auto";
+      git = true;
+      icons = "auto";
+    };
     git = {
       enable = true;
       userName = "Corintho Assunção";
