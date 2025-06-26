@@ -43,6 +43,13 @@ sanitize:
     sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations $DIRTY_GENS;
   fi
 
+#TODO: Refuse to run if git is dirty
+
+# All steps for full sanitization
+[group('cleanup')]
+[linux]
+sanitize-all: sanitize keep5 gc deploy
+
 # List all current available generations
 [group('info')]
 [linux]
