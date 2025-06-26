@@ -1,4 +1,4 @@
-{ files, inputs, lib, pkgs, ... }:
+{ files, inputs, lib, pkgs, username, ... }:
 
 {
   imports = [
@@ -174,6 +174,12 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
+  virtualisation.docker = {
+    enable = true;
+    package = pkgs.unstable.docker;
+  };
+  hardware.nvidia-container-toolkit.enable = true;
+  users.users.${username} = { extraGroups = [ "docker" ]; };
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
