@@ -5,7 +5,8 @@
     programs = {
       fish = {
         enable = true;
-        shellInit = "set -g fish_greeting";
+        shellInit = "set -x SHELL /run/current-system/sw/bin/bash";
+        interactiveShellInit = "set -g fish_greeting";
         plugins = [
           {
             name = "autopair";
