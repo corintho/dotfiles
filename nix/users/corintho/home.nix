@@ -1,11 +1,11 @@
-{ config, inputs, pkgs, ... }:
+{ config, lcars, inputs, lib, pkgs, ... }:
 
-{
+let fishModule = ../../modules/home/fish.nix;
+in {
   imports = [
     inputs.agenix.homeManagerModules.default
     ../../home/core.nix
     ../../modules/home/user_secrets.nix
-    ../../modules/home/fish.nix
     ../../modules/home/ghostty.nix
     ../../modules/home/hyprland.nix
     ../../modules/home/hyprpaper.nix
@@ -13,7 +13,7 @@
     ../../modules/home/oh_my_posh.nix
     ../../modules/home/waybar.nix
     ../../modules/home/zellij.nix
-  ];
+  ] ++ (lib.optional lcars.shell.fish.enable fishModule);
   home.packages = with pkgs; [
     htop
     jq

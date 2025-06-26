@@ -1,14 +1,18 @@
 { self, inputs, nixpkgs, nixpkgs-unstable, home-manager, secrets, paths, ... }:
 
 let
+  system = "x86_64-linux";
   username = "corintho";
   rootPath = paths.rootPath;
   nixPath = "${rootPath}/nix";
+  pkgs = import nixpkgs { inherit system; };
+  lcarsConfig = import ../features.nix { inherit pkgs; };
   # Passes these parameters to other nix modules
   specialArgs = {
     inherit self inputs username nixPath rootPath secrets paths;
     files = "${rootPath}/files";
     libFiles = "${rootPath}/lib";
+    lcars = lcarsConfig.lcars;
   };
 in {
   ncc-1701-d = nixpkgs.lib.nixosSystem {
@@ -28,6 +32,8 @@ in {
       }
       inputs.stylix.nixosModules.stylix
       inputs.agenix.nixosModules.default
+      ../options/default.nix
+      ../features.nix
       ../modules/secrets.nix
       ./ncc-1701-d
       "${nixPath}/users/${username}/nixos.nix"

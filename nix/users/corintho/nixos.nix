@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 let
   cifsOptions =
     "uid=1000,gid=100,x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
@@ -63,7 +63,7 @@ in {
       package = pkgs.unstable.bazecor;
     };
 
-    fish = { enable = true; };
+    fish = { enable = config.lcars.shell.fish.enable; };
 
     # Gaming
     steam = {
@@ -76,9 +76,13 @@ in {
     gamemode = { enable = true; };
   };
 
-  users.users.corintho = {
-    uid = 1000;
-    extraGroups = [ "input" ];
-    shell = pkgs.fish;
-  };
+  users.users.corintho = lib.mkMerge [
+    {
+      uid = 1000;
+      extraGroups = [ "input" ];
+    }
+    (lib.mkIf config.lcars.shell.fish.enable {
+      shell = config.lcars.shell.fish.pkg;
+    })
+  ];
 }

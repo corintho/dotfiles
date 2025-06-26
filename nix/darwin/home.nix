@@ -1,12 +1,12 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
-{
+let fishModule = ../modules/home/fish.nix;
+in {
   imports = [
-    ../modules/home/fish.nix
     ../modules/home/ghostty.nix
     ../modules/home/neovim.nix
     ../modules/home/zellij.nix
-  ];
+  ] ++ (lib.optional config.lcars.shell.fish.enable fishModule);
   home.stateVersion = "24.11"; # Please read the comment before changing.
   # The home.packages option allows you to install Nix packages into your
   # environment.
