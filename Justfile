@@ -43,12 +43,10 @@ sanitize:
     sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations $DIRTY_GENS;
   fi
 
-#TODO: Refuse to run if git is dirty
-
 # All steps for full sanitization
 [group('cleanup')]
 [linux]
-sanitize-all: sanitize keep5 gc deploy
+sanitize-all: check-git-status sanitize keep5 gc deploy
 
 # List all current available generations
 [group('info')]
@@ -97,6 +95,18 @@ up:
 up-secrets:
   nix flake update secrets --flake ./nix 
 
+# Check if git status is clean before deploying
+[private]
+check-git-status:
+  #!/usr/bin/env bash
+  changes=$(git status --porcelain | wc -l)
+  if [ 0 -eq $changes ]; then
+    exit 0
+  else
+    echo "Git status is not clean. Please commit or stash your changes before deploying."
+    exit 1
+  fi
+
 # Commit after updating
 [private]
 update-commit:
@@ -105,7 +115,7 @@ update-commit:
 
 # Update flake lock file, commit changes and redeploy
 [group('maintenance')]
-update: up update-commit deploy
+update: check-git-status up update-commit deploy
 
 # Update comma index information
 [group('maintenance')]
