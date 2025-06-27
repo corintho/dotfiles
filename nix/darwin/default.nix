@@ -1,20 +1,24 @@
-{ self, paths, inputs, nix-darwin, nix-homebrew, nixpkgs-unstable, home-manager
-, homebrew-bundle, homebrew-cask, homebrew-core, homebrew-xcodesorg, ... }:
+{ self, paths, inputs, nix-darwin, nix-homebrew, nixpkgs, nixpkgs-unstable
+, home-manager, homebrew-bundle, homebrew-cask, homebrew-core
+, homebrew-xcodesorg, ... }:
 
 let
+  system = "aarch64-darwin";
   username = "zg47ma";
   rootPath = paths.rootPath;
   nixPath = "${rootPath}/nix";
   files = "${rootPath}/files";
+  pkgs = import nixpkgs { inherit system; };
+  lcarsConfig = import ../features.nix { inherit pkgs; };
   specialArgs = {
     inherit self files inputs nixPath username rootPath paths;
-    lcars = import ../features.nix;
     libFiles = "${rootPath}/lib";
+    lcars = lcarsConfig.lcars;
   };
 
 in {
-  nix-darwin.hosts."MPCE-MBP-Y4TJXCG2JX" = {
-    imports = [
+  "MPCE-MBP-Y4TJXCG2JX" = nix-darwin.lib.darwinSystem {
+    modules = [
       ../options/default.nix
       ../features.nix
       # overlays and modules
@@ -130,7 +134,7 @@ in {
         system.configurationRevision =
           if (self ? rev) then self.rev else self.dirtyRev;
         system.stateVersion = 6;
-        nixpkgs.hostPlatform = "aarch64-darwin";
+        nixpkgs.hostPlatform = system;
         # nixpkgs.config.allowUnfree = true;
 
         stylix = {
@@ -151,11 +155,9 @@ in {
             {
               home = "/Users/${username}";
               name = "${username}";
-            }
-            (lib.mkIf lcars.shell.fish.enable {
               uid = 501;
-              shell = lcars.shell.fish.pkg;
-            })
+            }
+            (lib.mkIf lcars.shell.fish.enable { shell = lcars.shell.fish.pkg; })
           ];
         };
 
