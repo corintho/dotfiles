@@ -80,7 +80,7 @@ in {
           enable = true;
           onActivation.cleanup = "zap";
           brews = [ "mas" "xcodes" "aria2" ];
-          casks = [ "homerow" "ghostty" "git-credential-manager" "tomatobar" ];
+          casks = [ "homerow" "ghostty" "git-credential-manager" ];
           masApps = { "Tomito" = 1526042938; };
         };
 
