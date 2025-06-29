@@ -75,10 +75,8 @@ in {
           kb_options = "grp:menu_toggle";
           numlock_by_default = true;
         };
-        monitor = [
-          "DP-3,1920x1080@119.98,0x0,1"
-          "HDMI-A-1,1920x1080@60,auto-right,1"
-        ];
+        monitor =
+          [ "DP-3,1920x1080@119.98,0x0,1" "HDMI-A-1,1920x1080@60,auto-left,1" ];
         # Only needed when going through logs to debug issues
         # debug = { disable_logs = false; };
         # Remember to update waybar settings to match
