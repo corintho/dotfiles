@@ -52,7 +52,7 @@ in {
           with pkgs.unstable; [
             icu
             libxcrypt-legacy
-            python312
+            python312Full
             python312Packages.torch
           ];
       };

@@ -44,6 +44,13 @@ in {
     grim
     slurp
     # /Screen capturing
+    # Freecad
+    # Changes to these settings cause a recompile, which takes a long time
+    (unstable.freecad.override {
+      ifcSupport = true;
+      spaceNavSupport = false;
+    })
+    # /Freecad
     # Custom scripts on path
     (writeShellApplication {
       name = "windows_junctions";
