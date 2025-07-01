@@ -89,6 +89,7 @@ in {
         ];
         windowrulev2 = [
           "workspace name:Browsers, class:zen"
+          "workspace name:cOmms, class:discord"
           "workspace name:cOmms, class:Proton Mail"
           "workspace name:cOmms, class:org.telegram.desktop"
           "workspace name:Dev, class:neovide"
