@@ -31,6 +31,7 @@ in {
     file-roller
     # Gaming
     unstable.prismlauncher
+    unstable.discord
     # Terminal tools
     fd
     bat
