@@ -11,6 +11,7 @@
 - [x] `done: 250622` Add git skip helper functions to fish
 - [x] `done: 250622` Adjust colors to enhance contrast on neovim buffer line and status line
 - [x] `done: 250622` Add language indicator to waybar - https://github.com/Alexays/Waybar/issues/3676, check here for styling: https://github.com/Alexays/Waybar/wiki/Module:-Hyprland#language
+- [ ] Change default power profile to power saver. Add shortcuts to change. Do it in Rofi?
 - [ ] Add window counter to waybar
 - [ ] Test simplified prompt for omp
 - [ ] Better styling for Rofi
