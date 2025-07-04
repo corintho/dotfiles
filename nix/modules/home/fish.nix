@@ -1,11 +1,14 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   config = {
 
     xdg.configFile = { "fish/functions/zz.fish".source = ./fish/zz.fish; };
     programs = {
       fish = {
         enable = true;
-        shellInit = "set -x SHELL /run/current-system/sw/bin/bash";
+        shellInit = lib.mkMerge [
+          "set -x SHELL /run/current-system/sw/bin/bash"
+          (lib.mkIf pkgs.stdenv.isDarwin "fish_add_path /opt/homebrew/bin/")
+        ];
         interactiveShellInit = "set -g fish_greeting";
         plugins = [
           {
