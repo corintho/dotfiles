@@ -108,6 +108,7 @@ in {
         "$meh" = "ALT_CTRL_SHIFT";
         "$hyper" = "ALT_CTRL_SHIFT_SUPER";
         "$launcher" = "SUPER";
+        "$launcher2" = "SHIFT_SUPER";
         "$terminal" = "ghostty";
         "$browser" = "zen";
         "$menu" = "rofi -show drun";
@@ -141,6 +142,8 @@ in {
         bind = $launcher, K, killactive
         bind = $launcher, SPACE, exec, $menu
         bind = $launcher, L, exec, swaylock
+        # Special Launcher
+        bind = $launcher2, P, exec, rofi -show pwrctl
         # Zooming around
         ## Remove the hide mouse on key press and go into cursor mode
         bind = $mod, Z, exec, hyprctl keyword cursor:hide_on_key_press false; hyprctl dispatch submap cursor

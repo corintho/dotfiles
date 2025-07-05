@@ -7,17 +7,23 @@ default:
 # NixOS specific
 #
 
+# Change mode to high performance
+# By default, our configuration sets it back to powersave
+[linux]
+_perf:
+  @powerprofilesctl set performance
+
 # Standard deploy for Linux
 [group('build')]
 [linux]
-deploy:
+deploy: _perf
   nixos-rebuild switch --flake ./nix --use-remote-sudo --impure
   @just workaround-waybar
 
 # Standard deploy with extended debug enabled
 [group('build')]
 [linux]
-verbose:
+verbose: _perf
   nixos-rebuild switch --flake ./nix --use-remote-sudo --show-trace --verbose
 
 #TODO: Only needed for waybar because of a bug
@@ -28,13 +34,13 @@ workaround-waybar:
 # Dry run. Makes it easy to catch errors without generating a new profile and boot entry
 [group('build')]
 [linux]
-check:
+check: _perf
   nixos-rebuild dry-build --flake ./nix --impure
 
 # Remove dirty generations, except the current one
 [group('cleanup')]
 [linux]
-sanitize:
+sanitize: _perf
   #!/usr/bin/env bash
   DIRTY_GENS="$(just list |  grep '[0-9]' | grep --invert-match 'current' | grep 'dirty' | awk '{ print $1; }' | tr '\n' ' ')"
   if [ -z "${DIRTY_GENS}" ];

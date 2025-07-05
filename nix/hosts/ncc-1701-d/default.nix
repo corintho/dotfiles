@@ -110,6 +110,17 @@
     };
   };
 
+  # Enable power save mode by default
+  systemd.services.powerOptions = {
+    wantedBy = [ "multi-user.target" ];
+    script =
+      "${pkgs.power-profiles-daemon}/bin/powerprofilesctl set power-saver";
+    serviceConfig = {
+      User = "root";
+      Group = "root";
+    };
+  };
+
   # Install firefox.
   programs.firefox.enable = true;
 
@@ -140,12 +151,13 @@
     wl-clipboard-rs
     # /nvim
     kitty
-    rofi
     inputs.zen-browser.packages.${pkgs.system}.default
     hyprpicker
     # Sound control
     pamixer
     ncpamixer
+    # Power control
+    power-profiles-daemon
   ];
 
   # Workaround to enable binaries downloaded outside nix to work
