@@ -110,16 +110,13 @@
     };
   };
 
-  # Enable power save mode by default
-  systemd.services.powerOptions = {
-    wantedBy = [ "multi-user.target" ];
-    script =
-      "${pkgs.power-profiles-daemon}/bin/powerprofilesctl set power-saver";
-    serviceConfig = {
-      User = "root";
-      Group = "root";
-    };
+  # Enhance power management
+  powerManagement = {
+    enable = true;
+    cpuFreqGovernor = "powersave";
   };
+  services.power-profiles-daemon.enable = false;
+  services.thermald = { enable = true; };
 
   # Install firefox.
   programs.firefox.enable = true;
@@ -157,7 +154,7 @@
     pamixer
     ncpamixer
     # Power control
-    power-profiles-daemon
+    # power-profiles-daemon
   ];
 
   # Workaround to enable binaries downloaded outside nix to work
