@@ -157,6 +157,7 @@ keybinds clear-defaults=true {
         bind "Alt o" { MoveTab "right"; }
         bind "Alt PageUp" { GoToPreviousTab; }
         bind "Alt PageDown" { GoToNextTab; }
+        bind "Ctrl L" { Clear; }
         bind "Alt s" { 
             LaunchOrFocusPlugin "zellij_forgot" {
                 floating true
