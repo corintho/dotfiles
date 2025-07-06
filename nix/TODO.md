@@ -13,7 +13,7 @@
 - [x] `done: 250622` Add language indicator to waybar - https://github.com/Alexays/Waybar/issues/3676, check here for styling: https://github.com/Alexays/Waybar/wiki/Module:-Hyprland#language
 - [x] `done: 250705` Change default power profile to power saver. Add shortcuts to change. Do it in Rofi?
 - [x] `done: 250706` Change `wl-kbptr` appearance to match the vimium jumper (press "f" on the browser to see it)
-- [ ] Add window counter to waybar
+- [x] `done: 250706` Make a proper shutdown script to close windows gracefully
 - [ ] Test simplified prompt for omp
 - [ ] Better styling for Rofi
 - [ ] Check if I can replace the hyprland launcher with a custom Rofi launcher

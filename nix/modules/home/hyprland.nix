@@ -1,7 +1,13 @@
-{ config, pkgs, ... }:
+{ config, libFiles, pkgs, ... }:
 let inherit (config.lib.stylix) colors;
 in {
   config = {
+    home.file = {
+      ".local/lib/hyprland/" = {
+        source = "${libFiles}/hyprland";
+        recursive = true;
+      };
+    };
     home.packages = with pkgs; [
       unstable.wl-kbptr
       unstable.wlrctl
@@ -101,12 +107,14 @@ in {
           "workspace name:Gaming, class:net.lutris.Lutris"
           "workspace name:Gaming, class:net.davidotek.pupgui2"
           "workspace name:Gaming, class:org.prismlauncher.PrismLauncher"
+          "workspace name:Misc, class:Bazecor"
           "workspace special:magic, class:Proton Pass"
         ];
         "$mod" = "SUPER";
         "$mod2" = "ALT_SHIFT";
         "$meh" = "ALT_CTRL_SHIFT";
         "$hyper" = "ALT_CTRL_SHIFT_SUPER";
+        "$dangerous" = "ALT_CTRL_SUPER";
         "$launcher" = "SUPER";
         "$launcher2" = "SHIFT_SUPER";
         "$terminal" = "ghostty";
@@ -116,16 +124,18 @@ in {
       extraConfig = ''
         # Global submap
         submap = reset
+        # Dangerous keybinds
+        bind = $dangerous, BRACKETRIGHT, exec, ~/.local/lib/hyprland/shutdown.sh
         # Focusing
-        bind = $mod, left, movefocus, l
-        bind = $mod, right, movefocus, r
-        bind = $mod, up, movefocus, u
-        bind = $mod, down, movefocus, d
+        bind = $mod, LEFT, movefocus, l
+        bind = $mod, RIGHT, movefocus, r
+        bind = $mod, UP, movefocus, u
+        bind = $mod, DOWN, movefocus, d
         # Moving
-        bind = $mod2, left, movewindow, l
-        bind = $mod2, right, movewindow, r
-        bind = $mod2, up, movewindow, u
-        bind = $mod2, down, movewindow, d
+        bind = $mod2, LEFT, movewindow, l
+        bind = $mod2, RIGHT, movewindow, r
+        bind = $mod2, UP, movewindow, u
+        bind = $mod2, DOWN, movewindow, d
         # Layouting
         bind = $mod, F, fullscreen
         bind = $mod2, F, togglefloating
@@ -169,7 +179,7 @@ in {
         bind = , XF86AudioMute, exec, pamixer --toggle-mute
         # Resize mode
         submap = resize
-        bind = , escape, submap, reset
+        bind = , ESCAPE, submap, reset
         # Launcher mode
         submap = launcher
         bind = , B, exec, $browser
@@ -183,20 +193,20 @@ in {
         bind = , Q, exec, protonup-qt
         bind = , S, exec, steam
         bind = , T, exec, $terminal
-        bind = , escape, submap, reset
-        bind = $launcher, escape, submap, reset
+        bind = , ESCAPE, submap, reset
+        bind = $launcher, ESCAPE, submap, reset
         # Service mode
         submap = service
-        bind = , escape, submap, reset
+        bind = , ESCAPE, submap, reset
         # Cursor mode
         submap = cursor
         ## To relaunch the picker in cursor mode if necessary
         bind = $mod, Z, exec, wl-kbptr
         ## Cursor movement
-        binde = , up, exec, wlrctl pointer move 0 -10
-        binde = , down, exec, wlrctl pointer move 0 10
-        binde = , left, exec, wlrctl pointer move -10 0
-        binde = , right, exec, wlrctl pointer move 10 0
+        binde = , UP, exec, wlrctl pointer move 0 -10
+        binde = , DOWN, exec, wlrctl pointer move 0 10
+        binde = , LEFT, exec, wlrctl pointer move -10 0
+        binde = , RIGHT, exec, wlrctl pointer move 10 0
         ## Mouse click - keep aligned with wl-kbptr settings for consistency
         ## These cannot be part of the label_symbols specification
         bind = , L, exec, wlrctl pointer click left
@@ -205,7 +215,7 @@ in {
         ## Restore hiding mouse cursor on key press, and resets the submap to the default one
         ## Non consuming, so it can cancel the mode and the picker if it is still open.
         ## Otherwise, I would need two clicks on cancel to get out of it
-        bindn = , escape, exec, hyprctl keyword cursor:hide_on_key_press true; hyprctl dispatch submap reset
+        bindn = , ESCAPE, exec, hyprctl keyword cursor:hide_on_key_press true; hyprctl dispatch submap reset
         ## Also restore and exit when clicking
         bind = , L, exec, hyprctl keyword cursor:hide_on_key_press true; hyprctl dispatch submap reset
         bind = , U, exec, hyprctl keyword cursor:hide_on_key_press true; hyprctl dispatch submap reset
