@@ -60,8 +60,8 @@
           "background": "transparent",
           "style": "plain",
           "foreground_templates": [
-            "{{ if or (.Working.Changed) (.Staging.Changed) }}p:yellow{{ end }}",
             "{{ if and (gt .Ahead 0) (gt .Behind 0) }}p:red{{ end }}",
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}p:yellow{{ end }}",
             "{{ if gt .Ahead 0 }}p:green{{ end }}",
             "{{ if gt .Behind 0 }}p:blue{{ end }}"
           ]
