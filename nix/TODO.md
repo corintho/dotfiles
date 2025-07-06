@@ -12,7 +12,7 @@
 - [x] `done: 250622` Adjust colors to enhance contrast on neovim buffer line and status line
 - [x] `done: 250622` Add language indicator to waybar - https://github.com/Alexays/Waybar/issues/3676, check here for styling: https://github.com/Alexays/Waybar/wiki/Module:-Hyprland#language
 - [x] `done: 250705` Change default power profile to power saver. Add shortcuts to change. Do it in Rofi?
-- [ ] Change `wl-kbptr` appearance to match the vimium jumper (press "f" on the browser to see it)
+- [x] `done: 250706` Change `wl-kbptr` appearance to match the vimium jumper (press "f" on the browser to see it)
 - [ ] Add window counter to waybar
 - [ ] Test simplified prompt for omp
 - [ ] Better styling for Rofi

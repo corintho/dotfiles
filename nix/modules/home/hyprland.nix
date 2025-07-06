@@ -32,11 +32,11 @@ in {
 
         [mode_floating]
         source=detect
-        label_color=#${colors.base06}
-        label_select_color=#${colors.base07}
+        label_color=#${colors.base01}
+        label_select_color=#${colors.base05}
         unselectable_bg_color=#${colors.base01}88
-        selectable_bg_color=#${colors.base02}BB
-        selectable_border_color=#${colors.base0D}
+        selectable_bg_color=#${colors.base0A}BB
+        selectable_border_color=#${colors.base0A}
         label_font_family=JetBrainsMonoNL Nerd Font Propo
         # label_font_size=12 50% 100
         label_symbols=arstneiodhzxcgmqwfpbjvk
