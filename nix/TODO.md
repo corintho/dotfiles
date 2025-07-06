@@ -14,7 +14,7 @@
 - [x] `done: 250705` Change default power profile to power saver. Add shortcuts to change. Do it in Rofi?
 - [x] `done: 250706` Change `wl-kbptr` appearance to match the vimium jumper (press "f" on the browser to see it)
 - [x] `done: 250706` Make a proper shutdown script to close windows gracefully
-- [ ] Test simplified prompt for omp
+- [x] `done: 250706` Test simplified prompt for omp
 - [ ] Better styling for Rofi
 - [ ] Check if I can replace the hyprland launcher with a custom Rofi launcher
 - [ ] Update documentation on how to bootstrap
