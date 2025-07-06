@@ -15,6 +15,7 @@
 - [x] `done: 250706` Change `wl-kbptr` appearance to match the vimium jumper (press "f" on the browser to see it)
 - [x] `done: 250706` Make a proper shutdown script to close windows gracefully
 - [x] `done: 250706` Test simplified prompt for omp
+- [ ] Fix Tomito having a pop-up to close during update
 - [ ] Better styling for Rofi
 - [ ] Check if I can replace the hyprland launcher with a custom Rofi launcher
 - [ ] Update documentation on how to bootstrap
