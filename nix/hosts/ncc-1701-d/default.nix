@@ -153,8 +153,6 @@
     # Sound control
     pamixer
     ncpamixer
-    # Power control
-    # power-profiles-daemon
   ];
 
   # Workaround to enable binaries downloaded outside nix to work
