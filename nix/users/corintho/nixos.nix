@@ -55,6 +55,8 @@ in {
             icu
             libxcrypt-legacy
             python312Full
+            python312Packages.cython
+            python312Packages.numpy
             python312Packages.torch
           ];
       };
