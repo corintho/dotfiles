@@ -53,6 +53,16 @@ in {
       spaceNavSupport = false;
     })
     # /Freecad
+    # Sweet home 3d
+    unstable.sweethome3d.application
+    unstable.sweethome3d.textures-editor
+    unstable.sweethome3d.furniture-editor
+    (writeShellApplication {
+      name = "sweethome3d-fixed";
+      text = ''
+        JAVA_TOOL_OPTIONS="-Dcom.eteks.sweethome3d.j3d.useOffScreen3DView=true" ${unstable.sweethome3d.application}/bin/sweethome3d'';
+    })
+    # /Sweet home 3d
     # Custom scripts on path
     (writeShellApplication {
       name = "windows_junctions";
