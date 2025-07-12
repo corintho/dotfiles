@@ -23,7 +23,7 @@ verbose:
 #TODO: Only needed for waybar because of a bug
 [private]
 workaround-waybar:
-  @killall -SIGUSR2 -r waybar
+  -@killall -SIGUSR2 -r waybar
 
 # Dry run. Makes it easy to catch errors without generating a new profile and boot entry
 [group('build')]

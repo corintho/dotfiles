@@ -69,7 +69,13 @@ in {
   };
 
   # Disable modules to handle their style manually
-  stylix = { targets = { waybar.enable = false; }; };
+  stylix = {
+    targets = {
+      # Some apps do not behave correctly with GTK theming enabled
+      gtk.enable = false;
+      waybar.enable = false;
+    };
+  };
 
   programs = {
     bat = { enable = true; };
