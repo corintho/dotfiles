@@ -117,7 +117,7 @@ in {
         "$dangerous" = "ALT_CTRL_SUPER";
         "$launcher" = "SUPER";
         "$launcher2" = "SHIFT_SUPER";
-        "$terminal" = "ghostty";
+        "$terminal" = "kitty";
         "$browser" = "zen";
         "$menu" = "rofi -show drun";
       };
