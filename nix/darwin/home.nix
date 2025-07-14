@@ -20,6 +20,7 @@ in {
     deadnix
     statix
     # /nvim
+    unstable.kitty
   ];
 
   home.sessionVariables = { EDITOR = "nvim"; };
