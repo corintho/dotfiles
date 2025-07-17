@@ -27,6 +27,8 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  # Enable cuda support
+  nixpkgs.config.cudaSupport = true;
 
   environment.systemPackages = with pkgs; [
     comma
