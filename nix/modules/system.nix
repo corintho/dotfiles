@@ -31,6 +31,15 @@
   nixpkgs.config.cudaSupport = true;
 
   environment.systemPackages = with pkgs; [
+    #TODO: Bootstrap it properly
+    # Use cachix susbstituters for faster builds (needed for cuda)
+    cachix
+    # Cuda
+    cudaPackages.cuda_cudart
+    cudaPackages.cuda_nvcc
+    cudaPackages.cudnn
+    cudaPackages.nccl
+    # /Cuda
     comma
     curl
     kitty

@@ -54,12 +54,12 @@ in {
           with pkgs.unstable; [
             icu
             libxcrypt-legacy
-            python312Full
+            python312
             python312Packages.cython
             python312Packages.numpy
-            python312Packages.torch
-            python312Packages.pyqt6
-            python312Packages.tkinter
+            python312Packages.torch-bin
+            # python312Packages.pyqt6
+            # python312Packages.tkinter
           ];
       };
     };
