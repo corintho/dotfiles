@@ -30,6 +30,7 @@ in {
     exiftool
     p7zip
     file-roller
+    libreoffice
     # Gaming
     prismlauncher
     unstable.discord
