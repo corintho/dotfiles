@@ -107,6 +107,7 @@ in {
           "workspace name:Gaming, class:net.lutris.Lutris"
           "workspace name:Gaming, class:net.davidotek.pupgui2"
           "workspace name:Gaming, class:org.prismlauncher.PrismLauncher"
+          "workspace name:Gaming, class:Minecraft.*"
           "workspace name:Misc, class:Bazecor"
           "workspace special:magic, class:Proton Pass"
         ];
