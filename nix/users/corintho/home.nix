@@ -40,7 +40,7 @@ in {
     tlrc
     # /Terminal tools
     # Coding tools
-    devenv
+    unstable.devenv
     # /Coding tools
     # Screen capturing
     hyprshot
