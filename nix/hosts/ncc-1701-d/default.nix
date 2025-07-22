@@ -145,6 +145,7 @@
     gcc
     gnumake
     unzip
+    zip
     wl-clipboard-rs
     # /nvim
     kitty
