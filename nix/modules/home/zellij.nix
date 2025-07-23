@@ -14,6 +14,10 @@ in {
           "https://github.com/b0o/zjstatus-hints/releases/download/v0.1.4/zjstatus-hints.wasm";
         sha256 = "sha256-k2xV6QJcDtvUNCE4PvwVG9/ceOkk+Wa/6efGgr7IcZ0=";
       };
+      "zellij/themes/lcars.kdl".source = colors {
+        template = ./zellij/lcars.theme.mustache;
+        extension = "kdl";
+      };
       "zellij/config.kdl".text = builtins.readFile ./zellij/config.kdl
         + lib.concatStringsSep "\n" ([''
 
@@ -119,6 +123,8 @@ in {
               zjstatus-hints
           }
 
+          // Our custom theme
+          theme "lcars"
         '']
           ++ (lib.optional (lcars.shell.fish.enable) ''default_shell "fish"''));
     };

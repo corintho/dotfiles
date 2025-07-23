@@ -16,7 +16,7 @@
 - [x] `done: 250706` Make a proper shutdown script to close windows gracefully
 - [x] `done: 250706` Test simplified prompt for omp
 - [x] `done: 250718` Fix Tomito having a pop-up to close during update
-- [ ] Adjust styling for Zellij after update
+- [x] `done: 250723` Adjust styling for Zellij after update
 - [ ] Better styling for Rofi
 - [ ] Check if I can replace the hyprland launcher with a custom Rofi launcher
 - [ ] Update documentation on how to bootstrap
