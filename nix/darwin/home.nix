@@ -14,6 +14,7 @@ in {
   home.packages = with pkgs; [
     android-tools
     python3
+    fd
     # TODO:More nvim
     nixd
     nixfmt-classic
