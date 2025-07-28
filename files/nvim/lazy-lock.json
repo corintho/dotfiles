@@ -24,7 +24,7 @@
   "flexoki": { "branch": "main", "commit": "079554c242a86be5d1a95598c7c6368d6eedd7a3" },
   "flutter-tools.nvim": { "branch": "main", "commit": "65b7399804315a1160933b64292d3c5330aa4e9f" },
   "friendly-snippets": { "branch": "main", "commit": "572f5660cf05f8cd8834e096d7b4c921ba18e175" },
-  "fyler.nvim": { "branch": "main", "commit": "a7c2bf8f1f943285bedab8c627aa4f69b253c80d" },
+  "fyler.nvim": { "branch": "main", "commit": "06c6760e19bc87c95a2d507fe9d7faa30e9ce28e" },
   "git-blame.nvim": { "branch": "master", "commit": "8503b199edf9a666fe7b1a989cf14e3c26b2eb03" },
   "git-conflict.nvim": { "branch": "main", "commit": "4bbfdd92d547d2862a75b4e80afaf30e73f7bbb4" },
   "gitsigns.nvim": { "branch": "main", "commit": "7010000889bfb6c26065e0b0f7f1e6aa9163edd9" },
