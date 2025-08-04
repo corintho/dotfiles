@@ -9,6 +9,10 @@ in {
           "https://github.com/karimould/zellij-forgot/releases/download/0.4.2/zellij_forgot.wasm";
         sha256 = "sha256-MRlBRVGdvcEoaFtFb5cDdDePoZ/J2nQvvkoyG6zkSds=";
       };
+      "zellij/layouts" = {
+        source = ./zellij/layouts;
+        recursive = true;
+      };
       "zellij/plugins/zjstatus-hints.wasm".source = pkgs.fetchurl {
         url =
           "https://github.com/b0o/zjstatus-hints/releases/download/v0.1.4/zjstatus-hints.wasm";
@@ -60,7 +64,7 @@ in {
                       // format_center "{pipe_zjstatus_hints}" // A lot of potential, but needs more customization options
                       format_center ""
            
-                      format_right  "#[bg=#${colors.base00},fg=#${colors.base0D}]#[bg=#${colors.base0D},fg=#${colors.base01},bold] #[bg=#${colors.base02},fg=#${colors.base05},bold] {session} #[bg=#${colors.base03},fg=#${colors.base05},bold]"
+                      format_right  "#[bg=#${colors.base00},fg=#${colors.base0D}]#[bg=#${colors.base0D},fg=#${colors.base01},bold] #[bg=#${colors.base02},fg=#${colors.base05},bold] {session}#[bg=#${colors.base00},fg=#${colors.base02},bold]"
                       format_space  ""
                       format_hide_on_overlength "true"
                       format_precedence "crl"
@@ -98,9 +102,9 @@ in {
                       tab_separator           "#[bg=#${colors.base00}] "
 
                       // indicators
-                      tab_sync_indicator       " "
-                      tab_fullscreen_indicator " 󰊓"
-                      tab_floating_indicator   " 󰹙"
+                      tab_sync_indicator       "  "
+                      tab_fullscreen_indicator " 󰊓 "
+                      tab_floating_indicator   " 󰹙 "
 
                       command_git_branch_command     "git rev-parse --abbrev-ref HEAD"
                       command_git_branch_format      "#[fg=blue] {stdout} "
