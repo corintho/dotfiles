@@ -134,7 +134,10 @@ in {
     };
 
     programs = {
-      zellij = { enable = true; };
+      zellij = {
+        enable = true;
+        package = pkgs.unstable.zellij;
+      };
 
       fish = {
         interactiveShellInit =
