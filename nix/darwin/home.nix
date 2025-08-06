@@ -15,6 +15,7 @@ in {
     android-tools
     python3
     fd
+    tldr
     # TODO:More nvim
     nixd
     nixfmt-classic
