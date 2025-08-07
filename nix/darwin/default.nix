@@ -59,6 +59,7 @@ in {
           gitskipped = "git ls-files -v|grep '^S'";
           gitskip = "git update-index --skip-worktree";
           gitunskip = "git update-index --no-skip-worktree";
+          ",," = ", -d ";
         };
 
         services = {
