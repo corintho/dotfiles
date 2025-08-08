@@ -1,5 +1,5 @@
 { pkgs, ... }:
 
 {
-  packages = with pkgs; [ just ];
+  packages = with pkgs; [ just wget ];
 }

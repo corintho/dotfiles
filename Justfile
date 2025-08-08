@@ -120,7 +120,11 @@ update: check-git-status up update-commit deploy
 # Update comma index information
 [group('maintenance')]
 update-comma:
-  nix run 'nixpkgs#nix-index'
+  #!/usr/bin/env bash
+  filename="index-$(uname -m | sed 's/^arm64$/aarch64/')-$(uname | tr A-Z a-z)"
+  mkdir -p ~/.cache/nix-index && cd ~/.cache/nix-index
+  wget -q -N https://github.com/nix-community/nix-index-database/releases/latest/download/$filename
+  ln -f $filename files
 
 # Shows a searcheable dependency tree
 [group('info')]
