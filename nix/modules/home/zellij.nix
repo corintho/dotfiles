@@ -29,7 +29,9 @@ in {
           // changing these requires a restart to take effect
           plugins {
               about location="zellij:about"
-              compact-bar location="zellij:compact-bar"
+              compact-bar location="zellij:compact-bar" {
+                tooltip "Ctrl h"
+              }
               configuration location="zellij:configuration"
               filepicker location="zellij:strider" {
                   cwd "/"
@@ -61,8 +63,8 @@ in {
                       color_bg "${colors.base03}"
 
                       format_left   "{mode}#[bg=#${colors.base00}] {tabs}"
-                      // format_center "{pipe_zjstatus_hints}" // A lot of potential, but needs more customization options
-                      format_center ""
+                      format_center "{pipe_zjstatus_hints}" // A lot of potential, but needs more customization options
+                      // format_center ""
            
                       format_right  "#[bg=#${colors.base00},fg=#${colors.base0D}]#[bg=#${colors.base0D},fg=#${colors.base01},bold] #[bg=#${colors.base02},fg=#${colors.base05},bold] {session}#[bg=#${colors.base00},fg=#${colors.base02},bold]"
                       format_space  ""
