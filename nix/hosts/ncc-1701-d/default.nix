@@ -3,6 +3,7 @@
 {
   imports = [
     ../../modules/system.nix
+    ../../modules/qtile.nix
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
