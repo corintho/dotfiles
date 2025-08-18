@@ -21,6 +21,7 @@ in {
     nixfmt-classic
     deadnix
     statix
+    wget
     # /nvim
     unstable.kitty
   ];
