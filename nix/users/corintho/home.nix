@@ -11,6 +11,7 @@ in {
     ../../modules/home/hyprpaper.nix
     ../../modules/home/neovim.nix
     ../../modules/home/oh_my_posh.nix
+    ../../modules/home/qtile.nix
     ../../modules/home/rofi.nix
     ../../modules/home/waybar.nix
     ../../modules/home/zellij.nix
