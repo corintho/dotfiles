@@ -51,6 +51,7 @@ in {
     # Freecad
     unstable.freecad
     # /Freecad
+    obsidian
     # Sweet home 3d
     unstable.sweethome3d.application
     unstable.sweethome3d.textures-editor

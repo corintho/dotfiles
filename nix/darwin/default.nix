@@ -125,7 +125,7 @@ in {
           if (self ? rev) then self.rev else self.dirtyRev;
         system.stateVersion = 6;
         nixpkgs.hostPlatform = system;
-        # nixpkgs.config.allowUnfree = true;
+        nixpkgs.config.allowUnfree = true;
 
         stylix = {
           enable = true;

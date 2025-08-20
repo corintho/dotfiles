@@ -24,6 +24,7 @@ in {
     wget
     # /nvim
     unstable.kitty
+    obsidian
   ];
 
   home.sessionVariables = { EDITOR = "nvim"; };
