@@ -72,7 +72,8 @@ in {
           enable = true;
           onActivation.cleanup = "zap";
           brews = [ "mas" "xcodes" "aria2" ];
-          casks = [ "homerow" "ghostty" "git-credential-manager" "zen" ];
+          casks =
+            [ "bazecor" "homerow" "ghostty" "git-credential-manager" "zen" ];
           masApps = { "Tomito" = 1526042938; };
         };
 
