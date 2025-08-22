@@ -20,6 +20,10 @@
       url = "github:nix-darwin/nix-darwin/nix-darwin-25.05?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-darwin-linking = {
+      url = "github:nix-darwin/nix-darwin/pull/1396/head";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # Enable homebrew management through nix
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew?shallow=1";
     homebrew-bundle = {
