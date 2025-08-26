@@ -23,6 +23,7 @@ in {
     cifs-utils
     lsof
     samba
+    krita
     # Gaming
     mangohud
     protonup-qt
