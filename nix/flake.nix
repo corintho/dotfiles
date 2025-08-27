@@ -15,6 +15,7 @@
     };
     # Custom pkgs for some modules
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable?shallow=1";
+    devenv.url = "github:cachix/devenv/latest";
     # Darwin specific packages
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-25.05?shallow=1";

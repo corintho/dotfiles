@@ -45,7 +45,7 @@ in {
         system.primaryUser = username;
         environment.systemPackages = with pkgs; [
           comma
-          unstable.devenv
+          inputs.devenv.packages."${pkgs.system}".devenv
           bat
           curl
           neovim
