@@ -5,7 +5,8 @@
     # Base packages
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05?shallow=1";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05?shallow=1";
+      # url = "github:nix-community/home-manager/release-25.05?shallow=1";
+      url = "github:nix-community/home-manager?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Global styling through stylix

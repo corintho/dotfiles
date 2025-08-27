@@ -7,6 +7,7 @@ in {
     ../modules/home/neovim.nix
     ../modules/home/oh_my_posh.nix
     ../modules/home/zellij.nix
+    ../modules/home/darwin
   ] ++ (lib.optional lcars.shell.fish.enable fishModule);
   home.stateVersion = "24.11"; # Please read the comment before changing.
   # The home.packages option allows you to install Nix packages into your

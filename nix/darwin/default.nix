@@ -65,11 +65,7 @@ in {
           ",," = ", -d ";
         };
 
-        services = {
-          aerospace.enable = false;
-          jankyborders.enable = false;
-          sketchybar.enable = false;
-        };
+        services = { jankyborders.enable = true; };
 
         homebrew = {
           enable = true;
