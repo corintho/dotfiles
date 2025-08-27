@@ -22,6 +22,7 @@ in {
     deadnix
     statix
     wget
+    imagemagickBig
     # /nvim
     unstable.kitty
     obsidian
