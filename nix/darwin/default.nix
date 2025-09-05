@@ -21,6 +21,7 @@ in {
     modules = [
       ../options/default.nix
       ../features.nix
+      ./jankyborders.nix
       # Use application linking from main PR
       { disabledModules = [ "system/applications.nix" ]; }
       "${inputs.nix-darwin-linking}/modules/system/applications.nix"
@@ -64,8 +65,6 @@ in {
           gitunskip = "git update-index --no-skip-worktree";
           ",," = ", -d ";
         };
-
-        services = { jankyborders.enable = true; };
 
         homebrew = {
           enable = true;
