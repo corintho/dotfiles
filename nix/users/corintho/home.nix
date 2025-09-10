@@ -41,7 +41,7 @@ in {
     tlrc
     # /Terminal tools
     # Coding tools
-    inputs.devenv.packages."${pkgs.system}".devenv
+    unstable.devenv
     # /Coding tools
     # Screen capturing
     hyprshot
