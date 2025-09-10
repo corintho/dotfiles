@@ -6,7 +6,7 @@ in {
       enable = true;
       hidpi = false;
       style = "round";
-      width = 4.0;
+      width = 6.0;
       active_color = "0xff${colors.base0D}";
       inactive_color = "0xff${colors.base03}";
     };
