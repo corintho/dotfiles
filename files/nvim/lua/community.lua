@@ -7,8 +7,10 @@ return {
   "AstroNvim/astrocommunity",
   -- Language packs
   { import = "astrocommunity.pack.dart" },
+  { import = "astrocommunity.pack.eslint" },
   { import = "astrocommunity.pack.nix" },
   { import = "astrocommunity.pack.lua" },
+  { import = "astrocommunity.pack.prettier" },
   { import = "astrocommunity.pack.python" },
   { import = "astrocommunity.pack.rust" },
   { import = "astrocommunity.pack.svelte" },
