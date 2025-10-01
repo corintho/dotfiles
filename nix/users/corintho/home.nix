@@ -36,7 +36,9 @@ in {
     prismlauncher
     unstable.discord
     # AI
-    unstable.lmstudio
+    unstable.alpaca
+    unstable.ollama
+    unstable.oterm
     # Terminal tools
     fd
     bat
@@ -72,6 +74,7 @@ in {
     # /Custom scripts on path
   ];
 
+  home.sessionVariables = { OLLAMA_MODELS = "/windows/e/__Slow_AI_E/ollama"; };
   xsession = { numlock.enable = true; };
 
   dconf.settings = {
