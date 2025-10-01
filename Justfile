@@ -115,7 +115,7 @@ update-commit:
 
 # Update flake lock file, commit changes and redeploy
 [group('maintenance')]
-update: check-git-status up update-commit deploy
+update: check-git-status up update-commit deploy optimise
 
 # Update comma index information
 [group('maintenance')]
@@ -125,6 +125,11 @@ update-comma:
   mkdir -p ~/.cache/nix-index && cd ~/.cache/nix-index
   wget -q -N https://github.com/nix-community/nix-index-database/releases/latest/download/$filename
   ln -f $filename files
+
+# Optimises store usage
+[group('maintenance')]
+optimise:
+  nix store optimise
 
 # Shows a searcheable dependency tree
 [group('info')]
