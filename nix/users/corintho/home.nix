@@ -35,6 +35,8 @@ in {
     # Gaming
     prismlauncher
     unstable.discord
+    # AI
+    unstable.lmstudio
     # Terminal tools
     fd
     bat
