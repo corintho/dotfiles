@@ -10,7 +10,7 @@ default:
 # Standard deploy for Linux
 [group('build')]
 [linux]
-deploy:
+deploy: && optimise
   nixos-rebuild switch --flake ./nix --use-remote-sudo --impure
   @just workaround-waybar
 
@@ -115,7 +115,7 @@ update-commit:
 
 # Update flake lock file, commit changes and redeploy
 [group('maintenance')]
-update: check-git-status up update-commit deploy optimise
+update: check-git-status up update-commit deploy
 
 # Update comma index information
 [group('maintenance')]
