@@ -26,7 +26,7 @@ in {
     imagemagickBig
     # /nvim
     unstable.kitty
-    obsidian
+    unstable.obsidian
   ];
 
   home.sessionVariables = { EDITOR = "nvim"; };
