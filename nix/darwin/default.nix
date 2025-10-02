@@ -123,7 +123,13 @@ in {
           pam.services.sudo_local.touchIdAuth = true;
         };
 
-        nix.settings.experimental-features = "nix-command flakes";
+        # customise /etc/nix/nix.conf declaratively via `nix.settings`
+        nix.settings = {
+          # enable flakes globally
+          experimental-features = [ "nix-command" "flakes" ];
+          trusted-users = [ "root" "${username}" ];
+        };
+
         programs.fish.enable = lcars.shell.fish.enable;
 
         system.configurationRevision =
