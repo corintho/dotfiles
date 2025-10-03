@@ -119,6 +119,12 @@
   services.power-profiles-daemon.enable = false;
   services.thermald = { enable = true; };
 
+  # AI
+  services.open-webui = {
+    package = pkgs.open-webui;
+    enable = true;
+    port = 8083;
+  };
   # Install firefox.
   programs.firefox.enable = true;
 
