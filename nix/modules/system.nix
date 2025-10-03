@@ -14,7 +14,7 @@
   nix.settings = {
     # enable flakes globally
     experimental-features = [ "nix-command" "flakes" ];
-    trusted-users = [ "root" "${username}" ];
+    trusted-users = [ "${username}" ];
   };
   nix.channel.enable = false;
 

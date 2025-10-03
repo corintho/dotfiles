@@ -127,7 +127,7 @@ in {
         nix.settings = {
           # enable flakes globally
           experimental-features = [ "nix-command" "flakes" ];
-          trusted-users = [ "root" "${username}" ];
+          trusted-users = [ "${username}" ];
         };
 
         programs.fish.enable = lcars.shell.fish.enable;
