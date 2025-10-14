@@ -73,6 +73,13 @@
     openFirewall = true;
   };
 
+  # enables support for SANE scanners
+  hardware.sane = {
+    enable = true;
+    extraBackends = [ pkgs.sane-airscan ];
+  };
+  services.udev.packages = [ pkgs.sane-airscan ];
+
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
