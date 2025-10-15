@@ -9,6 +9,7 @@ in {
     ../../modules/home/ghostty.nix
     ../../modules/home/hyprland.nix
     ../../modules/home/hyprpaper.nix
+    ../../modules/home/niri.nix
     ../../modules/home/neovim.nix
     ../../modules/home/oh_my_posh.nix
     ../../modules/home/qtile.nix

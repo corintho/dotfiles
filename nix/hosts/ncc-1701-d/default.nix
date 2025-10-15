@@ -202,6 +202,11 @@
     portalPackage = pkgs.unstable.xdg-desktop-portal-hyprland;
   };
 
+  programs.niri = {
+    enable = true;
+    package = pkgs.unstable.niri;
+  };
+
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
