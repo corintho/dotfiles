@@ -84,13 +84,12 @@ in {
     gamemode = { enable = true; };
   };
 
-  users.users.corintho = lib.mkMerge [
-    {
-      uid = 1000;
-      extraGroups = [ "input" "scanner" "lp" ];
-    }
-    (lib.mkIf config.lcars.shell.fish.enable {
-      shell = config.lcars.shell.fish.pkg;
-    })
-  ];
+  users.users.corintho = lib.mkMerge [{
+    uid = 1000;
+    extraGroups = [ "input" "scanner" "lp" ];
+  }
+  # (lib.mkIf config.lcars.shell.fish.enable {
+  #   shell = config.lcars.shell.fish.pkg;
+  # })
+    ];
 }

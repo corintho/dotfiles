@@ -165,6 +165,7 @@
     inputs.agenix.packages.${pkgs.system}.default
     coreutils-full
     inetutils
+    egl-wayland
     # Requirements for nvim
     gcc
     gnumake
