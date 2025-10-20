@@ -76,6 +76,21 @@ input {
     focus-follows-mouse max-scroll-amount="0%"
 }
 
+workspace "Dev" {
+    open-on-output "HDMI-A-1"
+}
+workspace "Misc" {
+    open-on-output "HDMI-A-1"
+}
+workspace "cOmms" 
+
+workspace "Gaming" {
+    open-on-output "DP-3"
+}
+workspace "Browsers" {
+    open-on-output "DP-3"
+}
+
 // You can configure outputs by their name, which you can find
 // by running `niri msg outputs` while inside a niri instance.
 // The built-in laptop monitor is usually called "eDP-1".
@@ -180,13 +195,13 @@ layout {
         // - CSS-like notation: "rgb(255, 127, 0)", rgba(), hsl() and a few others.
 
         // Color of the ring on the active monitor.
-        active-color "#7fc8ff"
+        // active-color "#7fc8ff"
 
         // Color of the ring on inactive monitors.
         //
         // The focus ring only draws around the active window, so the only place
         // where you can see its inactive-color is on other monitors.
-        inactive-color "#505050"
+        // inactive-color "#505050"
 
         // You can also use gradients. They take precedence over solid colors.
         // Gradients are rendered the same as CSS linear-gradient(angle, from, to).
@@ -195,13 +210,19 @@ layout {
         // You can use any CSS linear-gradient tool on the web to set these up.
         // Changing the color space is also supported, check the wiki for more info.
         //
-        // active-gradient from="#80c8ff" to="#c7ff7f" angle=45
+        // active-gradient from="#80c8ff" to="#c7ff7f" angle=90
 
         // You can also color the gradient relative to the entire view
         // of the workspace, rather than relative to just the window itself.
         // To do that, set relative-to="workspace-view".
         //
         // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
+
+        //FIXME: This is already generated for an include file, but that funcnionlity is not available yet
+        active-color "#88bbff"
+        active-gradient from="#88bbff" to="#2255ff" angle=90
+        inactive-color "#848ab9"
+        inactive-gradient from="#a2a2b9" to="#848ab9" angle=90
     }
 
     // You can also add a border. It's similar to the focus ring, but always visible.
@@ -210,7 +231,7 @@ layout {
         // If you enable the border, you probably want to disable the focus ring.
         off
 
-        width 4
+        width 1
         active-color "#ffc87f"
         inactive-color "#505050"
 
@@ -228,7 +249,7 @@ layout {
     // You can enable drop shadows for windows.
     shadow {
         // Uncomment the next line to enable shadows.
-        // on
+        on
 
         // By default, the shadow draws only around its window, and not behind it.
         // Uncomment this setting to make the shadow draw behind its window.
@@ -274,6 +295,9 @@ layout {
         // bottom 64
     }
 }
+
+//FIXME: Not yet possible, need to wait for the next release
+// include "layout_colors.kdl"
 
 // Add lines like this to spawn processes at startup.
 // Note that running niri as a session supports xdg-desktop-autostart,
@@ -333,6 +357,7 @@ animations {
 window-rule {
     geometry-corner-radius 12
     clip-to-geometry true
+    open-focused true
 }
 
 // To override the general settings, specific windows rules have to come later
@@ -351,7 +376,6 @@ window-rule {
 window-rule {
     match app-id=r#"^Rofi$"#
     open-floating true
-    open-focused true
     geometry-corner-radius 4
     focus-ring {
         on
@@ -360,6 +384,42 @@ window-rule {
     border {
         off
     }
+}
+
+// Workspace assignment
+window-rule {
+    match app-id=r#"^zen$"#
+    open-on-workspace "Browsers"
+}
+
+window-rule {
+    match app-id=r#"^kitty$"#
+    match app-id=r#"^com.mitchellh.ghostty$"#
+    open-on-workspace "Dev"
+}
+
+window-rule {
+    match app-id=r#"^obsidian$"#
+    match app-id=r#"^Bazecor$"#
+    open-on-workspace "Misc"
+}
+
+window-rule {
+    match app-id=r#"^discord$"#
+    match app-id=r#"^org.telegram.desktop$"#
+    match app-id=r#"^Proton Mail$"#
+    open-on-workspace "cOmms"
+}
+
+window-rule {
+    match app-id=r#"^steam$"#
+    match app-id=r#"^heroic$"#
+    match app-id=r#"^itch$"#
+    match app-id=r#"^net.lutris.Lutris$"#
+    match app-id=r#"^net.davidotek.pupgui2$"#
+    match app-id=r#"^Minecraft"#
+    match app-id=r#"^org.prismlauncher.PrismLauncher$"#
+    open-on-workspace "Gaming"
 }
 
 // Open the Firefox picture-in-picture player as floating by default.
@@ -374,9 +434,10 @@ window-rule {
 
 // Example: block out two password managers from screen capture.
 // (This example rule is commented out with a "/-" in front.)
-/-window-rule {
+window-rule {
     match app-id=r#"^org\.keepassxc\.KeePassXC$"#
     match app-id=r#"^org\.gnome\.World\.Secrets$"#
+    match app-id=r#"^Proton Pass$"#
 
     block-out-from "screen-capture"
 
@@ -456,8 +517,8 @@ binds {
     Alt+Shift+Tab hotkey-overlay-title="Move workspace: Previous monitor" { move-workspace-to-monitor-previous; }
 
     // Move columns between monitors
-    Alt+Ctrl+Shift+Left hotkey-overlay-title="Move colmn to monitor: Previous" { move-column-to-monitor-previous; }
-    Alt+Ctrl+Shift+Right hotkey-overlay-title="Move colmn to monitor: Next" { move-column-to-monitor-next; }
+    Alt+Ctrl+Shift+Left hotkey-overlay-title="Move column to monitor: Previous" { move-column-to-monitor-previous; }
+    Alt+Ctrl+Shift+Right hotkey-overlay-title="Move column to monitor: Next" { move-column-to-monitor-next; }
 
     // Alternatively, there are commands to move just a single window:
     // Super+Shift+Ctrl+Left  { move-window-to-monitor-left; }
@@ -469,6 +530,8 @@ binds {
 
     Super+Page_Down hotkey-overlay-title="Focus workspace: Down" { focus-workspace-down; }
     Super+Page_Up hotkey-overlay-title="Focus workspace: Up" { focus-workspace-up; }
+    Super+Shift+Page_Up hotkey-overlay-title="Move workspace: Up" { move-workspace-up; }
+    Super+Shift+Page_Down hotkey-overlay-title="Move workspace: Down" { move-workspace-down; }
     Alt+Shift+Page_Down hotkey-overlay-title="Move column to workspace: Down" { move-column-to-workspace-down; }
     Alt+Shift+Page_Up hotkey-overlay-title="Move column to workspace: Up" { move-column-to-workspace-up; }
 
@@ -476,8 +539,6 @@ binds {
     // Super+Ctrl+Page_Down { move-window-to-workspace-down; }
     // ...
 
-    // Super+Shift+Page_Down { move-workspace-down; }
-    // Super+Shift+Page_Up   { move-workspace-up; }
     // Super+Shift+U         { move-workspace-down; }
     // Super+Shift+I         { move-workspace-up; }
 
@@ -539,6 +600,16 @@ binds {
     // Super+Ctrl+7 { move-column-to-workspace 7; }
     // Super+Ctrl+8 { move-column-to-workspace 8; }
     // Super+Ctrl+9 { move-column-to-workspace 9; }
+    Super+D { focus-workspace "Dev"; }
+    Super+Shift+D { move-column-to-workspace "Dev"; }
+    Super+M { focus-workspace "Misc"; }
+    Super+Shift+M { move-column-to-workspace "Misc"; }
+    Super+O { focus-workspace "cOmms"; }
+    Super+Shift+O { move-column-to-workspace "cOmms"; }
+    Super+G { focus-workspace "Gaming"; }
+    Super+Shift+G { move-column-to-workspace "Gaming"; }
+    Super+B { focus-workspace "Browsers"; }
+    Super+Shift+B { move-column-to-workspace "Browsers"; }
 
     // Alternatively, there are commands to move just a single window:
     // Super+Ctrl+1 { move-window-to-workspace 1; }
