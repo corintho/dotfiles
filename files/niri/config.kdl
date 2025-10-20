@@ -15,6 +15,9 @@ input {
         xkb {
             // You can set rules, model, layout, variant and options.
             // For more information, see xkeyboard-config(7).
+            layout "us, us";
+            variant ", intl";
+            options "grp:menu_toggle";
 
             // For example:
             // layout "us,ru"
