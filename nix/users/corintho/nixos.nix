@@ -18,6 +18,13 @@ in {
       [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
   };
 
+  fileSystems."/smb/scanned" = {
+    device = "//192.168.2.250/scanned";
+    fsType = "cifs";
+    options =
+      [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
+  };
+
   environment.systemPackages = with pkgs.unstable; [
     cryptomator
     cifs-utils
