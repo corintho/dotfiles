@@ -69,6 +69,12 @@ in {
     enable32Bit = true;
   };
 
+  # Enable power button to shutdown
+  services.logind = {
+    powerKey = "ignore";
+    powerKeyLongPress = "poweroff";
+  };
+
   # Load nvidia drivers
   services.xserver.videoDrivers = [ "nvidia" ];
 
