@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }: {
+{ pkgs, lib, lcars, ... }: {
   config = {
     programs = {
       ghostty = {
@@ -11,6 +11,7 @@
           # Exit without prompt
           confirm-close-surface = false;
           macos-option-as-alt = true;
+          command = (if lcars.shell.fish.enable then "fish" else "zsh");
           keybind = [ ] ++ lib.optionals pkgs.stdenv.isDarwin [
             # Fix for MacOS keys
             "alt+left=unbind"
@@ -18,7 +19,6 @@
           ];
         };
       };
-
     };
   };
 }
