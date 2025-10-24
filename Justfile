@@ -76,6 +76,15 @@ check:
 list:
   sudo darwin-rebuild --list-generations
 
+# Update brew. Remember to redeploy
+[group('maintenance')]
+[macos]
+update-brew:
+  nix flake update homebrew-bundle --flake ./nix 
+  nix flake update homebrew-cask --flake ./nix 
+  nix flake update homebrew-core --flake ./nix 
+  nix flake update homebrew-xcodesorg --flake ./nix 
+
 #
 # Universal commands
 #
