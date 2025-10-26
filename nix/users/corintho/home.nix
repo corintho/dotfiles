@@ -61,6 +61,8 @@ in {
     unstable.sweethome3d.application
     unstable.sweethome3d.textures-editor
     unstable.sweethome3d.furniture-editor
+    # Music
+    unstable.musescore
     (writeShellApplication {
       name = "sweethome3d-fixed";
       text = ''
