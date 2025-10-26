@@ -77,7 +77,7 @@ in {
                       border_position "top"
 
                       mode_normal        "#[fg=#${colors.base0B}]#[bg=#${colors.base0B},fg=#${colors.base02},bold]NORMAL#[fg=#${colors.base0B}]"
-                      mode_locked        "#[fg=#${colors.base04}]#[bg=#${colors.base04},fg=#${colors.base02},bold]LOCKED #[fg=#${colors.base04}]"
+                      mode_locked        "#[fg=#${colors.base04}]#[bg=#${colors.base04},fg=#${colors.base02},bold]LOCKED  #[fg=#${colors.base04}]"
                       mode_resize        "#[fg=#${colors.base08}]#[bg=#${colors.base08},fg=#${colors.base02},bold]RESIZE#[fg=#${colors.base08}]"
                       mode_pane          "#[fg=#${colors.base0D}]#[bg=#${colors.base0D},fg=#${colors.base02},bold]PANE#[fg=#${colors.base0D}]"
                       mode_tab           "#[fg=#${colors.base07}]#[bg=#${colors.base07},fg=#${colors.base02},bold]TAB#[fg=#${colors.base07}]"
