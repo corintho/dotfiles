@@ -61,7 +61,7 @@ list:
 # Standard deploy for MacOS
 [group('build')]
 [macos]
-deploy:
+deploy: && optimise
   sudo darwin-rebuild switch --flake ./nix --impure
 
 # Dry run. Makes it easy to catch errors without generating a new profile
