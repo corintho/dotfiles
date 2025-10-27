@@ -85,6 +85,10 @@ update-brew:
   nix flake update homebrew-core --flake ./nix 
   nix flake update homebrew-xcodesorg --flake ./nix 
 
+# All steps for full sanitization - as far as Darwin allows
+[group('cleanup')]
+[macos]
+sanitize-all: check-git-status keep5 gc deploy
 #
 # Universal commands
 #
