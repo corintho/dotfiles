@@ -163,6 +163,7 @@ clean:
 [group('cleanup')]
 gc:
   sudo nix store gc
+  nix store gc
   @printf "\nRemember to run \"deploy\" again to remove old entries from the boot menu\n"
 
 # Prune all other generations and reclaim their space
