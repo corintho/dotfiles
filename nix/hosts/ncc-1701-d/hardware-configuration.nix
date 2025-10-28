@@ -71,6 +71,8 @@ in {
 
   # Enable power button to shutdown
   services.logind = {
+    # Disable idle action, since we handle it differently already
+    extraConfig = "IdleAction=ignore";
     powerKey = "ignore";
     powerKeyLongPress = "poweroff";
   };
