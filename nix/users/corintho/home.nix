@@ -83,6 +83,9 @@ in {
   dconf.settings = {
     "org/gnome/desktop/interface" = { color-scheme = "prefer-dark"; };
     "org/gnome/desktop/peripherals/keyboard" = { numlock-state = true; };
+    "org/gnome/settings-daemon/plugins/power" = {
+      sleep-inactive-ac-type = "nothing";
+    };
   };
 
   # Disable modules to handle their style manually
