@@ -148,13 +148,7 @@ keybinds clear-defaults=true {
         bind "Alt ]" { NextSwapLayout; }
         bind "Alt t" { ToggleFloatingPanes; }
         bind "Alt f" { ToggleFocusFullscreen; }
-        bind "Alt h" { MoveFocusOrTab "left"; }
-        bind "Alt i" { MoveTab "left"; }
-        bind "Alt j" { MoveFocus "down"; }
-        bind "Alt k" { MoveFocus "up"; }
-        bind "Alt l" { MoveFocusOrTab "right"; }
         bind "Alt n" { NewPane; }
-        bind "Alt o" { MoveTab "right"; }
         bind "Alt PageUp" { GoToPreviousTab; }
         bind "Alt PageDown" { GoToNextTab; }
         bind "Ctrl L" { Clear; }
