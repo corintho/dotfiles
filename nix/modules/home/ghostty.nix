@@ -13,11 +13,8 @@
           confirm-close-surface = false;
           macos-option-as-alt = true;
           command = (if lcars.shell.fish.enable then "fish" else "zsh");
-          keybind = [ ] ++ lib.optionals pkgs.stdenv.isDarwin [
-            # Fix for MacOS keys
-            "alt+left=unbind"
-            "alt+right=unbind"
-            # Free up some more keys
+          keybind = [
+            # Free up some keys
             "alt+0=unbind"
             "alt+1=unbind"
             "alt+2=unbind"
@@ -38,6 +35,10 @@
             "alt+digit_7=unbind"
             "alt+digit_8=unbind"
             "alt+digit_9=unbind"
+          ] ++ lib.optionals pkgs.stdenv.isDarwin [
+            # Fix for MacOS keys
+            "alt+left=unbind"
+            "alt+right=unbind"
           ];
         };
       };
