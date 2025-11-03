@@ -27,11 +27,12 @@
           };
           keys = {
             normal = {
+              "C-," = "command_mode";
               space = {
+                c = ":buffer-close";
                 q = ":quit";
                 Q = ":quit!";
                 w = ":write";
-                "," = "command_mode";
               };
               "]" = { b = ":buffer-next"; };
               "[" = { b = ":buffer-previous"; };
