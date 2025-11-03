@@ -28,6 +28,16 @@
           keys = {
             normal = {
               "C-," = "command_mode";
+              "C-e" = [
+                ":sh rm -f /tmp/files2open"
+                '':insert-output yazi "%{buffer_name}" --chooser-file=/tmp/files2open''
+                ":redraw"
+                ":open /tmp/files2open"
+                "select_all"
+                "split_selection_on_newline"
+                "goto_file"
+                ":buffer-close! /tmp/files2open"
+              ];
               space = {
                 c = ":buffer-close";
                 q = ":quit";
