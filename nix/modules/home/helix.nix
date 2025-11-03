@@ -30,7 +30,8 @@
               "C-," = "command_mode";
               "C-e" = [
                 ":sh rm -f /tmp/files2open"
-                '':insert-output yazi "%{buffer_name}" --chooser-file=/tmp/files2open''
+                ''
+                  :insert-output yazi "%{buffer_name}" --chooser-file=/tmp/files2open''
                 ":redraw"
                 ":open /tmp/files2open"
                 "select_all"
@@ -38,6 +39,8 @@
                 "goto_file"
                 ":buffer-close! /tmp/files2open"
               ];
+              "C-g" =
+                [ ":new" ":insert-output lazygit" ":buffer-close!" ":redraw" ];
               space = {
                 c = ":buffer-close";
                 q = ":quit";
