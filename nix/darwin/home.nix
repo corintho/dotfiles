@@ -28,6 +28,7 @@ in {
     # /nvim
     unstable.kitty
     unstable.obsidian
+    unstable.lazygit
   ];
 
   home.sessionVariables = { EDITOR = "hx"; };

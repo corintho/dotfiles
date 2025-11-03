@@ -34,6 +34,7 @@ in {
     p7zip
     file-roller
     libreoffice
+    unstable.lazygit
     # Gaming
     prismlauncher
     unstable.discord
