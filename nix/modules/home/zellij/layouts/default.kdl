@@ -7,7 +7,7 @@ layout {
   }
   tab {
     pane split_direction="vertical" {
-      pane command="nvim"
+      pane command="hx ."
       pane split_direction="horizontal" {
         pane
         pane
