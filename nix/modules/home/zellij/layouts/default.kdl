@@ -7,7 +7,9 @@ layout {
   }
   tab {
     pane split_direction="vertical" {
-      pane command="hx ."
+      pane command="hx" {
+        args "."
+      }
       pane split_direction="horizontal" {
         pane
         pane
