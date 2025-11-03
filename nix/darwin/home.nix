@@ -30,7 +30,7 @@ in {
     unstable.obsidian
   ];
 
-  home.sessionVariables = { EDITOR = "nvim"; };
+  home.sessionVariables = { EDITOR = "hx"; };
 
   # Setup programs options
   programs = {
