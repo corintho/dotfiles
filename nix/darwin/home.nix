@@ -81,6 +81,21 @@ in {
     fzf = { enable = true; };
     ripgrep = { enable = true; };
     zoxide = { enable = true; };
+    yazi = {
+      enable = true;
+      settings = {
+        manager = {
+          show_hidden = true;
+          sort_by = "natural";
+        };
+        preview = {
+          max_width = 1600;
+          max_height = 1000;
+        };
+      };
+      package = pkgs.unstable.yazi;
+      shellWrapperName = "y";
+    };
   };
 
   # Let Home Manager install and manage itself.
