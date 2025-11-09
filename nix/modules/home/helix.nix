@@ -24,6 +24,9 @@
             jump-label-alphabet = "ntesiroahdmgcxzlpufywqjbkv";
             # Input setup
             mouse = false;
+            lsp = {
+              display-inlay-hints = true;
+            };
           };
           keys = {
             normal = {
