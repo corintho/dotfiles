@@ -30,6 +30,7 @@
           };
           keys = {
             normal = {
+              "C-y" = "copy_between_registers";
               "C-," = "command_mode";
               "C-e" = [
                 ":sh rm -f /tmp/files2open"
