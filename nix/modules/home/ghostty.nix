@@ -26,16 +26,6 @@
             "alt+7=unbind"
             "alt+8=unbind"
             "alt+9=unbind"
-            "alt+digit_0=unbind"
-            "alt+digit_1=unbind"
-            "alt+digit_2=unbind"
-            "alt+digit_3=unbind"
-            "alt+digit_4=unbind"
-            "alt+digit_5=unbind"
-            "alt+digit_6=unbind"
-            "alt+digit_7=unbind"
-            "alt+digit_8=unbind"
-            "alt+digit_9=unbind"
           ] ++ lib.optionals pkgs.stdenv.isDarwin [
             # Fix for MacOS keys
             "alt+left=unbind"
