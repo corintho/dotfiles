@@ -35,6 +35,7 @@ in {
     file-roller
     libreoffice
     unstable.lazygit
+    gitui
     # Gaming
     prismlauncher
     unstable.discord

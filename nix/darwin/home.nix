@@ -29,6 +29,7 @@ in {
     unstable.kitty
     unstable.obsidian
     unstable.lazygit
+    gitui
   ];
 
   home.sessionVariables = { EDITOR = "hx"; };
