@@ -12,7 +12,7 @@
           # Exit without prompt
           confirm-close-surface = false;
           macos-option-as-alt = true;
-          command = (if lcars.shell.fish.enable then "fish" else "zsh");
+          command = (if lcars.shell.fish.enable then "${lcars.shell.fish.package}/bin/fish" else "zsh");
           keybind = [
             # Free up some keys
             "ctrl+,=unbind"

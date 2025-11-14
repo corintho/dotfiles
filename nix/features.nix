@@ -1,6 +1,6 @@
 { pkgs, ... }: {
   lcars.shell.fish = {
     enable = true;
-    pkg = pkgs.fish; # Omit or override if needed
+    package = pkgs.fish; # Omit or override if needed
   };
 }

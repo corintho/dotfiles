@@ -158,7 +158,7 @@ in {
               name = "${username}";
               uid = 501;
             }
-            (lib.mkIf lcars.shell.fish.enable { shell = lcars.shell.fish.pkg; })
+            (lib.mkIf lcars.shell.fish.enable { shell = lcars.shell.fish.package; })
           ];
         };
 
