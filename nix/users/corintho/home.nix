@@ -89,6 +89,9 @@ in {
     "org/gnome/desktop/peripherals/keyboard" = { numlock-state = true; };
     "org/gnome/settings-daemon/plugins/power" = {
       sleep-inactive-ac-type = "nothing";
+      sleep-inactive-ac-timeout = 0;
+      sleep-inactive-battery-type = "nothing";
+      sleep-inactive-battery-timeout = 0;
     };
   };
 
