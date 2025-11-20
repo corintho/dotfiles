@@ -11,7 +11,7 @@ default:
 [group('build')]
 [linux]
 deploy: && optimise
-  nixos-rebuild switch --flake ./nix --use-remote-sudo --impure
+  systemd-inhibit nixos-rebuild switch --flake ./nix --use-remote-sudo --impure
   @just workaround-waybar
 
 # Standard deploy with extended debug enabled
