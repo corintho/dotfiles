@@ -57,21 +57,21 @@ in {
     slurp
     # /Screen capturing
     # Freecad
-    unstable.freecad
+    freecad
     # /Freecad
     unstable.obsidian
     # Sweet home 3d
     unstable.sweethome3d.application
     unstable.sweethome3d.textures-editor
     unstable.sweethome3d.furniture-editor
-    # Music
-    unstable.musescore
     (writeShellApplication {
       name = "sweethome3d-fixed";
       text = ''
         JAVA_TOOL_OPTIONS="-Dcom.eteks.sweethome3d.j3d.useOffScreen3DView=true" ${unstable.sweethome3d.application}/bin/sweethome3d'';
     })
     # /Sweet home 3d
+    # Music
+    unstable.musescore
     # Custom scripts on path
     (writeShellApplication {
       name = "windows_junctions";
