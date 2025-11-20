@@ -15,6 +15,7 @@
           command = (if lcars.shell.fish.enable then "${lcars.shell.fish.package}/bin/fish" else "zsh");
           keybind = [
             # Free up some keys
+            "ctrl+shift+a=unbind"
             "ctrl+,=unbind"
             "alt+0=unbind"
             "alt+1=unbind"
