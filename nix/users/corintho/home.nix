@@ -123,18 +123,23 @@ in {
 
     git = {
       enable = true;
-      userName = "Corintho Assunção";
-      userEmail = "github@corintho.eu";
-      difftastic = {
-        enable = true;
-        enableAsDifftool = true;
-        display = "inline";
-        package = pkgs.unstable.difftastic;
-      };
-      extraConfig = {
+      settings = {
+        user = {
+          name = "Corintho Assunção";
+          email = "github@corintho.eu";
+        };
         difftool = { prompt = false; };
         pager = { difftool = true; };
       };
+    };
+
+    difftastic = {
+      enable = true;
+      options = {
+        enableAsDifftool = true;
+        display = "inline";
+      };
+      package = pkgs.unstable.difftastic;
     };
 
     kitty = {
@@ -161,7 +166,22 @@ in {
 
     ssh = {
       enable = true;
-      matchBlocks = { "*" = { setEnv = { TERM = "xterm-256color"; }; }; };
+      enableDefaultConfig = false;
+      matchBlocks = {
+        "*" = {
+          forwardAgent = false;
+          setEnv = { TERM = "xterm-256color"; };
+          serverAliveInterval = 0;
+          serverAliveCountMax = 3;
+          compression = false;
+          addKeysToAgent = "no";
+          hashKnownHosts = false;
+          userKnownHostsFile = "~/.ssh/known_hosts";
+          controlMaster = "no";
+          controlPath = "~/.ssh/master-%r@%n:%p";
+          controlPersist = null;
+        };
+      };
       includes = [ "home.conf" ];
     };
 
