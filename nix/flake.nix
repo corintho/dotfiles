@@ -3,26 +3,21 @@
 
   inputs = {
     # Base packages
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05?shallow=1";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable?shallow=1";
     home-manager = {
-      # url = "github:nix-community/home-manager/release-25.05?shallow=1";
       url = "github:nix-community/home-manager?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Global styling through stylix
     stylix = {
-      url = "github:nix-community/stylix/release-25.05?shallow=1";
+      url = "github:nix-community/stylix?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Custom pkgs for some modules
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable?shallow=1";
     # Darwin specific packages
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-25.05?shallow=1";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nix-darwin-linking = {
-      url = "github:nix-darwin/nix-darwin/pull/1396/head";
+      url = "github:nix-darwin/nix-darwin/master?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Enable homebrew management through nix
@@ -62,7 +57,10 @@
       # NOTE: if you experience a build failure with Zen, the first thing to check is to remove this line!
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    zjstatus = { url = "github:dj95/zjstatus?shallow=1"; };
+    zjstatus = {
+      url = "github:dj95/zjstatus/pull/200/head?shallow=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # Workaround for absolute path requirements
     paths.url = ./paths;
   };

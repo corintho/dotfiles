@@ -4,7 +4,7 @@ let fishModule = ../modules/home/fish.nix;
 in {
   imports = [
     ../modules/home/ghostty.nix
-    ../modules/home/gitui.nix
+    # ../modules/home/gitui.nix
     ../modules/home/helix.nix
     ../modules/home/neovim.nix
     ../modules/home/oh_my_posh.nix

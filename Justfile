@@ -64,6 +64,12 @@ list:
 deploy: && optimise
   sudo darwin-rebuild switch --flake ./nix --impure
 
+# Standard deploy with extended debug enabled
+[group('build')]
+[macos]
+verbose:
+  sudo darwin-rebuild switch --flake ./nix --impure --show-trace --verbose
+
 # Dry run. Makes it easy to catch errors without generating a new profile
 [group('build')]
 [macos]

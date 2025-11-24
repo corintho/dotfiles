@@ -22,9 +22,6 @@ in {
       ../options/default.nix
       ../features.nix
       ./jankyborders.nix
-      # Use application linking from main PR
-      { disabledModules = [ "system/applications.nix" ]; }
-      "${inputs.nix-darwin-linking}/modules/system/applications.nix"
       # overlays and modules
       {
         nixpkgs.overlays = [

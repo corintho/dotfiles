@@ -1,6 +1,5 @@
-{ config, pkgs, ... }:
-let inherit (config.lib.stylix) colors;
-in {
+{ pkgs, ... }:
+{
   services = {
     jankyborders = {
       enable = true;
@@ -8,8 +7,6 @@ in {
       hidpi = false;
       style = "round";
       width = 6.0;
-      active_color = "0xff${colors.base0D}";
-      inactive_color = "0xff${colors.base03}";
     };
   };
 
