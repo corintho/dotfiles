@@ -49,19 +49,25 @@ in {
     };
     git = {
       enable = true;
-      userName = "Corintho Assunção";
-      userEmail = "zg47ma@insim.biz";
-      difftastic = {
-        enable = true;
-        enableAsDifftool = true;
-        display = "inline";
-        package = pkgs.unstable.difftastic;
-      };
-      extraConfig = {
+      settings = {
+        user = {
+          name = "Corintho Assunção";
+          email = "zg47ma@insim.biz";
+        };
         difftool = { prompt = false; };
         pager = { difftool = true; };
       };
     };
+
+    difftastic = {
+      enable = true;
+      options = {
+        enableAsDifftool = true;
+        display = "inline";
+      };
+      package = pkgs.unstable.difftastic;
+    };
+
     zsh = {
       enable = true;
       autocd = true;
