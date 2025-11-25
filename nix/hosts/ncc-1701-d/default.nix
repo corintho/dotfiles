@@ -48,12 +48,12 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.displayManager.gdm.autoSuspend = false;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.desktopManager.gnome.enable = true;
 
-  # Enable Hyprland
-  services.xserver.displayManager.gdm.wayland = true;
+  # Setup GDM 
+  services.displayManager.gdm.enable = true;
+  services.displayManager.gdm.autoSuspend = false;
+  services.displayManager.gdm.wayland = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
