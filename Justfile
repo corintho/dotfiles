@@ -11,14 +11,14 @@ default:
 [group('build')]
 [linux]
 deploy: && optimise
-  systemd-inhibit nixos-rebuild switch --flake ./nix --use-remote-sudo --impure
+  systemd-inhibit nixos-rebuild --sudo switch --flake ./nix --impure
   @just workaround-waybar
 
 # Standard deploy with extended debug enabled
 [group('build')]
 [linux]
 verbose:
-  nixos-rebuild switch --flake ./nix --use-remote-sudo --show-trace --verbose
+  nixos-rebuild --sudo switch --flake ./nix --show-trace --verbose
 
 #TODO: Only needed for waybar because of a bug
 [private]
