@@ -17,6 +17,7 @@ in {
     # ../../modules/home/qtile.nix
     ../../modules/home/rofi.nix
     ../../modules/home/waybar.nix
+    ../../modules/home/zed.nix
     ../../modules/home/zellij.nix
   ] ++ (lib.optional lcars.shell.fish.enable fishModule);
   home.packages = with pkgs; [
