@@ -70,7 +70,9 @@ rec {
   unpack_flutter = pkgs.writeShellApplication {
     name = "unpack_flutter";
     runtimeInputs = with pkgs; [
+      git
       unzip
+      which
     ];
 
     text = ''

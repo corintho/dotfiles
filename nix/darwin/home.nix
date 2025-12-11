@@ -45,6 +45,7 @@ in
 
   home.sessionVariables = {
     EDITOR = "hx";
+    PATH = "${local_flutter_path}/flutter/bin:$PATH";
   };
 
   home.activation = {

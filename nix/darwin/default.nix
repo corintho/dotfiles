@@ -72,9 +72,6 @@ in
         }:
         {
           system.primaryUser = username;
-          environment.variables = {
-            PATH = "${local_flutter_path}/flutter/bin:$PATH";
-          };
           environment.systemPackages = with pkgs; [
             comma
             unstable.devenv
