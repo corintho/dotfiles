@@ -71,7 +71,11 @@ in
     };
     git = {
       enable = true;
+      lfs.enable = true;
       settings = {
+        init = {
+          defaultBranch = "main";
+        };
         user = {
           name = "Corintho Assunção";
           email = "zg47ma@insim.biz";
