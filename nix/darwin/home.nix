@@ -17,7 +17,7 @@ in
     ../modules/home/helix.nix
     ../modules/home/neovim.nix
     ../modules/home/oh_my_posh.nix
-    ../modules/home/zed.nix
+    # ../modules/home/zed.nix
     ../modules/home/zellij.nix
     ../modules/home/darwin
   ]
