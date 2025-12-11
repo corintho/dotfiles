@@ -134,7 +134,7 @@ update-commit:
 
 # Update flake lock file, commit changes and redeploy
 [group('maintenance')]
-update: check-git-status up update-commit deploy
+update: check-git-status up update-commit deploy update-comma
 
 # Update comma index information
 [group('maintenance')]
