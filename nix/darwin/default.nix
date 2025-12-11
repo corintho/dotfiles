@@ -33,6 +33,8 @@ let
       username
       rootPath
       paths
+      local_flutter_path
+      flutter-local
       ;
     libFiles = "${rootPath}/lib";
     lcars = lcarsConfig.lcars;
@@ -70,15 +72,6 @@ in
         }:
         {
           system.primaryUser = username;
-          system.activationScripts = { postActivation = {
-              text = ''
-                sudo -u ${username} -H sh -c 'mkdir -p ${local_flutter_path}'
-                # installs flutter locally, if not there already
-                sudo -u ${username} -H "${flutter-local.unpack_flutter}/bin/unpack_flutter"
-              '';
-            };
-          }
-          ;
           environment.variables = {
             PATH = "${local_flutter_path}/flutter/bin:$PATH";
           };

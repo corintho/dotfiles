@@ -1,7 +1,16 @@
-{ lcars, lib, pkgs, ... }:
+{
+  lcars,
+  lib,
+  pkgs,
+  local_flutter_path,
+  flutter-local,
+  ...
+}:
 
-let fishModule = ../modules/home/fish.nix;
-in {
+let
+  fishModule = ../modules/home/fish.nix;
+in
+{
   imports = [
     ../modules/home/ghostty.nix
     # ../modules/home/gitui.nix
@@ -11,7 +20,8 @@ in {
     ../modules/home/zed.nix
     ../modules/home/zellij.nix
     ../modules/home/darwin
-  ] ++ (lib.optional lcars.shell.fish.enable fishModule);
+  ]
+  ++ (lib.optional lcars.shell.fish.enable fishModule);
   home.stateVersion = "24.11"; # Please read the comment before changing.
   # The home.packages option allows you to install Nix packages into your
   # environment.
@@ -33,11 +43,22 @@ in {
     unstable.lazygit
   ];
 
-  home.sessionVariables = { EDITOR = "hx"; };
+  home.sessionVariables = {
+    EDITOR = "hx";
+  };
 
+  home.activation = {
+    installFlutter = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run mkdir -p ${local_flutter_path}
+      # installs flutter locally, if not there already
+      run "${flutter-local.unpack_flutter}/bin/unpack_flutter"
+    '';
+  };
   # Setup programs options
   programs = {
-    bash = { enable = true; };
+    bash = {
+      enable = true;
+    };
     direnv = {
       enable = true;
       nix-direnv.enable = true;
@@ -55,8 +76,12 @@ in {
           name = "Corintho Assunção";
           email = "zg47ma@insim.biz";
         };
-        difftool = { prompt = false; };
-        pager = { difftool = true; };
+        difftool = {
+          prompt = false;
+        };
+        pager = {
+          difftool = true;
+        };
       };
     };
 
@@ -86,9 +111,15 @@ in {
         highlighters = [ "brackets" ];
       };
     };
-    fzf = { enable = true; };
-    ripgrep = { enable = true; };
-    zoxide = { enable = true; };
+    fzf = {
+      enable = true;
+    };
+    ripgrep = {
+      enable = true;
+    };
+    zoxide = {
+      enable = true;
+    };
     yazi = {
       enable = true;
       settings = {

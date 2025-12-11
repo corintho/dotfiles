@@ -1,4 +1,15 @@
-{ self, inputs, nixpkgs, nixpkgs-unstable, home-manager, secrets, paths, ... }:
+{
+  self,
+  inputs,
+  nixpkgs,
+  nixpkgs-unstable,
+  home-manager,
+  secrets,
+  paths,
+  local_flutter_path,
+  flutter-local,
+  ...
+}:
 
 let
   system = "x86_64-linux";
@@ -9,12 +20,23 @@ let
   lcarsConfig = import ../features.nix { inherit pkgs; };
   # Passes these parameters to other nix modules
   specialArgs = {
-    inherit self inputs username nixPath rootPath secrets paths;
+    inherit
+      self
+      inputs
+      username
+      nixPath
+      rootPath
+      secrets
+      paths
+      local_flutter_path
+      flutter-local
+      ;
     files = "${rootPath}/files";
     libFiles = "${rootPath}/lib";
     lcars = lcarsConfig.lcars;
   };
-in {
+in
+{
   ncc-1701-d = nixpkgs.lib.nixosSystem {
     inherit specialArgs;
 
@@ -22,8 +44,7 @@ in {
       {
         nixpkgs.overlays = [
           (final: _prev: {
-            unstable =
-              import nixpkgs-unstable { inherit (final) system config; };
+            unstable = import nixpkgs-unstable { inherit (final) system config; };
           })
           (_final: prev: {
             zjstatus = inputs.zjstatus.packages.${prev.system}.default;
@@ -32,19 +53,16 @@ in {
           (final: prev: {
             pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
               (python-final: python-prev: {
-                rapidocr-onnxruntime =
-                  python-prev.rapidocr-onnxruntime.overridePythonAttrs
-                  (oldAttrs: rec {
-                    version = "2.1.0";
-                    src = prev.fetchFromGitHub {
-                      owner = "RapidAI";
-                      repo = "RapidOCR";
-                      tag = "v${version}";
-                      hash =
-                        "sha256-4R2rOCfnhElII0+a5hnvbn+kKQLEtH1jBvfFdxpLEBk=";
-                    };
-                    doCheck = false;
-                  });
+                rapidocr-onnxruntime = python-prev.rapidocr-onnxruntime.overridePythonAttrs (oldAttrs: rec {
+                  version = "2.1.0";
+                  src = prev.fetchFromGitHub {
+                    owner = "RapidAI";
+                    repo = "RapidOCR";
+                    tag = "v${version}";
+                    hash = "sha256-4R2rOCfnhElII0+a5hnvbn+kKQLEtH1jBvfFdxpLEBk=";
+                  };
+                  doCheck = false;
+                });
               })
             ];
           })
@@ -62,8 +80,7 @@ in {
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.users.${username} =
-          import "${nixPath}/users/${username}/home.nix";
+        home-manager.users.${username} = import "${nixPath}/users/${username}/home.nix";
 
         # Optionally, use home-manager.extraSpecialArgs to pass
         # arguments to home.nix
