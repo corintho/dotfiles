@@ -57,7 +57,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     zjstatus = {
-      url = "github:dj95/zjstatus/pull/200/head?shallow=1";
+      url = "github:dj95/zjstatus/?shallow=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Workaround for absolute path requirements
