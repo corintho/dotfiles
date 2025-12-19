@@ -13,6 +13,11 @@ in {
         source = ./zellij/layouts;
         recursive = true;
       };
+      "zellij/plugins/zjstatus.wasm".source = pkgs.fetchurl {
+        url =
+          "https://github.com/dj95/zjstatus/releases/download/v0.22.0/zjstatus.wasm";
+        sha256 = "sha256-TeQm0gscv4YScuknrutbSdksF/Diu50XP4W/fwFU3VM=";
+      };
       "zellij/plugins/zjstatus-hints.wasm".source = pkgs.fetchurl {
         url =
           "https://github.com/b0o/zjstatus-hints/releases/download/v0.1.4/zjstatus-hints.wasm";
@@ -59,7 +64,7 @@ in {
               zellij_forgot location="file:~/.config/zellij/plugins/zellij_forgot.wasm" {
 
               }
-              zjstatus location="file://${pkgs.zjstatus}/bin/zjstatus.wasm" {
+              zjstatus location="file:~/.config/zellij/plugins/zjstatus.wasm" {
                       color_bg "${colors.base03}"
 
                       format_left   "{mode}#[bg=#${colors.base00}] {tabs}"

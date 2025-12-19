@@ -46,9 +46,6 @@ in
           (final: _prev: {
             unstable = import nixpkgs-unstable { inherit (final) system config; };
           })
-          (_final: prev: {
-            zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-          })
           # Override for open-webui dependency
           (final: prev: {
             pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
