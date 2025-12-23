@@ -109,6 +109,10 @@ repl:
 up:
   nix flake update --flake ./nix 
 
+# Update flake lock file, fixing unstable to the specified commit. Remember to redeploy. Look at: https://status.nixos.org/ for the current build status
+[group('maintenance')]
+up-unstable-to hash:
+  nix flake lock --update-input nixpkgs-unstable --override-input nixpkgs-unstable github:nixos/nixpkgs/{{hash}}?shallow=1 ./nix
 # Update secrets. Remember to redeploy
 [group('maintenance')]
 up-secrets:
