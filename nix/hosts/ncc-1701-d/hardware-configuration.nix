@@ -124,6 +124,9 @@ in {
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
+  # Enable QMK patching
+  hardware.keyboard.qmk.enable = true;
+
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
