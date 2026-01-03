@@ -36,7 +36,7 @@ check:
 [linux]
 sanitize:
   #!/usr/bin/env bash
-  DIRTY_GENS="$(just list |  grep '[0-9]' | grep --invert-match 'current' | grep 'dirty' | awk '{ print $1; }' | tr '\n' ' ')"
+  DIRTY_GENS="$(just list |  grep '[0-9]' | grep --invert-match 'True$' | grep 'dirty' | awk '{ print $1; }' | tr '\n' ' ')"
   if [ -z "${DIRTY_GENS}" ];
   then echo "No dirty generations to clean up";
   else
