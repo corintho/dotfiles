@@ -43,7 +43,7 @@ in {
     # AI
     unstable.alpaca
     unstable.ollama
-    unstable.oterm
+    # unstable.oterm
     # Terminal tools
     fd
     bat
