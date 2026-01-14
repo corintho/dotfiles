@@ -40,6 +40,13 @@ in {
     # Gaming
     prismlauncher
     unstable.discord
+    # 3D printing
+    orca-slicer
+    (writeShellApplication {
+      name = "orca-slicer-fixed";
+      text = ''
+        GBM_BACKEND=dri ${orca-slicer}/bin/orca-slicer'';
+    })
     # AI
     unstable.alpaca
     unstable.ollama
