@@ -54,7 +54,7 @@ in
     orca-slicer
     (writeShellApplication {
       name = "orca-slicer-fixed";
-      text = ''GBM_BACKEND=dri ${orca-slicer}/bin/orca-slicer'';
+      text = ''GBM_BACKEND=dri ${orca-slicer}/bin/orca-slicer "$@"'';
     })
     # AI
     unstable.alpaca
@@ -77,7 +77,7 @@ in
     freecad
     (writeShellApplication {
       name = "freecad-fixed";
-      text = ''QT_QPA_PLATFORM=xcb command ${freecad}/bin/freecad'';
+      text = ''QT_QPA_PLATFORM=xcb command ${freecad}/bin/freecad "$@"'';
     })
     # /Freecad
     unstable.obsidian
@@ -87,7 +87,7 @@ in
     unstable.sweethome3d.furniture-editor
     (writeShellApplication {
       name = "sweethome3d-fixed";
-      text = ''JAVA_TOOL_OPTIONS="-Dcom.eteks.sweethome3d.j3d.useOffScreen3DView=true" ${unstable.sweethome3d.application}/bin/sweethome3d'';
+      text = ''JAVA_TOOL_OPTIONS="-Dcom.eteks.sweethome3d.j3d.useOffScreen3DView=true" ${unstable.sweethome3d.application}/bin/sweethome3d "$@"'';
     })
     # /Sweet home 3d
     # Music
@@ -99,6 +99,39 @@ in
     })
     # /Custom scripts on path
   ];
+
+  # Custom launcher for "fixed" apps
+  xdg.desktopEntries = {
+    orca-slicer = {
+      type = "Application";
+      name = "Orca-slicer (fixed)";
+      exec = "orca-slicer-fixed %U";
+      icon = "OrcaSlicer";
+      categories = [ "Utility" ];
+      mimeType = [
+        "model/stl"
+        "model/3mf"
+        "application/vnd.ms-3mfdocument"
+        "application/prs.wavefront-obj"
+        "application/x-amf"
+        "x-scheme-handler/orcaslicer"
+      ];
+    };
+    freecad = {
+      type = "Application";
+      name = "Freecad (fixed)";
+      exec = "freecad-fixed";
+      icon = "freecad";
+      categories = [ "Utility" ];
+    };
+    sweethome-3d = {
+      type = "Application";
+      name = "Sweethome-3d (fixed)";
+      exec = "sweethome3d-fixed";
+      icon = "sweethome3d";
+      categories = [ "Utility" ];
+    };
+  };
 
   home.sessionVariables = {
     EDITOR = "hx";
