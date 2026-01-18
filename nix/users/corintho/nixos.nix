@@ -50,8 +50,6 @@ in {
     gitskip = "git update-index --skip-worktree";
     gitunskip = "git update-index --no-skip-worktree";
     ",," = ", -d ";
-    #TODO: Remove this when freecad support wayland better
-    freecad = "QT_QPA_PLATFORM=xcb command freecad";
   };
 
   programs = {
