@@ -9,6 +9,7 @@
 
 let
   fishModule = ../../modules/home/fish.nix;
+  orcaApp = pkgs.callPackage ../../modules/orca-slicer.nix {};
 in
 {
   imports = [
@@ -51,11 +52,7 @@ in
     prismlauncher
     unstable.discord
     # 3D printing
-    orca-slicer
-    (writeShellApplication {
-      name = "orca-slicer-fixed";
-      text = ''GBM_BACKEND=dri ${orca-slicer}/bin/orca-slicer "$@"'';
-    })
+    orcaApp
     # AI
     unstable.alpaca
     unstable.ollama
@@ -102,21 +99,6 @@ in
 
   # Custom launcher for "fixed" apps
   xdg.desktopEntries = {
-    orca-slicer = {
-      type = "Application";
-      name = "Orca-slicer (fixed)";
-      exec = "orca-slicer-fixed %U";
-      icon = "OrcaSlicer";
-      categories = [ "Utility" ];
-      mimeType = [
-        "model/stl"
-        "model/3mf"
-        "application/vnd.ms-3mfdocument"
-        "application/prs.wavefront-obj"
-        "application/x-amf"
-        "x-scheme-handler/orcaslicer"
-      ];
-    };
     freecad = {
       type = "Application";
       name = "Freecad (fixed)";
