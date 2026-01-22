@@ -135,7 +135,7 @@ in {
           }
 
           // Our custom theme
-          theme "lcars"
+          // theme "lcars"
         '']
           ++ (lib.optional (lcars.shell.fish.enable) ''default_shell "fish"''));
     };

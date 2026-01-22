@@ -5,7 +5,8 @@
         enable = true;
         package = pkgs.unstable.helix;
         settings = lib.mkForce {
-          theme = "lcars";
+          # theme = "lcars";
+          theme = "stylix";
           editor = {
             # Editor appearance
             line-number = "relative";

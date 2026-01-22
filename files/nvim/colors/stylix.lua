@@ -2,26 +2,26 @@
 require('mini.base16').setup({
   use_cterm = true,
   palette = {
-    base00 = '#0e121b',
-    base01 = '#232a3b',
-    base02 = '#203554',
-    base03 = '#a2a2b9',
-    base04 = '#848ab9',
-    base05 = '#ccdeff',
-    base06 = '#f5f6fa',
-    base07 = '#88bbff',
-    base08 = '#ff2200',
-    base09 = '#ff8800',
-    base0A = '#ffaa00',
-    base0B = '#00b844',
-    base0C = '#88ccff',
-    base0D = '#2255ff',
-    base0E = '#ff8800',
-    base0F = '#cc2233'
+    base00 = '#1d2021',
+    base01 = '#3c3836',
+    base02 = '#504945',
+    base03 = '#665c54',
+    base04 = '#bdae93',
+    base05 = '#d5c4a1',
+    base06 = '#ebdbb2',
+    base07 = '#fbf1c7',
+    base08 = '#fb4934',
+    base09 = '#fe8019',
+    base0A = '#fabd2f',
+    base0B = '#b8bb26',
+    base0C = '#8ec07c',
+    base0D = '#83a598',
+    base0E = '#fe8019',
+    base0F = '#d65d0e'
   }
 })
 
 -- Set overrides for hl groups
 -- Using the command for this one, so we can just change the existing one, instead of replacing it
-vim.cmd "highlight NeogitDiffDeleteCursor guifg='#ff2200' gui=bold"
+vim.cmd "highlight NeogitDiffDeleteCursor guifg='#fb4934' gui=bold"
 
