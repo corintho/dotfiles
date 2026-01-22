@@ -10,6 +10,7 @@
 let
   fishModule = ../../modules/home/fish.nix;
   orcaApp = pkgs.callPackage ../../modules/orca-slicer.nix {};
+  freecadRCApp = pkgs.callPackage ../../modules/freecad-rc.nix {};
 in
 {
   imports = [
@@ -71,11 +72,12 @@ in
     slurp
     # /Screen capturing
     # Freecad
-    freecad
-    (writeShellApplication {
-      name = "freecad-fixed";
-      text = ''QT_QPA_PLATFORM=xcb command ${freecad}/bin/freecad "$@"'';
-    })
+    freecadRCApp
+    # freecad
+    # (writeShellApplication {
+    #   name = "freecad-fixed";
+    #   text = ''QT_QPA_PLATFORM=xcb command ${freecad}/bin/freecad "$@"'';
+    # })
     # /Freecad
     unstable.obsidian
     # Sweet home 3d
@@ -99,13 +101,13 @@ in
 
   # Custom launcher for "fixed" apps
   xdg.desktopEntries = {
-    freecad = {
-      type = "Application";
-      name = "Freecad (fixed)";
-      exec = "freecad-fixed";
-      icon = "freecad";
-      categories = [ "Utility" ];
-    };
+    # freecad = {
+    #   type = "Application";
+    #   name = "Freecad (fixed)";
+    #   exec = "freecad-fixed";
+    #   icon = "freecad";
+    #   categories = [ "Utility" ];
+    # };
     sweethome-3d = {
       type = "Application";
       name = "Sweethome-3d (fixed)";
