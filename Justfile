@@ -90,6 +90,7 @@ update-brew:
   nix flake update homebrew-cask --flake ./nix 
   nix flake update homebrew-core --flake ./nix 
   nix flake update homebrew-xcodesorg --flake ./nix 
+  brew update
 
 # All steps for full sanitization - as far as Darwin allows
 [group('cleanup')]
