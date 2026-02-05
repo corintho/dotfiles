@@ -98,6 +98,7 @@ in
               "mas"
               "xcodes"
               "aria2"
+              "copilot-cli"
             ];
             casks = [
               "bazecor"
