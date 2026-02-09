@@ -98,10 +98,10 @@ in
               "mas"
               "xcodes"
               "aria2"
-              "copilot-cli"
             ];
             casks = [
               "bazecor"
+              "copilot-cli"
               "homerow"
               "ghostty"
               "git-credential-manager"
