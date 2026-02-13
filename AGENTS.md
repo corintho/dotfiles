@@ -13,7 +13,7 @@ This document provides guidelines for AI coding agents operating in the dotfiles
 
 ## Build/Lint/Test Commands
 
-### Dry Run (Safe Check)
+### Dry Run Validation
 ```bash
 # NixOS - check configuration without applying changes
 just check
@@ -52,13 +52,19 @@ just update
 just sanitize-all
 ```
 
-### Validation
+### Validation Commands
 ```bash
 # Check if git status is clean before deploying
 git status
 
 # Test flake integrity
 nix flake check ./nix
+```
+
+### Formatting Validation
+```bash
+# Check Nix code formatting without modifying files
+nix fmt --check
 ```
 
 ## Code Style Guidelines
@@ -70,7 +76,7 @@ nix flake check ./nix
 - Keep lines reasonably short (80-100 characters)
 - Use `nixfmt` or `nix fmt` for automatic formatting
 
-**File Organization**:
+**File Organization and Structure**:
 ```nix
 {
   config,
@@ -78,6 +84,7 @@ nix flake check ./nix
   pkgs,
   inputs,
   ...
+  # Add any custom inputs here
 }:
 
 let
@@ -155,6 +162,10 @@ in
 - Document complex logic
 - Add headers for major sections
 
+## Testing Tools
+
+- `nix-tree`: Shows searchable dependency tree (run with `just tree`)
+
 ## Git Conventions
 
 ### Commit Messages
@@ -166,6 +177,8 @@ Follow Conventional Commit format:
 [optional body explaining what and why]
 [optional footers]
 ```
+
+**Important**: Keep commit messages to a single line unless it's a breaking change. Only include a body/explanation for breaking changes.
 
 **Types**:
 - `feat`: New feature or configuration
@@ -181,24 +194,30 @@ Follow Conventional Commit format:
 - `nixos`: NixOS-specific changes
 - `darwin`: macOS-specific changes
 - `shell`: Shell/bash scripts
+- `test`: Test files and test infrastructure
 - `deps`: Dependency updates
 
 ### Workflow
 
 1. Always ensure git status is clean before deploying
 2. Commit changes with meaningful messages
-3. Run `just check` before committing system changes
-4. Push changes after local testing
+3. Confirm all commits before proceeding to next steps
+4. Run `just check` before committing system changes
+5. Run `nix fmt --check` to validate formatting
+6. Push changes after local testing
 
 ## File Locations & Organization
 
 ```
 nix/
 ├── flake.nix                 # Main flake configuration
+├── devenv.nix                # Development environment configuration
 ├── features.nix              # Feature flags
 ├── modules/                  # Reusable modules
 │   ├── home/                 # Home-manager modules
 │   └── nixos/                # NixOS modules
+├── hosts/                    # System-specific configurations
+├── options/                  # Nix option definitions
 ├── users/
 │   └── corintho/             # User-specific configs
 │       ├── home.nix          # Home configuration
@@ -215,6 +234,7 @@ files/                        # Configuration files to deploy
 - **home-manager**: User-level configuration management
 - **agenix**: Encrypted secrets management
 - **stylix**: System-wide color/styling theme
+- **nix-tree**: Dependency tree visualization
 - **nixpkgs**: Official Nix packages repository
 - **nix-darwin**: macOS configuration framework
 - **nix-homebrew**: Homebrew integration for macOS
@@ -225,7 +245,8 @@ Before making changes:
 1. Run `just check` for dry-run validation
 2. Verify changes don't break imports
 3. Test configuration compiles with `nix flake check ./nix`
-4. Ensure git status is clean
+4. Run `nix fmt --check` to validate formatting
+5. Ensure git status is clean
 
 ## Additional Resources
 
@@ -233,3 +254,10 @@ Before making changes:
 - See `Justfile` for task definitions
 - See `nix/README.md` for Nix-specific documentation
 - See `README.md` for general project documentation
+
+## Quick Reference: Validation Commands
+
+- `just check`: Platform-specific dry-run (NixOS/macOS)
+- `nix fmt --check`: Nix code formatting validation
+- `nix flake check ./nix`: Flake integrity check
+- `just tree`: View dependency tree
