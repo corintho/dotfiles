@@ -98,6 +98,18 @@ in
       };
       package = pkgs.unstable.difftastic;
     };
+    opencode = {
+      enable = true;
+      package = pkgs.unstable.opencode;
+      settings = {
+        enabled_providers = [
+          "github-copilot"
+          "ollama"
+          "lm-studio"
+          "llamacpp"
+        ];
+      };
+    };
 
     zsh = {
       enable = true;
