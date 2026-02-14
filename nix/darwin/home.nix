@@ -66,7 +66,7 @@ in {
         init = { defaultBranch = "main"; };
         user = {
           name = "Corintho Assunção";
-          email = "zg47ma@insim.biz";
+          email = "${builtins.getEnv "USER"}@insim.biz";
         };
         difftool = { prompt = false; };
         pager = { difftool = true; };

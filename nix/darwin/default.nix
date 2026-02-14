@@ -18,7 +18,14 @@
 
 let
   system = "aarch64-darwin";
-  username = "zg47ma";
+  username =
+    let
+      envUser = builtins.getEnv "USER";
+    in
+    if envUser == "" then
+      builtins.abort "ERROR: USER environment variable not set. Cannot determine username for Darwin configuration."
+    else
+      envUser;
   rootPath = paths.rootPath;
   nixPath = "${rootPath}/nix";
   files = "${rootPath}/files";
@@ -193,7 +200,9 @@ in
                 name = "${username}";
                 uid = 501;
               }
-              (lib.mkIf lcars.shell.fish.enable { shell = lcars.shell.fish.package; })
+              (lib.mkIf lcars.shell.fish.enable {
+                shell = lcars.shell.fish.package;
+              })
             ];
           };
 
