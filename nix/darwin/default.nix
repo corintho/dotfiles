@@ -20,12 +20,15 @@ let
   system = "aarch64-darwin";
   username =
     let
+      sudoUser = builtins.getEnv "SUDO_USER";
       envUser = builtins.getEnv "USER";
     in
-    if envUser == "" then
-      builtins.abort "ERROR: USER environment variable not set. Cannot determine username for Darwin configuration."
+    if sudoUser != "" then
+      sudoUser
+    else if envUser != "" then
+      envUser
     else
-      envUser;
+      builtins.abort "ERROR: Cannot determine username. Neither SUDO_USER nor USER environment variable is set.";
   rootPath = paths.rootPath;
   nixPath = "${rootPath}/nix";
   files = "${rootPath}/files";
