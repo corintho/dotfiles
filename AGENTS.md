@@ -173,12 +173,19 @@ in
 Follow Conventional Commit format:
 ```
 <type>(<scope>): <description>
-
-[optional body explaining what and why]
-[optional footers]
 ```
 
-**Important**: Keep commit messages to a single line unless it's a breaking change. Only include a body/explanation for breaking changes.
+**IMPORTANT**: 
+- Commit messages MUST be a single line
+- Do NOT include a body or additional lines
+- **Exception**: Breaking changes may include a body explaining the breaking change and migration path
+
+Breaking change format (rare):
+```
+<type>(<scope>)!: <description>
+
+BREAKING CHANGE: Explanation of what breaks and how to migrate
+```
 
 **Types**:
 - `feat`: New feature or configuration
