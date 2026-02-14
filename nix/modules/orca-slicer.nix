@@ -1,16 +1,11 @@
-{
-  appimageTools,
-  fetchurl,
-  lib,
-  writeText,
-  ...
-}:
+{ appimageTools, fetchurl, lib, writeText, ... }:
 let
   pname = "OrcaSlicer";
   version = "2.3.1";
 
   src = fetchurl {
-    url = "https://github.com/OrcaSlicer/OrcaSlicer/releases/download/v${version}/OrcaSlicer_Linux_AppImage_Ubuntu2404_V${version}.AppImage";
+    url =
+      "https://github.com/OrcaSlicer/OrcaSlicer/releases/download/v${version}/OrcaSlicer_Linux_AppImage_Ubuntu2404_V${version}.AppImage";
     hash = "sha256-8ZnlQIkU79u7+k/WdSzWrUcnIJtIi8R7/5oNpfBTpwE=";
   };
   appimageContents = appimageTools.extractType1 { inherit pname version src; };
@@ -25,8 +20,7 @@ let
     Type=Application
     Version=1.5
   '';
-in
-appimageTools.wrapType2 {
+in appimageTools.wrapType2 {
   inherit pname version src;
   # pkgs = pkgs;
   extraInstallCommands = ''
@@ -35,10 +29,7 @@ appimageTools.wrapType2 {
     cp -r ${appimageContents}/usr/share/icons $out/share
   '';
 
-  extraPkgs =
-    pkgs: with pkgs; [
-      webkitgtk_4_1
-    ];
+  extraPkgs = pkgs: with pkgs; [ webkitgtk_4_1 ];
 
   meta = {
     description = "Orca slicer";
