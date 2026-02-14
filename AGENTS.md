@@ -206,12 +206,27 @@ BREAKING CHANGE: Explanation of what breaks and how to migrate
 
 ### Workflow
 
-1. Always ensure git status is clean before deploying
-2. Commit changes with meaningful messages
-3. Confirm all commits before proceeding to next steps
-4. Run `just check` before committing system changes
-5. Run `nix fmt --check` to validate formatting
-6. Push changes after local testing
+**IMPORTANT**: AI agents must ALWAYS ask for explicit permission before committing or pushing changes.
+
+#### Making Changes
+1. Make file changes as requested
+2. Run `just check` to validate system changes
+3. Run `nix fmt --check` to validate formatting (or run `nixfmt` to fix)
+4. Show git diff/status to demonstrate what changed
+
+#### Committing Changes
+5. **Draft a commit message** following the conventional commit format
+6. **Show the commit message to the user** and ask for approval
+7. **Wait for explicit confirmation** before running `git commit`
+8. Only commit after receiving user approval
+
+#### Pushing Changes
+9. **NEVER push automatically** - always ask first
+10. **Wait for explicit "yes" or "push it"** confirmation
+11. Only run `git push` after receiving clear permission
+12. Always ensure git status is clean before deploying
+
+**Exception**: If the user explicitly asks you to "commit and push" in a single request, you may do both, but still show what you're committing first.
 
 ## File Locations & Organization
 
