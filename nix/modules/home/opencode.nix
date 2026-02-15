@@ -3,7 +3,7 @@
     enable = true;
     package = pkgs.unstable.opencode;
     settings = {
-      enabled_providers = [ "github-copilot" "openrouter" "ollama" "lm-studio" "llamacpp" ];
+      enabled_providers = [ "github-copilot" "opencode" "ollama" "lm-studio" "llamacpp" ];
       provider = {
         ollama = {
           npm = "@ai-sdk/openai-compatible";
