@@ -40,6 +40,7 @@ in {
     p7zip
     file-roller
     libreoffice
+    kdePackages.okular
     unstable.lazygit
     # Gaming
     prismlauncher
