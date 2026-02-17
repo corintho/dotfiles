@@ -15,7 +15,7 @@ let
     Exec=OrcaSlicer %U
     Icon=OrcaSlicer
     MimeType=model/stl;model/3mf;application/vnd.ms-3mfdocument;application/prs.wavefront-obj;application/x-amf;x-scheme-handler/orcaslicer
-    Name=OrcaSlicer
+    Name=OrcaSlicer-AppImage
     Terminal=false
     Type=Application
     Version=1.5
@@ -25,7 +25,7 @@ in appimageTools.wrapType2 {
   # pkgs = pkgs;
   extraInstallCommands = ''
       mkdir -p $out/share/applications
-      ln -s ${orcaslicer-launcher-desktop} $out/share/applications/OrcaSlicer.desktop
+      ln -s ${orcaslicer-launcher-desktop} $out/share/applications/OrcaSlicer-AppImage.desktop
     cp -r ${appimageContents}/usr/share/icons $out/share
   '';
 
