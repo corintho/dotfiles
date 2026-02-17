@@ -1,14 +1,16 @@
 { appimageTools, fetchurl, lib, writeText, ... }:
 let
   pname = "OrcaSlicer";
-  version = "2.3.1";
+  version = "2.3.2-beta2";
 
   src = fetchurl {
     url =
       "https://github.com/OrcaSlicer/OrcaSlicer/releases/download/v${version}/OrcaSlicer_Linux_AppImage_Ubuntu2404_V${version}.AppImage";
-    hash = "sha256-8ZnlQIkU79u7+k/WdSzWrUcnIJtIi8R7/5oNpfBTpwE=";
+    hash = "sha256-8IDF6NOzGW0RNO5duprCFNuVoItjv/xSrRILmw0yjZ4=";
   };
+
   appimageContents = appimageTools.extractType1 { inherit pname version src; };
+
   orcaslicer-launcher-desktop = writeText "orcaslicer-launcher.desktop" ''
     [Desktop Entry]
     Categories=Utility
@@ -22,10 +24,10 @@ let
   '';
 in appimageTools.wrapType2 {
   inherit pname version src;
-  # pkgs = pkgs;
+
   extraInstallCommands = ''
-      mkdir -p $out/share/applications
-      ln -s ${orcaslicer-launcher-desktop} $out/share/applications/OrcaSlicer-AppImage.desktop
+    mkdir -p $out/share/applications
+    ln -s ${orcaslicer-launcher-desktop} $out/share/applications/OrcaSlicer-AppImage.desktop
     cp -r ${appimageContents}/usr/share/icons $out/share
   '';
 

@@ -47,7 +47,6 @@ in {
     unstable.discord
     # 3D printing
     orcaApp
-    unstable.orca-slicer
     # AI
     unstable.alpaca
     unstable.ollama
