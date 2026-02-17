@@ -31,6 +31,8 @@ just deploy
 just deploy
 ```
 
+**⚠️ IMPORTANT**: AI agents must **NEVER** call `just deploy` as it requires interactive sudo authentication. Only call `just check` for validation. The user must manually run `just deploy` when ready.
+
 ### With Verbose Output
 ```bash
 # NixOS - deploy with debug trace information
