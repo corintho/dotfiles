@@ -25,6 +25,8 @@ let
 in appimageTools.wrapType2 {
   inherit pname version src;
 
+  extraBwrapArgs = [ "--setenv GTK_THEME Adwaita:dark" ];
+
   extraInstallCommands = ''
     mkdir -p $out/share/applications
     ln -s ${orcaslicer-launcher-desktop} $out/share/applications/OrcaSlicer-AppImage.desktop
