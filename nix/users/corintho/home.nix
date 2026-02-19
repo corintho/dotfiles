@@ -220,6 +220,8 @@ in {
 
     swaylock = { enable = true; };
 
+    vicinae = { enable = true; };
+
     yazi = {
       enable = true;
       settings = {
