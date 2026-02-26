@@ -74,7 +74,7 @@ in {
                       format_right  "#[bg=#${colors.base00},fg=#${colors.base0D}]#[bg=#${colors.base0D},fg=#${colors.base01},bold] #[bg=#${colors.base02},fg=#${colors.base05},bold] {session}#[bg=#${colors.base00},fg=#${colors.base02},bold]"
                       format_space  ""
                       format_hide_on_overlength "true"
-                      format_precedence "rlc"
+                      format_precedence "rcl"
 
                       border_enabled  "false"
                       border_char     "─"

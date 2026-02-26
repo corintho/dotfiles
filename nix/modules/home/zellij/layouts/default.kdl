@@ -5,8 +5,8 @@ layout {
       }
       children
   }
-  tab {
-    pane split_direction="vertical" {
+  tab name="main" {
+    pane split_direction="vertical" focus=true {
       pane command="hx" {
         args "."
       }
@@ -15,5 +15,8 @@ layout {
         pane
       }
     }
+  }
+  tab name="agent" {
+    pane command="opencode" start_suspended=true
   }
 }
