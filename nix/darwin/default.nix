@@ -68,6 +68,7 @@ in {
           gitskip = "git update-index --skip-worktree";
           gitunskip = "git update-index --no-skip-worktree";
           ",," = ", -d ";
+          "zzd" = "zellij delete-session (path basename $PWD)";
         };
 
         homebrew = {
