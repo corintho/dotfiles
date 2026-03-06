@@ -114,10 +114,17 @@ up:
 [group('maintenance')]
 up-unstable-to hash:
   nix flake update nixpkgs-unstable --override-input nixpkgs-unstable github:nixos/nixpkgs/{{hash}}?shallow=1 --flake ./nix
-# Update secrets. Remember to redeploy
+# Update secrets - macOS version (uses HTTPS via override to bypass SSH blockage)
 [group('maintenance')]
+[macos]
 up-secrets:
-  nix flake update secrets --flake ./nix 
+  nix flake update secrets --override-input secrets 'git+https://github.com/corintho/nix-secrets.git?ref=main&shallow=1' --flake ./nix
+
+# Update secrets - NixOS version (uses SSH directly)
+[group('maintenance')]
+[linux]
+up-secrets:
+  nix flake update secrets --flake ./nix
 
 # Check if git status is clean before deploying
 [private]
