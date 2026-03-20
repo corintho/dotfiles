@@ -54,6 +54,16 @@ sanitize-all: check-git-status sanitize keep5 gc deploy
 list:
   @nixos-rebuild list-generations
 
+# Update brew. The Linux version only updates the flakes
+[group('maintenance')]
+[private]
+[linux]
+update-brew:
+  nix flake update homebrew-bundle --flake ./nix 
+  nix flake update homebrew-cask --flake ./nix 
+  nix flake update homebrew-core --flake ./nix 
+  nix flake update homebrew-xcodesorg --flake ./nix 
+
 #
 # Darwin specific
 #
@@ -107,8 +117,8 @@ repl:
 
 # Update flake lock file. Remember to redeploy
 [group('maintenance')]
-up:
-  nix flake update --flake ./nix 
+up: && up-secrets update-brew
+  nix flake update nixpkgs stylix nixpkgs-unstable nix-darwin agenix zen-browser --flake ./nix 
 
 # Update flake lock file, fixing unstable to the specified commit. Remember to redeploy. Look at: https://status.nixos.org/ for the current build status
 [group('maintenance')]
