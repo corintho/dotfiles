@@ -36,7 +36,7 @@ in {
     protonup-qt
     lutris
     bottles
-    heroic
+    pkgs.heroic
     itch
   ];
 
@@ -62,12 +62,8 @@ in {
           with pkgs.unstable; [
             icu
             libxcrypt-legacy
-            python312
-            python312Packages.cython
-            python312Packages.numpy
-            python312Packages.torch-bin
-            # python312Packages.pyqt6
-            # python312Packages.tkinter
+            # python312Packages.pyqt6 # Uncomment if needed by specific appimages
+            # python312Packages.tkinter # Uncomment if needed by specific appimages
           ];
       };
     };
