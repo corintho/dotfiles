@@ -135,6 +135,18 @@ in {
           # enable flakes globally
           experimental-features = [ "nix-command" "flakes" ];
           trusted-users = [ "${username}" ];
+          # Warning for the future me. If you mess up this list, to fix it you need to
+          # first comment it all out, and do a deploy. Uncomment, add the new stuff and
+          # deploy again.
+          allowed-impure-host-deps = [
+            "/bin/sh"
+            "/dev/zero"
+            "/dev/random"
+            "/dev/urandom"
+            "/usr/lib"
+            "/System/Library"
+            "/Library/Apple"
+          ];
         };
 
         programs.fish.enable = lcars.shell.fish.enable;

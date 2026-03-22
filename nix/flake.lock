@@ -440,13 +440,12 @@
         "narHash": "sha256-W+UWMG0Jr63YZ7/pgfwXvzxZk7Nz2rv6oxNLJAMLS78=",
         "ref": "main",
         "rev": "d56d5971ddf241a8661e10f510859057ff41e50c",
-        "shallow": true,
+        "revCount": 18,
         "type": "git",
-        "url": "https://github.com/corintho/nix-secrets.git"
+        "url": "ssh://git@github.com/corintho/nix-secrets.git"
       },
       "original": {
         "ref": "main",
-        "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/corintho/nix-secrets.git"
       }
