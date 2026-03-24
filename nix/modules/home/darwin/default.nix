@@ -1,2 +1,2 @@
-{ imports = [ ./wm ]; }
+{ imports = [ ./wm ./homerow.nix ]; }
 
