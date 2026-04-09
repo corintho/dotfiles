@@ -6,6 +6,7 @@
       default_agent = "plan";
       enabled_providers =
         [ "github-copilot" "opencode" "ollama" "lm-studio" "llamacpp" ];
+      model = "github-copilot/claude-sonnet-4.5";
       provider = {
         ollama = {
           npm = "@ai-sdk/openai-compatible";
@@ -34,6 +35,10 @@
             };
           };
         };
+      };
+      agent = {
+        plan = { model = "github-copilot/claude-sonnet-4.5"; };
+        build = { model = "github-copilot/claude-haiku-4.5"; };
       };
     };
   };
