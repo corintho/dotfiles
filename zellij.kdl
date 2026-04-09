@@ -6,19 +6,17 @@ layout {
       children
   }
   tab name="main" {
-    pane split_direction="vertical" {
+    pane stacked=true {
       pane command="hx" {
         args "."
       }
-      pane split_direction="horizontal" {
-        pane command="just" {
-          start_suspended true
-          args "check"
-        }
-        pane command="just" {
-          start_suspended true
-          args "deploy"
-        }
+      pane command="just" {
+        start_suspended true
+        args "check"
+      }
+      pane command="just" {
+        start_suspended true
+        args "deploy"
       }
     }
   }

@@ -6,14 +6,12 @@ layout {
       children
   }
   tab name="main" {
-    pane split_direction="vertical" focus=true {
+    pane stacked=true {
       pane command="hx" {
         args "."
       }
-      pane split_direction="horizontal" {
-        pane
-        pane
-      }
+      pane
+      pane
     }
   }
   tab name="agent" {
