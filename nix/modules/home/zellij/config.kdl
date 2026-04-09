@@ -234,7 +234,7 @@ keybinds clear-defaults=true {
 // Choose the theme that is specified in the themes section.
 // Default: default
 // 
-// theme "stylix"
+theme "onedark"
  
 // Choose the base input mode of zellij.
 // Default: normal
