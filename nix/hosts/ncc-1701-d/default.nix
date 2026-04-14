@@ -4,6 +4,7 @@
   imports = [
     ../../modules/system.nix
     # ../../modules/qtile.nix
+    ../../cachix.nix
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
