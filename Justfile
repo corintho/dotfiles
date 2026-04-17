@@ -84,7 +84,7 @@ verbose:
 [group('build')]
 [macos]
 check:
-  sudo darwin-rebuild check --flake ./nix --impure
+  sudo darwin-rebuild build --flake ./nix --impure
 
 # List all current available generations
 [group('info')]
