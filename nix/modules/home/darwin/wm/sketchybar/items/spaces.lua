@@ -3,138 +3,91 @@ local colors = require("colors")
 -- Add event listener for aerospace workspace changes
 sbar.add("event", "aerospace_workspace_change")
 
--- Store created spaces for later reference
-local spaces = {}
-local spaces_initialized = false
-local pending_monitors = 0
-local monitors_completed = 0
+local space_items = {}
 
--- Forward declaration for finalize_spaces_initialization
-local finalize_spaces_initialization
+-- Map workspace names to NerdFont icons
+local function workspace_icon(workspace)
+  local icons = {
+    ["1"] = "",        -- house
+    ["Browsers"] = "", -- firefox
+    ["Dev"] = "",      -- code
+    ["Misc"] = "",     -- apps
+    ["Retail"] = "",   -- shopping cart
+    ["cOmms"] = "",    -- comments
+  }
+  return icons[workspace] or workspace -- Fallback to workspace name if no icon defined
+end
 
--- Initialize spaces asynchronously
-local function initialize_spaces()
-  if spaces_initialized then
+-- Asynchronous query to aerospace for workspace list
+sbar.exec("aerospace list-workspaces --all", function(result)
+  -- Parse workspace names
+  local workspaces = {}
+  for workspace in result:gmatch("%S+") do
+    table.insert(workspaces, workspace)
+  end
+
+  -- Fallback: if no workspaces found, exit gracefully (no workspace section shown)
+  if #workspaces == 0 then
     return
   end
 
-  -- Fetch monitors asynchronously
-  sbar.exec("aerospace list-monitors", function(result)
-    local monitors = {}
-    -- Parse monitors from output like "1 | DELL U2412M (1)\n2 | Built-in Retina Display"
-    -- Extract only the leading digit from each line
-    for line in result:gmatch("[^\n]+") do
-      local monitor_id = line:match("^%s*(%d+)")
-      if monitor_id then
-        table.insert(monitors, monitor_id)
+  -- Create items for each workspace
+  for _, workspace in ipairs(workspaces) do
+    local item = sbar.add("item", "space_" .. workspace, {
+      position = "center",
+      icon = { drawing = false },  -- No icon, label only
+      label = {
+        string = workspace_icon(workspace),
+        font = {
+          family = "JetBrainsMono Nerd Font",
+          size = 14,
+          style = "Regular",
+        },
+        color = colors.white,
+        padding_left = 3,
+        padding_right = 3,
+      },
+      padding_left = 0,
+      padding_right = 0,
+      background = { drawing = false },
+    })
+
+    -- Handle click to switch workspace
+    item:subscribe("mouse.clicked", function()
+      sbar.exec("aerospace workspace " .. workspace)
+    end)
+
+    -- Handle workspace change highlight
+    item:subscribe("aerospace_workspace_change", function(env)
+      local focused = env.FOCUSED_WORKSPACE or ""
+
+      if focused == workspace then
+        -- Focused: bold + red
+        item:set({
+          label = {
+            string = workspace_icon(workspace),
+            font = { style = "Bold" },
+            color = colors.red,
+          }
+        })
+      else
+        -- Not focused: regular + white
+        item:set({
+          label = {
+            string = workspace_icon(workspace),
+            font = { style = "Regular" },
+            color = colors.white,
+          }
+        })
       end
-    end
+    end)
 
-    pending_monitors = #monitors
-
-    -- For each monitor, fetch workspaces
-    for _, monitor in ipairs(monitors) do
-      sbar.exec("aerospace list-workspaces --monitor " .. monitor, function(ws_result)
-        local workspaces = {}
-        for workspace in ws_result:gmatch("%S+") do
-          table.insert(workspaces, workspace)
-        end
-
-        -- Create space items for this monitor
-        for _, sid in ipairs(workspaces) do
-          if not spaces[sid] then
-            local space = sbar.add("item", sid, {
-              display = monitor,
-              icon = {
-                string = sid,
-                padding_left = 10,
-                padding_right = 15,
-                highlight_color = colors.red,
-                font = {
-                  family = "JetBrainsMono Nerd Font",
-                  size = 16,
-                },
-              },
-              padding_left = 2,
-              padding_right = 2,
-              label = {
-                padding_right = 20,
-                font = {
-                  family = "JetBrainsMono Nerd Font",
-                  size = 16,
-                  style = "Regular",
-                },
-                background = {
-                  height = 26,
-                  drawing = true,
-                  color = colors.bg2,
-                  corner_radius = 8,
-                },
-                drawing = false,
-              },
-            })
-
-            spaces[sid] = space.name
-
-            -- Handle space click
-            space:subscribe("mouse.clicked", function(res)
-              sbar.exec("aerospace workspace " .. res.NAME)
-            end)
-
-            -- Handle workspace changes
-            space:subscribe({ "aerospace_workspace_change" }, function(res)
-              local focused = res.FOCUSED_WORKSPACE or ""
-              local name = res.NAME or ""
-
-              if focused == name then
-                sbar.animate("tanh", 30, function()
-                  space:set({
-                    icon = {
-                      highlight = true,
-                    },
-                    label = {
-                      width = "dynamic",
-                    },
-                  })
-                end)
-              else
-                sbar.animate("tanh", 30, function()
-                  space:set({
-                    icon = {
-                      highlight = false,
-                    },
-                    label = {
-                      width = 0,
-                    },
-                  })
-                end)
-              end
-            end)
-          end
-        end
-
-        -- Increment completed counter and check if all monitors are done
-        monitors_completed = monitors_completed + 1
-        if monitors_completed >= pending_monitors then
-          finalize_spaces_initialization()
-        end
-      end)
-    end
-  end)
-end
-
--- Finalize spaces initialization and create bracket after all spaces are created
-finalize_spaces_initialization = function()
-  spaces_initialized = true
-
-  -- Collect all created space item names for the bracket
-  local space_items = {}
-  for sid, space_name in pairs(spaces) do
-    table.insert(space_items, space_name)
+    table.insert(space_items, item.name)
   end
 
-  -- Create the bracket with all spaces
+  -- Create bracket grouping all spaces
   local spaces_bracket = sbar.add("bracket", "spaces_bracket", space_items, {
+    position = "center",
     background = {
       color = colors.bg1,
       border_color = colors.bg2,
@@ -144,19 +97,21 @@ finalize_spaces_initialization = function()
 
   -- Handle forced refresh
   spaces_bracket:subscribe({ "forced" }, function()
-    -- Get current focused workspace and trigger update
     sbar.exec("aerospace list-workspaces --focused", function(result)
       local focused = result:match("^%s*(.-)%s*$")
-
       sbar.trigger("aerospace_workspace_change", {
         FOCUSED_WORKSPACE = focused,
       })
     end)
   end)
-end
 
-
--- Initialize spaces on first run
-initialize_spaces()
+  -- Initial focused workspace detection
+  sbar.exec("aerospace list-workspaces --focused", function(result)
+    local focused = result:match("^%s*(.-)%s*$")
+    sbar.trigger("aerospace_workspace_change", {
+      FOCUSED_WORKSPACE = focused,
+    })
+  end)
+end)
 
 return {}
