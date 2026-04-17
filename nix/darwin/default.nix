@@ -75,7 +75,7 @@ in {
         homebrew = {
           enable = true;
           onActivation.cleanup = "zap";
-          brews = [ "mas" "xcodes" "aria2" ];
+          brews = [ "mas" "xcodes" "aria2" "rtk" ];
           casks = [
             "bazecor"
             "copilot-cli"
