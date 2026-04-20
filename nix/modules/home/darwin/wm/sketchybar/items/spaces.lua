@@ -34,7 +34,7 @@ sbar.exec("aerospace list-workspaces --all", function(result)
   -- Create items for each workspace
   for _, workspace in ipairs(workspaces) do
     local item = sbar.add("item", "space_" .. workspace, {
-      position = "center",
+      position = "e",
       icon = { drawing = false },  -- No icon, label only
       label = {
         string = workspace_icon(workspace),
