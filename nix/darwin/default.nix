@@ -31,6 +31,7 @@ in {
     modules = [
       ../options/default.nix
       ../features.nix
+      ../modules/darwin/menu-bar.nix
       ./jankyborders.nix
       # overlays and modules
       {
@@ -107,7 +108,6 @@ in {
           NSGlobalDomain = {
             "com.apple.mouse.tapBehavior" = 1;
             "com.apple.swipescrolldirection" = false;
-            _HIHideMenuBar = false;
             AppleICUForce24HourTime = true;
             AppleInterfaceStyle = "Dark";
             InitialKeyRepeat = 15;
@@ -119,6 +119,8 @@ in {
             NSNavPanelExpandedStateForSaveMode2 = true;
           };
         };
+
+        custom.menuBar.autoHide = "always";
 
         fonts.packages = with pkgs; [
           nerd-fonts.fira-code
