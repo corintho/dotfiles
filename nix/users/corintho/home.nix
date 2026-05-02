@@ -55,7 +55,8 @@ in
     prismlauncher
     unstable.discord
     # 3D printing
-    orcaApp
+    # orcaApp
+    orca-slicer
     # AI
     unstable.alpaca
     unstable.ollama
@@ -74,8 +75,8 @@ in
     slurp
     # /Screen capturing
     # Freecad
-    freecadRCApp
-    # freecad
+    # freecadRCApp
+    freecad
     # (writeShellApplication {
     #   name = "freecad-fixed";
     #   text = ''QT_QPA_PLATFORM=xcb command ${freecad}/bin/freecad "$@"'';
