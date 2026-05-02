@@ -15,6 +15,7 @@
     # enable flakes globally
     experimental-features = [ "nix-command" "flakes" ];
     trusted-users = [ "${username}" ];
+    download-buffer-size = 268435456;
   };
   nix.channel.enable = false;
 

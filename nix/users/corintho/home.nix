@@ -320,16 +320,10 @@ in {
   services = {
     swayidle = {
       enable = true;
-      events = [
-        {
-          event = "before-sleep";
-          command = "${pkgs.swaylock}/bin/swaylock -fF";
-        }
-        {
-          event = "lock";
-          command = "lock";
-        }
-      ];
+      events = {
+        before-sleep = "${pkgs.swaylock}/bin/swaylock -fF";
+        lock = "lock";
+      };
       timeouts = [
         {
           timeout = 290;

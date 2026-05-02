@@ -27,27 +27,38 @@ in {
             unstable =
               import nixpkgs-unstable { inherit (final) system config; };
           })
-          # Override for open-webui dependency
+          # TODO: Remove this override once Sphinx/docutils compatibility is fixed
+          # in nixpkgs-unstable (currently broken in commit 7aaa00e7).
+          # See: https://github.com/NixOS/nixpkgs/issues/...
           (final: prev: {
-            pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-              (python-final: python-prev: {
-                rapidocr-onnxruntime =
-                  python-prev.rapidocr-onnxruntime.overridePythonAttrs
-                  (oldAttrs: rec {
-                    version = "2.1.0";
-                    src = prev.fetchFromGitHub {
-                      owner = "RapidAI";
-                      repo = "RapidOCR";
-                      tag = "v${version}";
-                      hash =
-                        "sha256-4R2rOCfnhElII0+a5hnvbn+kKQLEtH1jBvfFdxpLEBk=";
-                    };
-                    doCheck = false;
-                  });
-              })
-            ];
+            python312 = prev.python312.overrideAttrs (old: {
+              passthru = old.passthru // {
+                doc =
+                  null; # Disable doc derivation to work around Sphinx incompatibility
+              };
+            });
+          })
+          # TODO: Remove once primp upstream fixes pytestFlagsArray deprecation
+          (final: prev: {
+            python3Packages = prev.python3Packages.override {
+              overrides = pyfinal: pyprev: {
+                primp = pyprev.primp.overrideAttrs (old: {
+                  pytestFlagsArray = null;
+                  pytestFlags = [ "-o" "asyncio_mode=auto" ];
+                });
+              };
+            };
+          })
+          # TODO: Remove once openldap test017-syncreplication-refresh passes in sandbox
+          (final: prev: {
+            openldap = prev.openldap.overrideAttrs (old: { doCheck = false; });
           })
         ];
+
+        # Global packageOverrides for broader coverage
+        nixpkgs.config.packageOverrides = pkgs: {
+          openldap = pkgs.openldap.overrideAttrs (old: { doCheck = false; });
+        };
       }
       inputs.stylix.nixosModules.stylix
       inputs.agenix.nixosModules.default

@@ -5,7 +5,7 @@
   home.packages = with pkgs; [
     unstable.neovim
     nixd
-    nixfmt-classic
+    nixfmt
     deadnix
     statix
     nodejs_22

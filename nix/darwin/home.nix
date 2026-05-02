@@ -23,7 +23,7 @@ in {
     tldr
     # TODO:More nvim
     nixd
-    nixfmt-classic
+    nixfmt
     deadnix
     statix
     wget

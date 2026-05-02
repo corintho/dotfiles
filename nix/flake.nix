@@ -3,21 +3,21 @@
 
   inputs = {
     # Base packages
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Global styling through stylix
     stylix = {
-      url = "github:nix-community/stylix/release-25.11";
+      url = "github:nix-community/stylix/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Custom pkgs for some modules
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     # Darwin specific packages
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+      url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Enable homebrew management through nix
@@ -44,8 +44,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     secrets = {
-      url =
-        "git+ssh://git@github.com/corintho/nix-secrets.git?ref=main";
+      url = "git+ssh://git@github.com/corintho/nix-secrets.git?ref=main";
       flake = false;
     };
     # Custom packages for software from other sources
