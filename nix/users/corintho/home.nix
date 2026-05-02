@@ -1,10 +1,18 @@
-{ config, lcars, inputs, lib, pkgs, ... }:
+{
+  config,
+  lcars,
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   fishModule = ../../modules/home/fish.nix;
   orcaApp = pkgs.callPackage ../../modules/orca-slicer.nix { };
   freecadRCApp = pkgs.callPackage ../../modules/freecad-rc.nix { };
-in {
+in
+{
   imports = [
     inputs.agenix.homeManagerModules.default
     ../../home/core.nix
@@ -23,7 +31,8 @@ in {
     ../../modules/home/waybar.nix
     ../../modules/home/zed.nix
     ../../modules/home/zellij.nix
-  ] ++ (lib.optional lcars.shell.fish.enable fishModule);
+  ]
+  ++ (lib.optional lcars.shell.fish.enable fishModule);
   home.packages = with pkgs; [
     htop
     jq
@@ -79,8 +88,7 @@ in {
     unstable.sweethome3d.furniture-editor
     (writeShellApplication {
       name = "sweethome3d-fixed";
-      text = ''
-        JAVA_TOOL_OPTIONS="-Dcom.eteks.sweethome3d.j3d.useOffScreen3DView=true" ${unstable.sweethome3d.application}/bin/sweethome3d "$@"'';
+      text = ''JAVA_TOOL_OPTIONS="-Dcom.eteks.sweethome3d.j3d.useOffScreen3DView=true" ${unstable.sweethome3d.application}/bin/sweethome3d "$@"'';
     })
     # /Sweet home 3d
     # Music
@@ -111,13 +119,23 @@ in {
     };
   };
 
-  home.sessionVariables = { EDITOR = "hx"; };
-  home.sessionVariables = { OLLAMA_MODELS = "/windows/e/__Slow_AI_E/ollama"; };
-  xsession = { numlock.enable = true; };
+  home.sessionVariables = {
+    EDITOR = "hx";
+  };
+  home.sessionVariables = {
+    OLLAMA_MODELS = "/windows/e/__Slow_AI_E/ollama";
+  };
+  xsession = {
+    numlock.enable = true;
+  };
 
   dconf.settings = {
-    "org/gnome/desktop/interface" = { color-scheme = "prefer-dark"; };
-    "org/gnome/desktop/peripherals/keyboard" = { numlock-state = true; };
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+    };
+    "org/gnome/desktop/peripherals/keyboard" = {
+      numlock-state = true;
+    };
     "org/gnome/settings-daemon/plugins/power" = {
       sleep-inactive-ac-type = "nothing";
       sleep-inactive-ac-timeout = 0;
@@ -136,7 +154,9 @@ in {
   };
 
   programs = {
-    bat = { enable = true; };
+    bat = {
+      enable = true;
+    };
 
     direnv = {
       enable = true;
@@ -150,7 +170,9 @@ in {
       icons = "auto";
     };
 
-    fzf = { enable = true; };
+    fzf = {
+      enable = true;
+    };
 
     git = {
       enable = true;
@@ -159,8 +181,12 @@ in {
           name = "Corintho Assunção";
           email = "github@corintho.eu";
         };
-        difftool = { prompt = false; };
-        pager = { difftool = true; };
+        difftool = {
+          prompt = false;
+        };
+        pager = {
+          difftool = true;
+        };
       };
     };
 
@@ -188,12 +214,18 @@ in {
     neovide = {
       enable = true;
       package = pkgs.unstable.neovide;
-      settings = { fork = true; };
+      settings = {
+        fork = true;
+      };
     };
 
-    nix-index = { enable = true; };
+    nix-index = {
+      enable = true;
+    };
 
-    ripgrep = { enable = true; };
+    ripgrep = {
+      enable = true;
+    };
 
     ssh = {
       enable = true;
@@ -201,7 +233,9 @@ in {
       matchBlocks = {
         "*" = {
           forwardAgent = false;
-          setEnv = { TERM = "xterm-256color"; };
+          setEnv = {
+            TERM = "xterm-256color";
+          };
           serverAliveInterval = 0;
           serverAliveCountMax = 3;
           compression = false;
@@ -216,11 +250,24 @@ in {
       includes = [ "home.conf" ];
     };
 
-    swayimg = { enable = true; };
+    swayimg = {
+      enable = true;
+    };
 
-    swaylock = { enable = true; };
+    swaylock = {
+      enable = true;
+    };
 
-    vicinae = { enable = true; };
+    vicinae = {
+      enable = true;
+      settings = {
+        "favorites" = [
+          "applications:obsidian"
+          "applications:net.lutris.Lutris"
+          "applications:org.prismlauncher.PrismLauncher"
+        ];
+      };
+    };
 
     yazi = {
       enable = true;
@@ -238,11 +285,15 @@ in {
       shellWrapperName = "y";
     };
 
-    zoxide = { enable = true; };
+    zoxide = {
+      enable = true;
+    };
 
     nushell = {
       enable = true;
-      settings = { show_banner = false; };
+      settings = {
+        show_banner = false;
+      };
       extraConfig = ''
         let carapace_completer = {|spans|
         carapace $spans.0 nushell ...$spans | from json
@@ -327,8 +378,7 @@ in {
       timeouts = [
         {
           timeout = 290;
-          command =
-            "${pkgs.libnotify}/bin/notify-send 'Locking in 10 seconds' -t 10000";
+          command = "${pkgs.libnotify}/bin/notify-send 'Locking in 10 seconds' -t 10000";
         }
         {
           timeout = 300;
@@ -341,6 +391,8 @@ in {
       ];
     };
 
-    swaync = { enable = true; };
+    swaync = {
+      enable = true;
+    };
   };
 }
