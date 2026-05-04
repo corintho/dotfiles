@@ -3,14 +3,22 @@
     # Create sketchybarrc with absolute Nix store paths for lua5.4 and sbarlua
     programs.sketchybar = {
       enable = true;
-      package = pkgs.writeShellScriptBin "sketchybar" ''
-        export PATH="${pkgs.lua5_4}/bin:${pkgs.unstable.aerospace}/bin:$HOME/.config/sketchybar/helpers/event_providers/bin:$HOME/.config/sketchybar/helpers/menus/bin:$PATH"
-        export LUA_CPATH="${pkgs.sbarlua}/lib/lua/5.4/?.so''${LUA_CPATH:+:$LUA_CPATH}"
+      package = let
+        # Extract Lua package that sbarlua was built with
+        lua = builtins.head pkgs.sbarlua.propagatedBuildInputs;
+        luaVersion = lua.luaversion;
+      in pkgs.writeShellScriptBin "sketchybar" ''
+        export PATH="${lua}/bin:${pkgs.unstable.aerospace}/bin:$HOME/.config/sketchybar/helpers/event_providers/bin:$HOME/.config/sketchybar/helpers/menus/bin:$PATH"
+        export LUA_CPATH="${pkgs.sbarlua}/lib/lua/${luaVersion}/?.so''${LUA_CPATH:+:$LUA_CPATH}"
         export CONFIG_DIR="$HOME/.config/sketchybar"
         exec ${pkgs.unstable.sketchybar}/bin/sketchybar "$@"
       '';
       config = let
         inherit (config.lib.stylix) colors;
+
+        # Extract Lua package that sbarlua was built with
+        lua = builtins.head pkgs.sbarlua.propagatedBuildInputs;
+        luaVersion = lua.luaversion;
 
         # Alpha channel constants for SketchyBar colors (0x00 - 0xff)
         alphaBarBackground = "f0"; # 94% opacity for bar background
@@ -23,10 +31,10 @@
 
         # Create sketchybarrc as a Nix derivation with hardcoded paths
         sketchybarrc = pkgs.writeScript "sketchybarrc" ''
-          #!${pkgs.lua5_4}/bin/lua
+          #!${lua}/bin/lua
 
           -- Require the sketchybar module (installed via Nix from pkgs.sbarlua)
-          package.cpath = "${pkgs.sbarlua}/lib/lua/5.4/?.so;" .. package.cpath
+          package.cpath = "${pkgs.sbarlua}/lib/lua/${luaVersion}/?.so;" .. package.cpath
 
           sbar = require("sketchybar")
 
