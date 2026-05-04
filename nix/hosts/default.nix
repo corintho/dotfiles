@@ -22,10 +22,10 @@ in {
 
     modules = [
       {
-        nixpkgs.overlays = [
+         nixpkgs.overlays = [
           (final: _prev: {
             unstable =
-              import nixpkgs-unstable { inherit (final) system config; };
+              import nixpkgs-unstable { inherit system; inherit (final) config; };
           })
           # TODO: Remove this override once Sphinx/docutils compatibility is fixed
           # in nixpkgs-unstable (currently broken in commit 7aaa00e7).
