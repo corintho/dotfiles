@@ -1,17 +1,25 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   programs.opencode = {
     enable = true;
     package = pkgs.unstable.opencode;
     settings = {
       default_agent = "plan";
-      enabled_providers =
-        [ "github-copilot" "opencode" "ollama" "lm-studio" "llamacpp" ];
+      enabled_providers = [
+        "github-copilot"
+        "opencode"
+        "ollama"
+        "lm-studio"
+        "llamacpp"
+      ];
       model = "github-copilot/claude-sonnet-4.5";
       provider = {
         ollama = {
           npm = "@ai-sdk/openai-compatible";
           name = "Ollama (local)";
-          options = { baseURL = "http://localhost:11434/v1"; };
+          options = {
+            baseURL = "http://localhost:11434/v1";
+          };
           models = {
             "qwen3-vl:4b" = {
               name = "qwen3-vl:4b";
@@ -37,8 +45,17 @@
         };
       };
       agent = {
-        plan = { model = "github-copilot/claude-sonnet-4.5"; };
-        build = { model = "github-copilot/claude-haiku-4.5"; };
+        plan = {
+          model = "github-copilot/claude-sonnet-4.5";
+        };
+        build = {
+          model = "github-copilot/claude-haiku-4.5";
+        };
+      };
+      permission = {
+        external_directory = {
+          "/tmp/**" = "allow";
+        };
       };
     };
   };
