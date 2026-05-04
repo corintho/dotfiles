@@ -9,6 +9,13 @@ local icons = {
     cpu = "􀫥",
     clipboard = "􀉄",
 
+    pomodoro = {
+      timer = "⏱",
+      break_icon = "☕",
+      idle = "⏱",
+      pause = "⏸",
+    },
+
     switch = {
       on = "􁏮",
       off = "􁏯",
@@ -50,6 +57,13 @@ local icons = {
     gear = "",
     cpu = "",
     clipboard = "Missing Icon",
+
+    pomodoro = {
+      timer = "",
+      break_icon = "",
+      idle = "",
+      pause = "󰏤",
+    },
 
     switch = {
       on = "󱨥",

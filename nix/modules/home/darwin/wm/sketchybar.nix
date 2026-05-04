@@ -88,14 +88,30 @@
           }
         '';
 
+        # Wrap tomito status script with runtime dependencies
+        tomitoStatusScript = pkgs.writeShellApplication {
+          name = "tomito_status.sh";
+          runtimeInputs = [ pkgs.sqlite pkgs.coreutils ];
+          text = builtins.readFile ./sketchybar/scripts/tomito_status.sh;
+        };
+
         # Create a directory with sketchybarrc and all other lua files
         sketchybar-config = pkgs.runCommand "sketchybar-config" { } ''
-          mkdir -p $out
+          mkdir -p $out/scripts
           cp ${sketchybarrc} $out/sketchybarrc
           chmod +x $out/sketchybarrc
-          cp -r ${./sketchybar}/* $out/
+          # Copy lua files and directories (but not scripts subdirectory)
+          for item in ${./sketchybar}/*; do
+            name=$(basename "$item")
+            if [[ "$name" != "scripts" ]]; then
+              cp -r "$item" $out/
+            fi
+          done
           # Replace colors.lua with generated one from stylix theme
           cp ${colorsLua} $out/colors.lua
+          # Add tomito status script
+          cp ${tomitoStatusScript}/bin/tomito_status.sh $out/scripts/tomito_status.sh
+          chmod +x $out/scripts/tomito_status.sh
           # Remove any old sketchybarrc if it exists
           rm -f $out/sketchybarrc.lua
         '';
