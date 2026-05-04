@@ -13,7 +13,7 @@ in {
     ../modules/home/zellij.nix
     ../modules/home/darwin
   ] ++ (lib.optional lcars.shell.fish.enable fishModule);
-  home.stateVersion = "24.11"; # Please read the comment before changing.
+  home.stateVersion = "26.05"; # Please read the comment before changing.
   gtk.gtk4.theme = null;
   # The home.packages option allows you to install Nix packages into your
   # environment.
@@ -74,6 +74,8 @@ in {
       };
       signing.format = null;
     };
+
+    man.generateCaches = false;
 
     difftastic = {
       enable = true;
