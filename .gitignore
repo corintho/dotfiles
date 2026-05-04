@@ -11,3 +11,9 @@ devenv.local.nix
 
 # pre-commit
 .pre-commit-config.yaml
+
+# OpenCode
+.opencode/package-lock.json
+
+# Nix build output
+result

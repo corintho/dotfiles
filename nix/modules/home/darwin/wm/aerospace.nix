@@ -8,7 +8,7 @@ in {
       enable = true;
       launchd.enable = true;
       package = pkgs.unstable.aerospace;
-      userSettings = baseConfig // {
+      settings = baseConfig // {
         exec-on-workspace-change = [
           "/bin/bash"
           "-c"

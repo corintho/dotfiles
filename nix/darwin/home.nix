@@ -14,6 +14,7 @@ in {
     ../modules/home/darwin
   ] ++ (lib.optional lcars.shell.fish.enable fishModule);
   home.stateVersion = "24.11"; # Please read the comment before changing.
+  gtk.gtk4.theme = null;
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
@@ -71,6 +72,7 @@ in {
         difftool = { prompt = false; };
         pager = { difftool = true; };
       };
+      signing.format = null;
     };
 
     difftastic = {
