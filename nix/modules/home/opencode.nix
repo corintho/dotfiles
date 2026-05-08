@@ -4,6 +4,7 @@
     enable = true;
     package = pkgs.unstable.opencode;
     settings = {
+      share = "disabled";
       default_agent = "plan";
       enabled_providers = [
         "github-copilot"
@@ -55,6 +56,9 @@
       permission = {
         external_directory = {
           "/tmp/**" = "allow";
+        };
+        skill = {
+          "*" = "allow";
         };
       };
     };
