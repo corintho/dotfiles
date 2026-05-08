@@ -1,7 +1,16 @@
-{ lcars, lib, pkgs, local_flutter_path, flutter-local, ... }:
+{
+  lcars,
+  lib,
+  pkgs,
+  local_flutter_path,
+  flutter-local,
+  ...
+}:
 
-let fishModule = ../modules/home/fish.nix;
-in {
+let
+  fishModule = ../modules/home/fish.nix;
+in
+{
   imports = [
     ../modules/home/ghostty.nix
     ../modules/home/gitui.nix
@@ -12,7 +21,8 @@ in {
     # ../modules/home/zed.nix
     ../modules/home/zellij.nix
     ../modules/home/darwin
-  ] ++ (lib.optional lcars.shell.fish.enable fishModule);
+  ]
+  ++ (lib.optional lcars.shell.fish.enable fishModule);
   home.stateVersion = "26.05"; # Please read the comment before changing.
   gtk.gtk4.theme = null;
   # The home.packages option allows you to install Nix packages into your
@@ -33,6 +43,17 @@ in {
     unstable.kitty
     unstable.obsidian
     unstable.lazygit
+    # Custom scripts
+    (writeShellApplication {
+      name = "local-route-fix";
+      text = ''
+        sudo bash -c '
+          set -e
+          route delete -net 192.168.2.0/24 2>/dev/null || true
+          route add -net 192.168.2.0/24 192.168.2.254
+        '
+      '';
+    })
   ];
 
   home.sessionVariables = {
@@ -49,7 +70,9 @@ in {
   };
   # Setup programs options
   programs = {
-    bash = { enable = true; };
+    bash = {
+      enable = true;
+    };
     direnv = {
       enable = true;
       nix-direnv.enable = true;
@@ -64,13 +87,19 @@ in {
       enable = true;
       lfs.enable = true;
       settings = {
-        init = { defaultBranch = "main"; };
+        init = {
+          defaultBranch = "main";
+        };
         user = {
           name = "Corintho Assunção";
           email = "${builtins.getEnv "USER"}@insim.biz";
         };
-        difftool = { prompt = false; };
-        pager = { difftool = true; };
+        difftool = {
+          prompt = false;
+        };
+        pager = {
+          difftool = true;
+        };
       };
       signing.format = null;
     };
@@ -102,9 +131,15 @@ in {
         highlighters = [ "brackets" ];
       };
     };
-    fzf = { enable = true; };
-    ripgrep = { enable = true; };
-    zoxide = { enable = true; };
+    fzf = {
+      enable = true;
+    };
+    ripgrep = {
+      enable = true;
+    };
+    zoxide = {
+      enable = true;
+    };
     yazi = {
       enable = true;
       settings = {
