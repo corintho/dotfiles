@@ -13,7 +13,7 @@
         "lm-studio"
         "llamacpp"
       ];
-      model = "github-copilot/claude-sonnet-4.5";
+      model = "github-copilot/claude-sonnet-4.6";
       provider = {
         ollama = {
           npm = "@ai-sdk/openai-compatible";
@@ -47,7 +47,7 @@
       };
       agent = {
         plan = {
-          model = "github-copilot/claude-sonnet-4.5";
+          model = "github-copilot/claude-sonnet-4.6";
         };
         build = {
           model = "github-copilot/claude-haiku-4.5";
