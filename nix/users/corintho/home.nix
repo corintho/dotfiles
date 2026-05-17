@@ -56,7 +56,14 @@ in
     unstable.discord
     # 3D printing
     # orcaApp
-    orca-slicer
+    (pkgs.symlinkJoin {
+      name = "orca-slicer";
+      paths = [ pkgs.orca-slicer ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/orca-slicer --set GTK_THEME Adwaita:dark
+      '';
+    })
     # AI
     unstable.alpaca
     unstable.ollama
