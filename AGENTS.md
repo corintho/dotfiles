@@ -52,6 +52,9 @@ just update
 
 # Perform full sanitization (cleanup and rebuild)
 just sanitize-all
+
+# Pin nixpkgs and nixpkgs-unstable to a specific commit
+just up-unstable-to <hash>
 ```
 
 ### Validation Commands

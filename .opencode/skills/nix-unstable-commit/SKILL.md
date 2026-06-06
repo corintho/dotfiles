@@ -165,6 +165,16 @@ To find a working commit manually:
 4. Copy the nixpkgs revision
 ```
 
+### Next Steps
+
+After copying the commit hash, pin it in your lockfile using the repo's `just` recipe:
+
+```bash
+just up-unstable-to <hash>
+```
+
+This updates both `nixpkgs` and `nixpkgs-unstable` inputs to the verified commit. Then run `just deploy` to apply the changes.
+
 ## Important Notes
 
 ### Why Hydra-Based Verification?

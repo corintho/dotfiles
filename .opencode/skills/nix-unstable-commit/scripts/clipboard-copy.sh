@@ -12,7 +12,8 @@ if command -v pbcopy &> /dev/null; then
     echo "✓ Copied to clipboard (pbcopy)" >&2
 elif command -v wl-copy &> /dev/null; then
     # Wayland
-    echo "$TEXT" | wl-copy
+    echo "$TEXT" | wl-copy >/dev/null 2>&1 &
+    disown
     echo "✓ Copied to clipboard (wl-copy)" >&2
 elif command -v xclip &> /dev/null; then
     # X11
