@@ -53,6 +53,32 @@ in {
           (final: prev: {
             openldap = prev.openldap.overrideAttrs (old: { doCheck = false; });
           })
+          # Fix netgen pybind11 incompatibility (keep_alive not supported on properties in pybind11 3.x)
+          (final: prev: {
+            netgen = prev.netgen.overrideAttrs (old: {
+              postPatch = (old.postPatch or "") + ''
+                substituteInPlace libsrc/meshing/python_mesh.cpp \
+                  --replace-fail ', py::keep_alive<0,1>()' ""
+              '';
+            });
+          })
+          # Enable NETGEN mesher and add CalculiX solver for FreeCAD FEM
+          (final: prev: {
+            freecad = prev.freecad.overrideAttrs (old: {
+              buildInputs = old.buildInputs ++ [ final.netgen final."calculix-ccx" ];
+              cmakeFlags = old.cmakeFlags ++ [
+                (final.lib.cmakeBool "BUILD_FEM_NETGEN" true)
+              ];
+              qtWrapperArgs = old.qtWrapperArgs ++ [
+                "--prefix PATH : ${final."calculix-ccx"}/bin"
+                "--prefix PYTHONPATH : ${final.netgen}/${final.python3Packages.python.sitePackages}"
+              ];
+              postPatch = old.postPatch + ''
+                substituteInPlace src/Mod/Fem/femmesh/netgentools.py \
+                  --replace-fail '"-E",' ""
+              '';
+            });
+          })
         ];
 
         # Global packageOverrides for broader coverage
