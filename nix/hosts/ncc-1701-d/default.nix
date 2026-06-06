@@ -54,7 +54,6 @@
   # Setup GDM 
   services.displayManager.gdm.enable = true;
   services.displayManager.gdm.autoSuspend = false;
-  services.displayManager.gdm.wayland = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
