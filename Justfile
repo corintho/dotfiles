@@ -12,18 +12,12 @@ default:
 [linux]
 deploy:
   systemd-inhibit nixos-rebuild --sudo switch --flake ./nix --impure
-  @just workaround-waybar
 
 # Standard deploy with extended debug enabled
 [group('build')]
 [linux]
 verbose:
   nixos-rebuild --sudo switch --flake ./nix --show-trace --verbose
-
-#TODO: Only needed for waybar because of a bug
-[private]
-workaround-waybar:
-  -@killall -SIGUSR2 -r waybar
 
 # Dry run. Makes it easy to catch errors without generating a new profile and boot entry
 [group('build')]
