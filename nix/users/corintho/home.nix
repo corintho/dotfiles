@@ -297,6 +297,16 @@ in
       enable = true;
     };
 
+    opencode = {
+      settings = {
+        model = "opencode/deepseek-v4-flash-free";
+        agent = {
+          plan.model = "opencode/deepseek-v4-flash-free";
+          build.model = "opencode/minimax-m3-free";
+        };
+      };
+    };
+
     nushell = {
       enable = true;
       settings = {

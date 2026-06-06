@@ -106,6 +106,16 @@ in
 
     man.generateCaches = false;
 
+    opencode = {
+      settings = {
+        model = "github-copilot/claude-sonnet-4.6";
+        agent = {
+          plan.model = "github-copilot/claude-sonnet-4.6";
+          build.model = "github-copilot/claude-haiku-4.5";
+        };
+      };
+    };
+
     difftastic = {
       enable = true;
       options = {
