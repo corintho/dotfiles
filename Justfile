@@ -10,7 +10,7 @@ default:
 # Standard deploy for Linux
 [group('build')]
 [linux]
-deploy: && optimise
+deploy:
   systemd-inhibit nixos-rebuild --sudo switch --flake ./nix --impure
   @just workaround-waybar
 
@@ -71,7 +71,7 @@ update-brew:
 # Standard deploy for MacOS
 [group('build')]
 [macos]
-deploy: && optimise
+deploy:
   sudo darwin-rebuild switch --flake ./nix --impure
 
 # Standard deploy with extended debug enabled
