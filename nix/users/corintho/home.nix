@@ -9,8 +9,6 @@
 
 let
   fishModule = ../../modules/home/fish.nix;
-  orcaApp = pkgs.callPackage ../../modules/orca-slicer.nix { };
-  freecadRCApp = pkgs.callPackage ../../modules/freecad-rc.nix { };
 in
 {
   imports = [
@@ -55,7 +53,6 @@ in
     prismlauncher
     unstable.discord
     # 3D printing
-    # orcaApp
     (pkgs.symlinkJoin {
       name = "orca-slicer";
       paths = [ pkgs.orca-slicer ];
@@ -82,12 +79,7 @@ in
     slurp
     # /Screen capturing
     # Freecad
-    # freecadRCApp
     freecad
-    # (writeShellApplication {
-    #   name = "freecad-fixed";
-    #   text = ''QT_QPA_PLATFORM=xcb command ${freecad}/bin/freecad "$@"'';
-    # })
     # /Freecad
     unstable.obsidian
     # Sweet home 3d
