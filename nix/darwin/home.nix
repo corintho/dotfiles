@@ -24,7 +24,10 @@ in
   ]
   ++ (lib.optional lcars.shell.fish.enable fishModule);
   home.stateVersion = "26.05"; # Please read the comment before changing.
-  gtk.gtk4.theme = null;
+
+  # Disable stylix GTK theming on macOS (not needed/used)
+  stylix.targets.gtk.enable = false;
+
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
