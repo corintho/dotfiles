@@ -57,6 +57,12 @@ in
         '
       '';
     })
+    (writeShellApplication {
+      name = "network-always-on";
+      text = ''
+        sudo pmset -a networkoversleep 1
+      '';
+    })
   ];
 
   home.sessionVariables = {
