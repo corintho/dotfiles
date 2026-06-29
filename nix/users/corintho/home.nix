@@ -64,6 +64,7 @@ in
     # AI
     unstable.alpaca
     unstable.ollama
+    unstable.handy
     # unstable.oterm
     # Terminal tools
     fd
