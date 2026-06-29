@@ -86,7 +86,14 @@ in {
             "raycast"
             "zen"
           ];
-          masApps = { "Tomito" = 1526042938; };
+          masApps = {
+            "Apple Configurator" = 1037126344;
+            "GarageBand" = 682658836;
+            "Keeper Password Manager" = 414781829;
+            "RosettaCheck" = 6759349750;
+            "Tomito" = 1526042938;
+            "Velja" = 1607635845;
+          };
         };
 
         system.defaults = {
