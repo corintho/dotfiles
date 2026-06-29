@@ -43,6 +43,7 @@ in
     wget
     imagemagickBig
     # /nvim
+    unstable.handy
     unstable.kitty
     unstable.obsidian
     unstable.lazygit
