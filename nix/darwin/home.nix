@@ -96,13 +96,15 @@ in
     git = {
       enable = true;
       lfs.enable = true;
+      includes = [
+        { path = "~/.config/git/local"; }
+      ];
       settings = {
         init = {
           defaultBranch = "main";
         };
         user = {
           name = "Corintho Assunção";
-          email = "${builtins.getEnv "USER"}@insim.biz";
         };
         difftool = {
           prompt = false;
