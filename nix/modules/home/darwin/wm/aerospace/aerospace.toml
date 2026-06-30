@@ -205,13 +205,10 @@ if.app-id = 'company.thebrowser.Browser'
 run = ['move-node-to-workspace Browsers']
 
 [[on-window-detected]]
-if.app-id = 'company.thebrowser.Browser'
+if.app-id = 'com.microsoft.edgemac'
 run = ['move-node-to-workspace Browsers']
 
 # Comms windows
-[[on-window-detected]]
-if.app-id = 'com.microsoft.edgemac'
-run = ['move-node-to-workspace cOmms']
 
 [[on-window-detected]]
 if.app-id = 'com.microsoft.Outlook'
