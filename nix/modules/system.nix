@@ -45,7 +45,7 @@
 
     # Python ML stack - system-wide PyTorch with CUDA support
     python312
-    python312Packages.torch-bin # PyTorch 2.9.1 with CUDA 12.8.x support
+    python312Packages.torch-bin # PyTorch with CUDA support (via cudaPackages_13 overlay)
     python312Packages.numpy
     python312Packages.cython
 

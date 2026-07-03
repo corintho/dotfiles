@@ -79,6 +79,10 @@ in {
               '';
             });
           })
+          # Use CUDA 13 (default is still 12.9) to satisfy PyTorch >= 13.0.3 requirement
+          (final: prev: {
+            cudaPackages = prev.cudaPackages_13;
+          })
         ];
 
         # Global packageOverrides for broader coverage
