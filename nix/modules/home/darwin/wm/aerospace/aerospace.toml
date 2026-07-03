@@ -209,6 +209,9 @@ if.app-id = 'com.microsoft.edgemac'
 run = ['move-node-to-workspace Browsers']
 
 # Comms windows
+[[on-window-detected]]
+if.app-id = 'com.microsoft.teams2'
+run = ['move-node-to-workspace cOmms']
 
 [[on-window-detected]]
 if.app-id = 'com.microsoft.Outlook'
