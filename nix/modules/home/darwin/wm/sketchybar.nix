@@ -36,6 +36,9 @@
           -- Require the sketchybar module (installed via Nix from pkgs.sbarlua)
           package.cpath = "${pkgs.sbarlua}/lib/lua/${luaVersion}/?.so;" .. package.cpath
 
+          -- Inject Nix store paths for tools that need absolute paths in sbar.exec() subprocesses
+          AEROSPACE_BIN = "${pkgs.unstable.aerospace}/bin/aerospace"
+
           sbar = require("sketchybar")
 
           -- Bundle the entire initial configuration into a single message to sketchybar

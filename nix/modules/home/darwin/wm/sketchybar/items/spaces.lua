@@ -19,7 +19,7 @@ local function workspace_icon(workspace)
 end
 
 -- Asynchronous query to aerospace for workspace list
-sbar.exec("aerospace list-workspaces --all", function(result)
+sbar.exec(AEROSPACE_BIN .. " list-workspaces --all", function(result)
   -- Parse workspace names
   local workspaces = {}
   for workspace in result:gmatch("%S+") do
@@ -54,7 +54,7 @@ sbar.exec("aerospace list-workspaces --all", function(result)
 
     -- Handle click to switch workspace
     item:subscribe("mouse.clicked", function()
-      sbar.exec("aerospace workspace " .. workspace)
+      sbar.exec(AEROSPACE_BIN .. " workspace " .. workspace)
     end)
 
     -- Handle workspace change highlight
@@ -97,7 +97,7 @@ sbar.exec("aerospace list-workspaces --all", function(result)
 
   -- Handle forced refresh
   spaces_bracket:subscribe({ "forced" }, function()
-    sbar.exec("aerospace list-workspaces --focused", function(result)
+    sbar.exec(AEROSPACE_BIN .. " list-workspaces --focused", function(result)
       local focused = result:match("^%s*(.-)%s*$")
       sbar.trigger("aerospace_workspace_change", {
         FOCUSED_WORKSPACE = focused,
@@ -106,7 +106,7 @@ sbar.exec("aerospace list-workspaces --all", function(result)
   end)
 
   -- Initial focused workspace detection
-  sbar.exec("aerospace list-workspaces --focused", function(result)
+  sbar.exec(AEROSPACE_BIN .. " list-workspaces --focused", function(result)
     local focused = result:match("^%s*(.-)%s*$")
     sbar.trigger("aerospace_workspace_change", {
       FOCUSED_WORKSPACE = focused,
