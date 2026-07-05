@@ -1,5 +1,15 @@
-{ self, inputs, nixpkgs, nixpkgs-unstable, home-manager, secrets, paths
-, local_flutter_path, flutter-local, ... }:
+{
+  self,
+  inputs,
+  nixpkgs,
+  nixpkgs-unstable,
+  home-manager,
+  secrets,
+  paths,
+  local_flutter_path,
+  flutter-local,
+  ...
+}:
 
 let
   system = "x86_64-linux";
@@ -10,22 +20,34 @@ let
   lcarsConfig = import ../features.nix { inherit pkgs; };
   # Passes these parameters to other nix modules
   specialArgs = {
-    inherit self inputs username nixPath rootPath secrets paths
-      local_flutter_path flutter-local;
+    inherit
+      self
+      inputs
+      username
+      nixPath
+      rootPath
+      secrets
+      paths
+      local_flutter_path
+      flutter-local
+      ;
     files = "${rootPath}/files";
     libFiles = "${rootPath}/lib";
     lcars = lcarsConfig.lcars;
   };
-in {
+in
+{
   ncc-1701-d = nixpkgs.lib.nixosSystem {
     inherit specialArgs;
 
     modules = [
       {
-         nixpkgs.overlays = [
+        nixpkgs.overlays = [
           (final: _prev: {
-            unstable =
-              import nixpkgs-unstable { inherit system; inherit (final) config; };
+            unstable = import nixpkgs-unstable {
+              inherit system;
+              inherit (final) config;
+            };
           })
           # TODO: Remove this override once Sphinx/docutils compatibility is fixed
           # in nixpkgs-unstable (currently broken in commit 7aaa00e7).
@@ -33,8 +55,7 @@ in {
           (final: prev: {
             python312 = prev.python312.overrideAttrs (old: {
               passthru = old.passthru // {
-                doc =
-                  null; # Disable doc derivation to work around Sphinx incompatibility
+                doc = null; # Disable doc derivation to work around Sphinx incompatibility
               };
             });
           })
@@ -44,50 +65,65 @@ in {
               overrides = pyfinal: pyprev: {
                 primp = pyprev.primp.overrideAttrs (old: {
                   pytestFlagsArray = null;
-                  pytestFlags = [ "-o" "asyncio_mode=auto" ];
+                  pytestFlags = [
+                    "-o"
+                    "asyncio_mode=auto"
+                  ];
                 });
               };
             };
           })
           # TODO: Remove once openldap test017-syncreplication-refresh passes in sandbox
           (final: prev: {
-            openldap = prev.openldap.overrideAttrs (old: { doCheck = false; });
-          })
-          # Fix netgen pybind11 incompatibility (keep_alive not supported on properties in pybind11 3.x)
-          (final: prev: {
-            netgen = prev.netgen.overrideAttrs (old: {
-              postPatch = (old.postPatch or "") + ''
-                substituteInPlace libsrc/meshing/python_mesh.cpp \
-                  --replace-fail ', py::keep_alive<0,1>()' ""
-              '';
+            openldap = prev.openldap.overrideAttrs (old: {
+              doCheck = false;
             });
           })
-          # Enable NETGEN mesher and add CalculiX solver for FreeCAD FEM
+          # FreeCAD as AppImage (avoids netgen 6.2 API incompatibility at build time)
           (final: prev: {
-            freecad = prev.freecad.overrideAttrs (old: {
-              buildInputs = old.buildInputs ++ [ final.netgen final."calculix-ccx" ];
-              cmakeFlags = old.cmakeFlags ++ [
-                (final.lib.cmakeBool "BUILD_FEM_NETGEN" true)
-              ];
-              qtWrapperArgs = old.qtWrapperArgs ++ [
-                "--prefix PATH : ${final."calculix-ccx"}/bin"
-                "--prefix PYTHONPATH : ${final.netgen}/${final.python3Packages.python.sitePackages}"
-              ];
-              postPatch = old.postPatch + ''
-                substituteInPlace src/Mod/Fem/femmesh/netgentools.py \
-                  --replace-fail '"-E",' ""
-              '';
-            });
+            freecad = final.callPackage ../modules/freecad-appimage.nix { };
           })
-          # Use CUDA 13 (default is still 12.9) to satisfy PyTorch >= 13.0.3 requirement
+          # torch-bin 2.11.0 uses CUDA 12.8 wheel; compatible with system CUDA 12.9
           (final: prev: {
-            cudaPackages = prev.cudaPackages_13;
+            python312Packages = prev.python312Packages.override {
+              overrides = pyfinal: pyprev: {
+                torch-bin = pyprev.torch-bin.overrideAttrs (old: {
+                  version = "2.11.0+cu128";
+                  src = final.fetchurl {
+                    url = "https://download.pytorch.org/whl/cu128/torch-2.11.0%2Bcu128-cp312-cp312-manylinux_2_28_x86_64.whl";
+                    hash = "sha256-0lLPl1+xjJSoUzYyOtQl9HPfVtqzWkSwA5m9cMejuZc=";
+                  };
+                  # Disable wheel unpack/pack (buggy with PEP 440 +cu128 suffix);
+                  # handle deps removal in postInstall instead
+                  preBuild = ''
+                    pythonRelaxDepsHook() { true; }
+                  '';
+                  postInstall = old.postInstall + ''
+                    for meta in "$out/lib/python3.12/site-packages/torch-"*.dist-info/METADATA; do
+                      [ -f "$meta" ] || continue
+                      sed -i '/^Requires-Dist: cuda-toolkit/d' "$meta"
+                      sed -i '/^Requires-Dist: nvidia-cudnn-cu12/d' "$meta"
+                      sed -i '/^Requires-Dist: nvidia-cusparselt-cu12/d' "$meta"
+                      sed -i '/^Requires-Dist: nvidia-nccl-cu12/d' "$meta"
+                      sed -i '/^Requires-Dist: nvidia-nvshmem-cu12/d' "$meta"
+                    done
+                  '';
+                  __structuredAttrs = false;
+                  meta = old.meta // {
+                    problems = { };
+                  };
+                  dontCheckRuntimeDeps = true;
+                });
+              };
+            };
           })
         ];
 
         # Global packageOverrides for broader coverage
         nixpkgs.config.packageOverrides = pkgs: {
-          openldap = pkgs.openldap.overrideAttrs (old: { doCheck = false; });
+          openldap = pkgs.openldap.overrideAttrs (old: {
+            doCheck = false;
+          });
         };
       }
       inputs.stylix.nixosModules.stylix
@@ -102,8 +138,7 @@ in {
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.users.${username} =
-          import "${nixPath}/users/${username}/home.nix";
+        home-manager.users.${username} = import "${nixPath}/users/${username}/home.nix";
 
         # Optionally, use home-manager.extraSpecialArgs to pass
         # arguments to home.nix
