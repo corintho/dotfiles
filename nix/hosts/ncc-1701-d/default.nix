@@ -9,6 +9,9 @@
     ./hardware-configuration.nix
   ];
 
+  # Disable IBus — we use XKB grp:menu_toggle for keyboard layout switching
+  i18n.inputMethod.enable = false;
+
   # Bootloader.
   boot.loader = {
     efi.canTouchEfiVariables = true;
