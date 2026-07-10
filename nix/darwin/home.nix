@@ -47,6 +47,9 @@ in
     unstable.kitty
     unstable.obsidian
     unstable.lazygit
+    (pkgs.tesseract.override {
+      enableLanguages = [ "eng" "nld" "por" ];
+    })
     # Custom scripts
     (writeShellApplication {
       name = "local-route-fix";

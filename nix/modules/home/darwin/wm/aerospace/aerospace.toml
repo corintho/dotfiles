@@ -156,6 +156,9 @@ alt-ctrl-shift-cmd-right = [
   'move-node-to-monitor --wrap-around --focus-follows-window next',
 ]
 
+# Screenshot with OCR (tesseract)
+alt-cmd-4 = '''exec-and-forget /bin/bash -c 'F="/private/tmp/ocr_screenshot.png" && screencapture -i "$F" 2>/dev/null && /etc/profiles/per-user/zg47ma/bin/tesseract "$F" stdout -l eng+nld+por | /usr/bin/pbcopy; rm -f "$F"' '''
+
 # See: https://nikitabobko.github.io/AeroSpace/commands#mode
 alt-shift-semicolon = 'mode service'
 
