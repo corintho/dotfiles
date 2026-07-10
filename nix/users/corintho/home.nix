@@ -78,6 +78,9 @@ in
     hyprshot
     grim
     slurp
+    (pkgs.tesseract.override {
+      enableLanguages = [ "eng" "nld" "por" ];
+    })
     # /Screen capturing
     # Freecad
     freecad

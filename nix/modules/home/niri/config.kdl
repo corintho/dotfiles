@@ -687,6 +687,7 @@ binds {
     Ctrl+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
     Shift+Print { spawn-sh "grim -g \"$(slurp)\" - | wl-copy"; }
+    Super+Print { spawn-sh "grim -g \"$(slurp)\" - | tesseract stdin stdout -l eng+nld+por | wl-copy"; }
 
     // Applications such as remote-desktop clients and software KVM switches may
     // request that niri stops processing the keyboard shortcuts defined here
