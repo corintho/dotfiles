@@ -54,6 +54,7 @@ in
       ];
     })
     markpad
+    unstable.llama-cpp
     # Custom scripts
     (writeShellApplication {
       name = "local-route-fix";

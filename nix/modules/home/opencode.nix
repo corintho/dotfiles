@@ -12,6 +12,7 @@
         "ollama"
         "lm-studio"
         "llamacpp"
+        "llama.cpp"
       ];
       provider = {
         ollama = {
@@ -39,6 +40,19 @@
             "qwen3:4b" = {
               name = "qwen3:4b";
               reasoning = true;
+              tools = true;
+            };
+          };
+        };
+        "llama.cpp" = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "llama.cpp (local)";
+          options = {
+            baseURL = "http://127.0.0.1:1234/v1";
+          };
+          models = {
+            "ggml-org/gemma-4-E4B-it-GGUF:Q8_0" = {
+              name = "Gemma 4 E4B IT Q8";
               tools = true;
             };
           };

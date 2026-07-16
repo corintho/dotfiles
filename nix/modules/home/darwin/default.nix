@@ -1,2 +1,2 @@
-{ imports = [ ./wm ./homerow.nix ]; }
+{ imports = [ ./wm ./homerow.nix ./llama-cpp.nix ]; }
 
