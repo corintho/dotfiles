@@ -1,32 +1,57 @@
-{ self, paths, inputs, nix-darwin, nix-homebrew, nixpkgs, nixpkgs-unstable
-, home-manager, homebrew-bundle, homebrew-cask, homebrew-core
-, homebrew-xcodesorg, local_flutter_path, flutter-local, ... }:
+{
+  self,
+  paths,
+  inputs,
+  nix-darwin,
+  nix-homebrew,
+  nixpkgs,
+  nixpkgs-unstable,
+  home-manager,
+  homebrew-bundle,
+  homebrew-cask,
+  homebrew-core,
+  homebrew-xcodesorg,
+  local_flutter_path,
+  flutter-local,
+  ...
+}:
 
 let
   system = "aarch64-darwin";
-  username = let
-    sudoUser = builtins.getEnv "SUDO_USER";
-    envUser = builtins.getEnv "USER";
-  in if sudoUser != "" then
-    sudoUser
-  else if envUser != "" then
-    envUser
-  else
-    builtins.abort
-    "ERROR: Cannot determine username. Neither SUDO_USER nor USER environment variable is set.";
+  username =
+    let
+      sudoUser = builtins.getEnv "SUDO_USER";
+      envUser = builtins.getEnv "USER";
+    in
+    if sudoUser != "" then
+      sudoUser
+    else if envUser != "" then
+      envUser
+    else
+      builtins.abort "ERROR: Cannot determine username. Neither SUDO_USER nor USER environment variable is set.";
   rootPath = paths.rootPath;
   nixPath = "${rootPath}/nix";
   files = "${rootPath}/files";
   pkgs = import nixpkgs { inherit system; };
   lcarsConfig = import ../features.nix { inherit pkgs; };
   specialArgs = {
-    inherit self files inputs nixPath username rootPath paths local_flutter_path
-      flutter-local;
+    inherit
+      self
+      files
+      inputs
+      nixPath
+      username
+      rootPath
+      paths
+      local_flutter_path
+      flutter-local
+      ;
     libFiles = "${rootPath}/lib";
     lcars = lcarsConfig.lcars;
   };
 
-in {
+in
+{
   "MPCE-MBP-Y4TJXCG2JX" = nix-darwin.lib.darwinSystem {
     modules = [
       ../options/default.nix
@@ -37,8 +62,13 @@ in {
       {
         nixpkgs.overlays = [
           (final: _prev: {
-            unstable =
-              import nixpkgs-unstable { inherit system; inherit (final) config; };
+            unstable = import nixpkgs-unstable {
+              inherit system;
+              inherit (final) config;
+            };
+          })
+          (final: _prev: {
+            markpad = final.callPackage ../modules/markpad.nix { };
           })
         ];
       }
@@ -47,162 +77,181 @@ in {
       home-manager.darwinModules.home-manager
 
       # The main Darwin configuration, now as a module
-      ({ lib, pkgs, lcars, ... }: {
-        system.primaryUser = username;
-        environment.systemPackages = with pkgs; [
-          comma
-          unstable.devenv
-          bat
-          curl
-          neovim
-          tmux
-          nodejs_22
-          (lua5_1.withPackages (ps: with ps; [ luarocks ]))
-          monitorcontrol
-        ];
-
-        environment.shellAliases = {
-          join_img = "convert -background black +smush 16";
-          klingon = ''say -v Xander "QgaplA"'';
-          listening = "lsof -iTCP -sTCP:LISTEN -n -P";
-          n = "nvim";
-          gitskipped = "git ls-files -v|grep '^S'";
-          gitskip = "git update-index --skip-worktree";
-          gitunskip = "git update-index --no-skip-worktree";
-          ",," = ", -d ";
-          "zzd" = "zellij delete-session (path basename $PWD)";
-        };
-
-        homebrew = {
-          enable = true;
-          onActivation.cleanup = "zap";
-          brews = [ "mas" "xcodes" "aria2" "rtk" ];
-          casks = [
-            "bazecor"
-            "copilot-cli"
-            "homerow"
-            "ghostty"
-            "git-credential-manager"
-            "raycast"
-            "zen"
+      (
+        {
+          lib,
+          pkgs,
+          lcars,
+          ...
+        }:
+        {
+          system.primaryUser = username;
+          environment.systemPackages = with pkgs; [
+            comma
+            unstable.devenv
+            bat
+            curl
+            neovim
+            tmux
+            nodejs_22
+            (lua5_1.withPackages (ps: with ps; [ luarocks ]))
+            monitorcontrol
           ];
-          masApps = {
-            "Apple Configurator" = 1037126344;
-            "GarageBand" = 682658836;
-            "Keeper Password Manager" = 414781829;
-            "RosettaCheck" = 6759349750;
-            "Tomito" = 1526042938;
-            "Velja" = 1607635845;
+
+          environment.shellAliases = {
+            join_img = "convert -background black +smush 16";
+            klingon = ''say -v Xander "QgaplA"'';
+            listening = "lsof -iTCP -sTCP:LISTEN -n -P";
+            n = "nvim";
+            gitskipped = "git ls-files -v|grep '^S'";
+            gitskip = "git update-index --skip-worktree";
+            gitunskip = "git update-index --no-skip-worktree";
+            ",," = ", -d ";
+            "zzd" = "zellij delete-session (path basename $PWD)";
           };
-        };
 
-        system.defaults = {
-          controlcenter.BatteryShowPercentage = true;
-          dock.autohide = true;
-          finder = {
-            _FXSortFoldersFirst = true;
-            AppleShowAllExtensions = true;
-            AppleShowAllFiles = true;
-            FXDefaultSearchScope = "SCcf";
-            FXEnableExtensionChangeWarning = false;
-            FXPreferredViewStyle = "clmv";
-            NewWindowTarget = "Home";
-            QuitMenuItem = true;
-            ShowPathbar = true;
-            ShowStatusBar = true;
-          };
-          loginwindow.GuestEnabled = false;
-          NSGlobalDomain = {
-            "com.apple.mouse.tapBehavior" = 1;
-            "com.apple.swipescrolldirection" = false;
-            AppleICUForce24HourTime = true;
-            AppleInterfaceStyle = "Dark";
-            InitialKeyRepeat = 15;
-            KeyRepeat = 2;
-            NSAutomaticQuoteSubstitutionEnabled = false;
-            NSAutomaticWindowAnimationsEnabled = false;
-            NSDocumentSaveNewDocumentsToCloud = false;
-            NSNavPanelExpandedStateForSaveMode = true;
-            NSNavPanelExpandedStateForSaveMode2 = true;
-          };
-        };
+          environment.etc."newsyslog.d/aerospace-watchdog.conf".text = ''
+            /Users/${username}/Library/Logs/aerospace-watchdog.log  640  5  1024  *  J
+          '';
 
-        custom.menuBar.autoHide = "always";
-
-        fonts.packages = with pkgs; [
-          nerd-fonts.fira-code
-          nerd-fonts.jetbrains-mono
-        ];
-
-        security = {
-          pki.certificateFiles = [ "/etc/ssl/certs/corporate.crt" ];
-          pam.services.sudo_local.touchIdAuth = true;
-        };
-
-        # customise /etc/nix/nix.conf declaratively via `nix.settings`
-        nix.settings = {
-          # enable flakes globally
-          experimental-features = [ "nix-command" "flakes" ];
-          trusted-users = [ "${username}" ];
-          download-buffer-size = 268435456;
-          # Warning for the future me. If you mess up this list, to fix it you need to
-          # first comment it all out, and do a deploy. Uncomment, add the new stuff and
-          # deploy again.
-          allowed-impure-host-deps = [
-            "/bin/sh"
-            "/dev/zero"
-            "/dev/random"
-            "/dev/urandom"
-            "/usr/lib"
-            "/System/Library"
-            "/Library/Apple"
-          ];
-        };
-
-        programs.fish.enable = lcars.shell.fish.enable;
-
-        system.configurationRevision =
-          if (self ? rev) then self.rev else self.dirtyRev;
-        system.stateVersion = 6;
-        nixpkgs.hostPlatform = system;
-        nixpkgs.config.allowUnfree = true;
-
-        stylix = {
-          enable = true;
-          polarity = "dark";
-          base16Scheme =
-            "${pkgs.base16-schemes}/share/themes/onedark-dark.yaml";
-          # base16Scheme = "${files}/lcars.yaml";
-          fonts = {
-            monospace = {
-              package = pkgs.nerd-fonts.jetbrains-mono;
-              name = "JetBrainsMono Nerd Font";
+          homebrew = {
+            enable = true;
+            onActivation.cleanup = "zap";
+            brews = [
+              "mas"
+              "xcodes"
+              "aria2"
+              "rtk"
+            ];
+            casks = [
+              "bazecor"
+              "copilot-cli"
+              "handy"
+              "homerow"
+              "ghostty"
+              "git-credential-manager"
+              "raycast"
+              "zen"
+            ];
+            masApps = {
+              "Apple Configurator" = 1037126344;
+              "GarageBand" = 682658836;
+              "Keeper Password Manager" = 414781829;
+              "RosettaCheck" = 6759349750;
+              "Tomito" = 1526042938;
+              "Velja" = 1607635845;
             };
           };
-        };
 
-        users = {
-          knownUsers = [ username ];
-          users.${username} = lib.mkMerge [
-            {
-              home = "/Users/${username}";
-              name = "${username}";
-              uid = 501;
-            }
-            (lib.mkIf lcars.shell.fish.enable {
-              shell = lcars.shell.fish.package;
-            })
+          system.defaults = {
+            controlcenter.BatteryShowPercentage = true;
+            dock.autohide = true;
+            finder = {
+              _FXSortFoldersFirst = true;
+              AppleShowAllExtensions = true;
+              AppleShowAllFiles = true;
+              FXDefaultSearchScope = "SCcf";
+              FXEnableExtensionChangeWarning = false;
+              FXPreferredViewStyle = "clmv";
+              NewWindowTarget = "Home";
+              QuitMenuItem = true;
+              ShowPathbar = true;
+              ShowStatusBar = true;
+            };
+            loginwindow.GuestEnabled = false;
+            NSGlobalDomain = {
+              "com.apple.mouse.tapBehavior" = 1;
+              "com.apple.swipescrolldirection" = false;
+              AppleICUForce24HourTime = true;
+              AppleInterfaceStyle = "Dark";
+              InitialKeyRepeat = 15;
+              KeyRepeat = 2;
+              NSAutomaticQuoteSubstitutionEnabled = false;
+              NSAutomaticWindowAnimationsEnabled = false;
+              NSDocumentSaveNewDocumentsToCloud = false;
+              NSNavPanelExpandedStateForSaveMode = true;
+              NSNavPanelExpandedStateForSaveMode2 = true;
+            };
+          };
+
+          custom.menuBar.autoHide = "always";
+
+          fonts.packages = with pkgs; [
+            nerd-fonts.fira-code
+            nerd-fonts.jetbrains-mono
           ];
-        };
 
-        nix = {
-          enable = true;
-          package = pkgs.nix;
-          extraOptions = ''
-            experimental-features = nix-command flakes
-          '';
-        };
-      })
+          security = {
+            pki.certificateFiles = [ "/etc/ssl/certs/corporate.crt" ];
+            pam.services.sudo_local.touchIdAuth = true;
+          };
+
+          # customise /etc/nix/nix.conf declaratively via `nix.settings`
+          nix.settings = {
+            # enable flakes globally
+            experimental-features = [
+              "nix-command"
+              "flakes"
+            ];
+            trusted-users = [ "${username}" ];
+            download-buffer-size = 268435456;
+            # Warning for the future me. If you mess up this list, to fix it you need to
+            # first comment it all out, and do a deploy. Uncomment, add the new stuff and
+            # deploy again.
+            allowed-impure-host-deps = [
+              "/bin/sh"
+              "/dev/zero"
+              "/dev/random"
+              "/dev/urandom"
+              "/usr/lib"
+              "/System/Library"
+              "/Library/Apple"
+            ];
+          };
+
+          programs.fish.enable = lcars.shell.fish.enable;
+
+          system.configurationRevision = if (self ? rev) then self.rev else self.dirtyRev;
+          system.stateVersion = 6;
+          nixpkgs.hostPlatform = system;
+          nixpkgs.config.allowUnfree = true;
+
+          stylix = {
+            enable = true;
+            polarity = "dark";
+            base16Scheme = "${pkgs.base16-schemes}/share/themes/onedark-dark.yaml";
+            # base16Scheme = "${files}/lcars.yaml";
+            fonts = {
+              monospace = {
+                package = pkgs.nerd-fonts.jetbrains-mono;
+                name = "JetBrainsMono Nerd Font";
+              };
+            };
+          };
+
+          users = {
+            knownUsers = [ username ];
+            users.${username} = lib.mkMerge [
+              {
+                home = "/Users/${username}";
+                name = "${username}";
+                uid = 501;
+              }
+              (lib.mkIf lcars.shell.fish.enable {
+                shell = lcars.shell.fish.package;
+              })
+            ];
+          };
+
+          nix = {
+            enable = true;
+            package = pkgs.nix;
+            extraOptions = ''
+              experimental-features = nix-command flakes
+            '';
+          };
+        }
+      )
 
       # Home-manager user configuration
       {

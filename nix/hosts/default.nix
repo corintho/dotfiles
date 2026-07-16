@@ -83,6 +83,10 @@ in
           (final: prev: {
             freecad = final.callPackage ../modules/freecad-appimage.nix { };
           })
+          # Markpad - platform-aware derivation (darwin: .app bundle, linux: AppImage)
+          (final: _prev: {
+            markpad = final.callPackage ../modules/markpad.nix { };
+          })
           # torch-bin 2.11.0 uses CUDA 12.8 wheel; compatible with system CUDA 12.9
           (final: prev: {
             python312Packages = prev.python312Packages.override {

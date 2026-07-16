@@ -79,12 +79,19 @@ in
     grim
     slurp
     (pkgs.tesseract.override {
-      enableLanguages = [ "eng" "nld" "por" ];
+      enableLanguages = [
+        "eng"
+        "nld"
+        "por"
+      ];
     })
     # /Screen capturing
     # Freecad
     freecad
     # /Freecad
+    # Markpad
+    markpad
+    # /Markpad
     unstable.obsidian
     # Sweet home 3d
     unstable.sweethome3d.application

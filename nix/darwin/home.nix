@@ -43,13 +43,17 @@ in
     wget
     imagemagickBig
     # /nvim
-    unstable.handy
     unstable.kitty
     unstable.obsidian
     unstable.lazygit
     (pkgs.tesseract.override {
-      enableLanguages = [ "eng" "nld" "por" ];
+      enableLanguages = [
+        "eng"
+        "nld"
+        "por"
+      ];
     })
+    markpad
     # Custom scripts
     (writeShellApplication {
       name = "local-route-fix";
