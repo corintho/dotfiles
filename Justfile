@@ -66,19 +66,19 @@ update-brew:
 [group('build')]
 [macos]
 deploy:
-  sudo darwin-rebuild switch --flake ./nix --impure
+  sudo -E darwin-rebuild switch --flake ./nix --impure
 
 # Standard deploy with extended debug enabled
 [group('build')]
 [macos]
 verbose:
-  sudo darwin-rebuild switch --flake ./nix --impure --show-trace --verbose
+  sudo -E darwin-rebuild switch --flake ./nix --impure --show-trace --verbose
 
 # Dry run. Makes it easy to catch errors without generating a new profile
 [group('build')]
 [macos]
 check:
-  sudo darwin-rebuild build --flake ./nix --impure
+  sudo -E darwin-rebuild build --flake ./nix --impure
 
 # List all current available generations
 [group('info')]
