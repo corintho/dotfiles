@@ -1,28 +1,30 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
-  cifsOptions =
-    "uid=1000,gid=100,x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-in {
+  cifsOptions = "uid=1000,gid=100,x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+in
+{
   # SMB shares
   fileSystems."/smb/home" = {
     device = "//192.168.2.250/home";
     fsType = "cifs";
-    options =
-      [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
+    options = [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
   };
 
   fileSystems."/smb/ai" = {
     device = "//192.168.2.250/ai";
     fsType = "cifs";
-    options =
-      [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
+    options = [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
   };
 
   fileSystems."/smb/scanned" = {
     device = "//192.168.2.250/scanned";
     fsType = "cifs";
-    options =
-      [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
+    options = [ "${cifsOptions},credentials=${config.age.secrets.smb_corintho.path}" ];
   };
 
   environment.systemPackages = with pkgs.unstable; [
@@ -43,13 +45,13 @@ in {
   # Global aliases for all shells
   environment.shellAliases = {
     listening = "lsof -iTCP -sTCP:LISTEN -n -P";
-    scripts = ''
-      jq ".scripts | to_entries | sort_by(.key) | from_entries" package.json'';
+    scripts = ''jq ".scripts | to_entries | sort_by(.key) | from_entries" package.json'';
     n = "nvim";
     gitskipped = "git ls-files -v|grep '^S'";
     gitskip = "git update-index --skip-worktree";
     gitunskip = "git update-index --no-skip-worktree";
     ",," = ", -d ";
+    ",s" = ", --shell ";
     "zzd" = "zellij delete-session (path basename $PWD)";
   };
 
@@ -58,8 +60,8 @@ in {
       enable = true;
       binfmt = true;
       package = pkgs.unstable.appimage-run.override {
-        extraPkgs = _:
-          with pkgs.unstable; [
+        extraPkgs =
+          _: with pkgs.unstable; [
             icu
             libxcrypt-legacy
             # python312Packages.pyqt6 # Uncomment if needed by specific appimages
@@ -73,7 +75,9 @@ in {
       package = pkgs.unstable.bazecor;
     };
 
-    fish = { enable = config.lcars.shell.fish.enable; };
+    fish = {
+      enable = config.lcars.shell.fish.enable;
+    };
 
     # Gaming
     steam = {
@@ -83,15 +87,23 @@ in {
       dedicatedServer.openFirewall = true;
       package = pkgs.steam;
     };
-    gamemode = { enable = true; };
+    gamemode = {
+      enable = true;
+    };
   };
 
-  users.users.corintho = lib.mkMerge [{
-    uid = 1000;
-    extraGroups = [ "input" "scanner" "lp" "dialout" ];
-  }
-  # (lib.mkIf config.lcars.shell.fish.enable {
-  #   shell = config.lcars.shell.fish.pkg;
-  # })
-    ];
+  users.users.corintho = lib.mkMerge [
+    {
+      uid = 1000;
+      extraGroups = [
+        "input"
+        "scanner"
+        "lp"
+        "dialout"
+      ];
+    }
+    # (lib.mkIf config.lcars.shell.fish.enable {
+    #   shell = config.lcars.shell.fish.pkg;
+    # })
+  ];
 }
