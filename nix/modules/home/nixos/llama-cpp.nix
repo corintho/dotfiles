@@ -1,33 +1,46 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
-  models = config.lcars.models or {};
+  models = config.lcars.models or { };
   llamaBin = "${pkgs.unstable.llama-cpp}/bin/llama-server";
+  yamlFmt = pkgs.formats.yaml { };
 
-  mkCmd = model:
+  mkCmd =
+    model:
     let
       port = "\${PORT}";
-      args =
-        [ "--model" model.modelPath ]
-        ++ lib.optionals (model.mmprojPath != null) [ "--mmproj" model.mmprojPath ]
-        ++ [ "--port" port "-c" "0" ]
-        ++ model.extraArgs;
+      args = [
+        "--model"
+        model.modelPath
+      ]
+      ++ lib.optionals (model.mmprojPath != null) [
+        "--mmproj"
+        model.mmprojPath
+      ]
+      ++ [
+        "--port"
+        port
+        "-c"
+        "0"
+      ]
+      ++ model.extraArgs;
     in
     "${llamaBin} ${lib.concatStringsSep " " args}";
 
-  mkModelEntry = name: model: ''
-  "${name}":
-    cmd: "${mkCmd model}"
-    proxy: http://127.0.0.1:''${PORT}
-  '';
+  modelConfigs = builtins.mapAttrs (name: model: {
+    cmd = mkCmd model;
+    proxy = "http://127.0.0.1:\${PORT}";
+  }) models;
 
-  modelEntries = lib.concatStringsSep "\n" (lib.mapAttrsToList mkModelEntry models);
-
-  llamaSwapConfig = pkgs.writeText "llama-swap-config.yaml" ''
-    healthCheckTimeout: 120
-
-    models:
-  '' + modelEntries + "\n";
+  llamaSwapConfig = yamlFmt.generate "llama-swap-config.yaml" {
+    healthCheckTimeout = 120;
+    models = modelConfigs;
+  };
 in
 lib.mkIf (models != { }) {
   home.packages = with pkgs.unstable; [
