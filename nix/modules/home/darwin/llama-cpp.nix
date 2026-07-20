@@ -10,7 +10,7 @@ let
       args =
         [ "--model" model.modelPath ]
         ++ lib.optionals (model.mmprojPath != null) [ "--mmproj" model.mmprojPath ]
-        ++ [ "--port" port "-ngl" "99" "-c" "0" ]
+        ++ [ "--port" port "-c" "0" ]
         ++ model.extraArgs;
     in
     "${llamaBin} ${lib.concatStringsSep " " args}";

@@ -2,6 +2,23 @@
 
 Downloads a GGUF model from HuggingFace, configures it for llama.cpp with intelligent flag inference, and adds it to both llama-swap and OpenCode settings.
 
+## Hardware Context
+
+This system hardware affects model and quantization recommendations:
+
+| Component | Spec |
+|---|---|
+| GPU | NVIDIA GeForce RTX 2060 SUPER (8 GB VRAM) |
+| RAM | 62 GB |
+| CPU | Intel i7-9700KF |
+
+**VRAM guidance:**
+- 8 GB VRAM = ~6 GB usable after OS/display overhead
+- **7B models at Q4_K_M** (~6 GB) fit comfortably with full GPU offload
+- **14B models at Q4_K_M** (~9-10 GB) cannot fully offload to GPU — set `-ngl` to fit your VRAM budget or run CPU-only
+- Layer size estimate: ~200-250 MB per layer for 14B Q4_K_M → 8 GB fits ~**24-28 layers** (`-ngl 24` to `-ngl 28`)
+- Always specify `-ngl` in `extraArgs` per model (not a global default)
+
 ## Activation
 
 Trigger with: `/add-llama-model`, `add model`, `download and add llama model`, etc.
@@ -30,11 +47,13 @@ Validate the selected repo:
 From the siblings list, filter `.gguf` files:
 - Exclude: `.BF16.gguf` (too large ~30GB), `UD-IQ1_*.gguf`, `UD-IQ2_*.gguf` (too aggressive)
 - Extract file sizes (available from HF page or calculate from model card)
-- **Score by size targeting 8–15GB range** (optimal for M2 Pro 32GB):
-  - `UD-Q4_K_XL` (~9–12GB) = best choice
-  - `Q4_K_M` (~9–10GB) = good fallback
-  - `Q3_K_M` (~6–8GB) = acceptable if smaller preferred
-  - `Q5_K_M` (~12–13GB) = larger, more accurate
+- **Consider VRAM budget on this system (RTX 2060 SUPER 8 GB):**
+  - **7B models**: `Q4_K_M` (~5-6 GB) = best choice, fits fully on GPU
+  - **14B models** (partial offload required):
+    - `Q3_K_M` (~6-8 GB) = fits more layers on GPU, acceptable quality
+    - `Q4_K_M` (~9-10 GB) = better quality but needs careful `-ngl` tuning
+    - `Q4_K_XL` (~9-12 GB) = same VRAM as Q4_K_M but more quality
+  - **Flag the VRAM constraint when recommending 14B+ models**: tell user they need `-ngl` in `extraArgs`
 
 Multimodal detection:
 - Check if any sibling filename contains `mmproj` (e.g., `mmproj-gemma-4-E4B-it-Q8_0.gguf`)
@@ -65,9 +84,11 @@ Parse `gguf.chat_template` from Step 1's `hf models info` JSON response:
 - Skip `-fa on` for multimodal (not always supported); use `-fa off` if needed
 - Model family heuristics: Gemma → multimodal, Llama3.2-Vision → multimodal
 
-**Base flags** (always applied):
-- `-ngl 99` (offload all layers to GPU)
+**Base flags** (added automatically by the module — do NOT include in `extraArgs`):
 - `-c 0` (no context size limit in llama-swap config)
+
+**Required per-model flag** (always add to `extraArgs`):
+- `-ngl <N>` — GPU layers to offload. See Hardware Context section for guidance. Example: `-ngl 99` for a 7B model, `-ngl 24` for a 14B model on 8 GB VRAM.
 
 **If chat_template is ambiguous or missing**:
 - Fetch the HF model page with WebFetch
@@ -80,10 +101,12 @@ Inferred configuration:
   Tools: true (detected <tool_call> in chat template)
   Reasoning: false
   Multimodal: no
-  Flags: --jinja -ngl 99 -c 0 -fa on
+  Flags (add to extraArgs): --jinja -fa on
 
 [Confirm] [Edit flags] [Skip and ask me]
 ```
+
+**Reminder:** `-c 0` is added automatically by the module. `-ngl` must be specified in `extraArgs` per model — ask the user what value they want based on their VRAM budget.
 
 ### Step 4 — Download
 
@@ -135,25 +158,27 @@ Locate the `lcars.models` attribute set and add a new entry with the captured pa
   modelPath = "/Users/<username>/.cache/huggingface/hub/models--unsloth--Qwen3-14B-GGUF/snapshots/<hash>/Qwen3-14B-UD-Q4_K_XL.gguf";
   # mmprojPath is optional, only if multimodal
   mmprojPath = "/Users/<username>/.cache/huggingface/hub/.../mmproj-...gguf";
-  # extraArgs: model-specific flags (--jinja, -fa on)
-  extraArgs = [ "--jinja" "-fa" "on" ];
+  # extraArgs: model-specific flags including -ngl
+  extraArgs = [ "-ngl" "24" "--jinja" "-fa" "on" ];
   name = "Qwen3 14B UD Q4_K_XL";
   tools = true;
   reasoning = false;
 };
 ```
 
+**ALWAYS include `-ngl <N>` in `extraArgs`** — see Hardware Context for guidance. 7B models can use `-ngl 99` (full offload), 14B models on 8 GB VRAM need something like `-ngl 24`.
+
 **Field reference:**
 | Field | Required | Description |
 |-------|----------|-------------|
 | `modelPath` | yes | Full path to the GGUF file |
 | `mmprojPath` | no | Multimodal projection file path |
-| `extraArgs` | no | Model-specific llama-server flags |
+| `extraArgs` | no | Model-specific llama-server flags (including `-ngl`) |
 | `name` | yes | Human-readable label for opencode |
 | `tools` | no (default: true) | Tool-calling capability |
 | `reasoning` | no (default: false) | Reasoning capability |
 
-The `-ngl 99 -c 0` base flags are added automatically by the module — no need to specify them.
+The `-c 0` base flag is added automatically by the module. `-ngl` is NOT a base flag — you must specify it per model.
 
 Validate with `just check` before proceeding to Step 6.
 
@@ -205,6 +230,13 @@ Configuration will be activated on next model request to llama-swap.
 - No manual snapshot hash reconstruction needed
 - Paths are stable across re-runs
 
+### GPU offload (`-ngl`)
+
+- **Not a global default** — `-ngl` is deliberately excluded from the module's base flags
+- Must be specified per model in `extraArgs` based on VRAM budget
+- See Hardware Context section for this system's GPU specs and layer-count estimates
+- When unsure, recommend CPU-only (omit `-ngl`) and let the user tune later
+
 ### YAML format
 
 - Always use inline `cmd: "..."` format, never `cmd: >` (folded scalars cause indentation bugs)
@@ -249,7 +281,8 @@ Select: 1 (Qwen3-14B-UD-Q4_K_XL.gguf)
   Tools: true (detected <tool_call> in chat template)
   Reasoning: false
   Multimodal: no
-  Flags: --jinja -ngl 99 -c 0 -fa on
+  Flags (add to extraArgs): --jinja -fa on
+  -ngl needed? This is a 14B model on 8 GB VRAM — recommend -ngl 24
 
 Confirmed? (y/n) y
 
@@ -261,7 +294,7 @@ Confirmed? (y/n) y
 📝 Updated lcars.models in home.nix:
    + "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
        modelPath = "...";
-       extraArgs = [ "--jinja" "-fa" "on" ];
+       extraArgs = [ "-ngl" "24" "--jinja" "-fa" "on" ];
        name = "Qwen3 14B UD Q4_K_XL";
        tools = true;
        reasoning = false;
