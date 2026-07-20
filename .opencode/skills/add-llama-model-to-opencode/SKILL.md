@@ -12,12 +12,15 @@ This system hardware affects model and quantization recommendations:
 | RAM | 62 GB |
 | CPU | Intel i7-9700KF |
 
-**VRAM guidance:**
-- 8 GB VRAM = ~6 GB usable after OS/display overhead
-- **7B models at Q4_K_M** (~6 GB) fit comfortably with full GPU offload
-- **14B models at Q4_K_M** (~9-10 GB) cannot fully offload to GPU — set `-ngl` to fit your VRAM budget or run CPU-only
-- Layer size estimate: ~200-250 MB per layer for 14B Q4_K_M → 8 GB fits ~**24-28 layers** (`-ngl 24` to `-ngl 28`)
+**VRAM calculation methodology** (source: [bmdpat.com/blog/llama-cpp-n-gpu-layers-explained-2026](https://bmdpat.com/blog/llama-cpp-n-gpu-layers-explained-2026)):
+- Get GGUF file size from HF file listing
+- Get layer count from model card (e.g., `config.json` `num_hidden_layers`, or `hf models info` metadata)
+- **Per-layer VRAM = GGUF_file_size / layer_count**
+- **Max GPU layers = (usable_VRAM - KV_cache_headroom) / per_layer_VRAM**
+- This system: RTX 2060 SUPER 8 GB → ~6.5 GB usable, reserve ~1.5 GB for KV cache → **~5 GB for weights**
 - Always specify `-ngl` in `extraArgs` per model (not a global default)
+- `-ngl -1` offloads all layers (same as 999) — use only when model fits entirely in VRAM with headroom
+- `-ngl 0` = CPU-only (slow on this system)
 
 ## Activation
 
@@ -46,13 +49,12 @@ Validate the selected repo:
 
 From the siblings list, filter `.gguf` files:
 - Exclude: `.BF16.gguf` (too large ~30GB), `UD-IQ1_*.gguf`, `UD-IQ2_*.gguf` (too aggressive)
-- Extract file sizes (available from HF page or calculate from model card)
+- **Record the GGUF file size** (shown in HF file listing) — needed later for `-ngl` calculation
 - **Consider VRAM budget on this system (RTX 2060 SUPER 8 GB):**
-  - **7B models**: `Q4_K_M` (~5-6 GB) = best choice, fits fully on GPU
-  - **14B models** (partial offload required):
-    - `Q3_K_M` (~6-8 GB) = fits more layers on GPU, acceptable quality
-    - `Q4_K_M` (~9-10 GB) = better quality but needs careful `-ngl` tuning
-    - `Q4_K_XL` (~9-12 GB) = same VRAM as Q4_K_M but more quality
+  - **7B models at Q4_K_M** (~5-6 GB) = fits entirely on GPU → `-ngl -1`
+  - **14B+ models** (partial offload required):
+    - Smaller file size = more layers fit on GPU
+    - The exact `-ngl` value will be calculated in Step 3 after layer count is known
   - **Flag the VRAM constraint when recommending 14B+ models**: tell user they need `-ngl` in `extraArgs`
 
 Multimodal detection:
@@ -87,8 +89,16 @@ Parse `gguf.chat_template` from Step 1's `hf models info` JSON response:
 **Base flags** (added automatically by the module — do NOT include in `extraArgs`):
 - `-c 0` (no context size limit in llama-swap config)
 
-**Required per-model flag** (always add to `extraArgs`):
-- `-ngl <N>` — GPU layers to offload. See Hardware Context section for guidance. Example: `-ngl 99` for a 7B model, `-ngl 24` for a 14B model on 8 GB VRAM.
+**Required per-model flag** (always add to `extraArgs`): `-ngl <N>`
+
+Calculate using the formula from the article:
+
+1. **Look up layer count** — check the base model card on HF or run `hf models info <base_model>` for `num_hidden_layers` in `config.json`. Common values: 7B = 32, 14B = 40, Gemma 4 E4B = 42, 30B MoE = 48, 70B = 80.
+2. **Per-layer VRAM** = GGUF_file_size_GB / layer_count
+3. **Max GPU layers** = 5.0 GB / per_layer_VRAM (rounded down)
+4. Set `-ngl` to that value. If the model fits entirely in VRAM (file size < ~5 GB after overhead), use `-ngl -1`.
+
+Example: 9.16 GB file, 40 layers → 229 MB/layer → 5.0 GB / 0.229 GB = 21.8 → **`-ngl 20`**
 
 **If chat_template is ambiguous or missing**:
 - Fetch the HF model page with WebFetch
@@ -106,7 +116,7 @@ Inferred configuration:
 [Confirm] [Edit flags] [Skip and ask me]
 ```
 
-**Reminder:** `-c 0` is added automatically by the module. `-ngl` must be specified in `extraArgs` per model — ask the user what value they want based on their VRAM budget.
+**Reminder:** `-c 0` is added automatically by the module. `-ngl` must be specified in `extraArgs` per model — calculate using the formula above and present the value to the user for confirmation.
 
 ### Step 4 — Download
 
@@ -159,14 +169,15 @@ Locate the `lcars.models` attribute set and add a new entry with the captured pa
   # mmprojPath is optional, only if multimodal
   mmprojPath = "/Users/<username>/.cache/huggingface/hub/.../mmproj-...gguf";
   # extraArgs: model-specific flags including -ngl
-  extraArgs = [ "-ngl" "24" "--jinja" "-fa" "on" ];
+  # -ngl calculated: file_size / layers = per_layer → weight_budget / per_layer = max_layers
+  extraArgs = [ "-ngl" "20" "--jinja" "-fa" "on" ];
   name = "Qwen3 14B UD Q4_K_XL";
   tools = true;
   reasoning = false;
 };
 ```
 
-**ALWAYS include `-ngl <N>` in `extraArgs`** — see Hardware Context for guidance. 7B models can use `-ngl 99` (full offload), 14B models on 8 GB VRAM need something like `-ngl 24`.
+**ALWAYS include `-ngl <N>` in `extraArgs`** — calculate using the formula from the Hardware Context section (per-layer VRAM from file size / layer count, then max layers from weight budget / per-layer VRAM). 7B models at Q4 usually fit entirely → `-ngl -1`.
 
 **Field reference:**
 | Field | Required | Description |
@@ -234,8 +245,14 @@ Configuration will be activated on next model request to llama-swap.
 
 - **Not a global default** — `-ngl` is deliberately excluded from the module's base flags
 - Must be specified per model in `extraArgs` based on VRAM budget
-- See Hardware Context section for this system's GPU specs and layer-count estimates
-- When unsure, recommend CPU-only (omit `-ngl`) and let the user tune later
+- **Formula** (from [bmdpat.com/blog/llama-cpp-n-gpu-layers-explained-2026](https://bmdpat.com/blog/llama-cpp-n-gpu-layers-explained-2026)):
+  - Look up layer count (`llama.block_count` in load log, or `num_hidden_layers` in model's `config.json`)
+  - Per-layer VRAM = GGUF file size (bytes) / layer_count
+  - Max layers = (available_weight_budget) / per_layer_VRAM
+  - On this system: weight budget ≈ 5 GB (after OS/KV cache overhead)
+- **For multimodal models (Gemma 4 E4B)**: the mmproj takes additional ~1 GB VRAM — reduce `-ngl` further or expect OOM
+- **MoE models**: `-ngl` offloads transformer layers; expert weights are handled separately. The formula still applies but be more conservative (expert layers increase memory pressure)
+- **When unsure**: prefer a lower `-ngl` (run today) over a theoretical maximum (risk OOM)
 
 ### YAML format
 
@@ -282,7 +299,7 @@ Select: 1 (Qwen3-14B-UD-Q4_K_XL.gguf)
   Reasoning: false
   Multimodal: no
   Flags (add to extraArgs): --jinja -fa on
-  -ngl needed? This is a 14B model on 8 GB VRAM — recommend -ngl 24
+  -ngl: 9.16 GB / 40 layers = 229 MB/layer → 5.0 GB / 0.229 GB ≈ 21 layers → -ngl 20
 
 Confirmed? (y/n) y
 
@@ -294,7 +311,7 @@ Confirmed? (y/n) y
 📝 Updated lcars.models in home.nix:
    + "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
        modelPath = "...";
-       extraArgs = [ "-ngl" "24" "--jinja" "-fa" "on" ];
+extraArgs = [ "-ngl" "20" "--jinja" "-fa" "on" ];
        name = "Qwen3 14B UD Q4_K_XL";
        tools = true;
        reasoning = false;
