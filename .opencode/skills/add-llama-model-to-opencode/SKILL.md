@@ -120,50 +120,46 @@ Once confirmed, the snapshot path is ready:
 /Users/<username>/.cache/huggingface/hub/models--<org>--<repo>/snapshots/<hash>/<filename>
 ```
 
-### Step 5 — Update `llama-cpp.nix`
+### Step 5 — Update `lcars.models`
 
-Read `nix/modules/home/darwin/llama-cpp.nix`.
+**Important:** Models are now declared in a single location per platform, which drives both **llama-swap** and **opencode** automatically.
 
-Add new `let` variables for the model and mmproj paths (using captured paths from Step 4):
+Determine which platform file to edit:
+- **macOS (Darwin)**: `nix/darwin/home.nix`
+- **NixOS (Linux)**: `nix/users/corintho/home.nix`
 
-```nix
-modelName = "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL";
-modelPath = "/Users/<username>/.cache/huggingface/hub/.../Qwen3-14B-UD-Q4_K_XL.gguf";
-# mmproj is optional
-mmprojPath = "/Users/<username>/.cache/huggingface/hub/.../mmproj-...gguf";
-```
-
-Add model entry to `llamaSwapConfig` YAML **using inline `cmd` format** (not `>` block scalar to avoid YAML indentation issues):
-
-```nix
-"unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL":
-  cmd: "${llamaBin} --model ${modelPath} --port ''${PORT} --jinja -ngl 99 -c 0 -fa on"
-  proxy: http://127.0.0.1:''${PORT}
-```
-
-If multimodal, add `--mmproj ${mmprojPath}` to the cmd.
-
-Validate with `just check` before proceeding to Step 6.
-
-### Step 6 — Update `opencode.nix`
-
-Read `nix/modules/home/opencode.nix`.
-
-Generate clean display name:
-- Strip organization prefix: `unsloth/` → remove
-- Strip `-GGUF` suffix
-- Clean quantization format: keep as-is (e.g., `Q4_K_XL`)
-- Example: `unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL` → `Qwen3 14B UD Q4_K_XL`
-
-Add model entry under `"llama.cpp"` provider's `models` table:
+Locate the `lcars.models` attribute set and add a new entry with the captured paths from Step 4:
 
 ```nix
 "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
+  modelPath = "/Users/<username>/.cache/huggingface/hub/models--unsloth--Qwen3-14B-GGUF/snapshots/<hash>/Qwen3-14B-UD-Q4_K_XL.gguf";
+  # mmprojPath is optional, only if multimodal
+  mmprojPath = "/Users/<username>/.cache/huggingface/hub/.../mmproj-...gguf";
+  # extraArgs: model-specific flags (--jinja, -fa on)
+  extraArgs = [ "--jinja" "-fa" "on" ];
   name = "Qwen3 14B UD Q4_K_XL";
   tools = true;
-  reasoning = false;  # optional, only if true
+  reasoning = false;
 };
 ```
+
+**Field reference:**
+| Field | Required | Description |
+|-------|----------|-------------|
+| `modelPath` | yes | Full path to the GGUF file |
+| `mmprojPath` | no | Multimodal projection file path |
+| `extraArgs` | no | Model-specific llama-server flags |
+| `name` | yes | Human-readable label for opencode |
+| `tools` | no (default: true) | Tool-calling capability |
+| `reasoning` | no (default: false) | Reasoning capability |
+
+The `-ngl 99 -c 0` base flags are added automatically by the module — no need to specify them.
+
+Validate with `just check` before proceeding to Step 6.
+
+### Step 6 — No manual opencode edit needed
+
+The `llama.cpp` provider models in opencode are **auto-generated** from `lcars.models`. No separate edit is required — just adding the model entry in Step 5 is sufficient.
 
 ### Step 7 — Validate
 
@@ -193,7 +189,7 @@ Configuration will be activated on next model request to llama-swap.
 
 ### Idempotency
 
-- Check if model ID already exists in `llama-cpp.nix` and `opencode.nix`
+- Check if model ID already exists in `lcars.models` (in the platform's `home.nix`)
 - If found, offer to update (re-download with new quant) or skip
 - Prevent duplicate entries
 
@@ -262,15 +258,15 @@ Confirmed? (y/n) y
 
 ✅ Downloaded to: /Users/zg47ma/.cache/huggingface/hub/models--unsloth--Qwen3-14B-GGUF/snapshots/a04a82c4.../Qwen3-14B-UD-Q4_K_XL.gguf
 
-📝 Updated llama-cpp.nix:
-   + "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL"
-     cmd: "... --jinja -ngl 99 -c 0 -fa on"
-
-📝 Updated opencode.nix:
+📝 Updated lcars.models in home.nix:
    + "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
+       modelPath = "...";
+       extraArgs = [ "--jinja" "-fa" "on" ];
        name = "Qwen3 14B UD Q4_K_XL";
        tools = true;
+       reasoning = false;
      };
+   (llama-swap + opencode updated automatically)
 
 ✅ Validation passed (just check)
 

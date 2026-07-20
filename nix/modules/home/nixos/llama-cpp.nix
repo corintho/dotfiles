@@ -1,4 +1,4 @@
-{ config, pkgs, lib, username, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   models = config.lcars.models or {};
@@ -35,20 +35,17 @@ lib.mkIf (models != { }) {
     llama-swap
   ];
 
-  launchd.agents."llama-cpp" = {
-    enable = true;
-    config = {
-      ProgramArguments = [
-        "${pkgs.unstable.llama-swap}/bin/llama-swap"
-        "--config"
-        "${llamaSwapConfig}"
-        "--listen"
-        "127.0.0.1:1234"
-      ];
-      RunAtLoad = true;
-      KeepAlive = true;
-      StandardOutPath = "/Users/${username}/Library/Logs/llama-cpp.log";
-      StandardErrorPath = "/Users/${username}/Library/Logs/llama-cpp.log";
+  systemd.user.services."llama-swap" = {
+    Unit = {
+      Description = "llama-swap AI model router";
+      After = [ "network.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.unstable.llama-swap}/bin/llama-swap --config ${llamaSwapConfig} --listen 127.0.0.1:1234";
+      Restart = "on-failure";
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
     };
   };
 }

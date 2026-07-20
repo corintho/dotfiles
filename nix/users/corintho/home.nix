@@ -8,6 +8,7 @@
 }:
 
 let
+  modelsDir = "/windows/c/ai/llama";
   fishModule = ../../modules/home/fish.nix;
 in
 {
@@ -27,6 +28,8 @@ in
     # ../../modules/home/qtile.nix
     ../../modules/home/rofi.nix
     ../../modules/home/waybar.nix
+    ../../modules/home/nixos
+    ../../modules/home/models.nix
     ../../modules/home/zed.nix
     ../../modules/home/zellij.nix
   ]
@@ -89,9 +92,6 @@ in
     # Freecad
     freecad
     # /Freecad
-    # Markpad
-    markpad
-    # /Markpad
     unstable.obsidian
     # Sweet home 3d
     unstable.sweethome3d.application
@@ -111,6 +111,26 @@ in
     })
     # /Custom scripts on path
   ];
+
+  # Local llama.cpp models (drives llama-swap + opencode)
+  lcars.models = {
+    "ggml-org/gemma-4-E4B-it-GGUF:Q8_0" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--ggml-org--gemma-4-E4B-it-GGUF/snapshots/6d556b1304a00d2a95a62f567bb2df5ff5abb936/gemma-4-E4B-it-Q8_0.gguf";
+      mmprojPath = "${modelsDir}/huggingface/hub/models--ggml-org--gemma-4-E4B-it-GGUF/snapshots/6d556b1304a00d2a95a62f567bb2df5ff5abb936/mmproj-gemma-4-E4B-it-Q8_0.gguf";
+      name = "Gemma 4 E4B IT Q8";
+    };
+    "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3-14B-GGUF/snapshots/a04a82c4739b3ef5fa6da7d10261db2c67dd1985/Qwen3-14B-UD-Q4_K_XL.gguf";
+      extraArgs = [ "--jinja" "-fa" "on" ];
+      name = "Qwen3 14B UD Q4_K_XL";
+      reasoning = true;
+    };
+    "unsloth/Qwen2.5-Coder-14B-Instruct-GGUF:Q4_K_M" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen2.5-Coder-14B-Instruct-GGUF/snapshots/388f3f20271ef903bb2dbe7d8236158903e7edb3/Qwen2.5-Coder-14B-Instruct-Q4_K_M.gguf";
+      extraArgs = [ "--jinja" "-fa" "on" ];
+      name = "Qwen2.5 Coder 14B Q4_K_M";
+    };
+  };
 
   # Custom launcher for "fixed" apps
   xdg.desktopEntries = {
@@ -132,9 +152,8 @@ in
 
   home.sessionVariables = {
     EDITOR = "hx";
-  };
-  home.sessionVariables = {
     OLLAMA_MODELS = "/windows/e/__Slow_AI_E/ollama";
+    HF_HOME = "${modelsDir}/huggingface";
   };
   xsession = {
     numlock.enable = true;

@@ -1,4 +1,14 @@
-{ pkgs, ... }:
+{ config, pkgs, lib, ... }:
+
+let
+  llmModels = config.lcars.models or {};
+
+  mkModel = name: model:
+    { inherit (model) name tools; }
+    // lib.optionalAttrs model.reasoning { reasoning = true; };
+
+  autoModels = lib.mapAttrs mkModel llmModels;
+in
 {
   programs.opencode = {
     enable = true;
@@ -50,21 +60,7 @@
           options = {
             baseURL = "http://127.0.0.1:1234/v1";
           };
-          models = {
-            "ggml-org/gemma-4-E4B-it-GGUF:Q8_0" = {
-              name = "Gemma 4 E4B IT Q8";
-              tools = true;
-            };
-            "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
-              name = "Qwen3 14B UD Q4_K_XL";
-              tools = true;
-              reasoning = true;
-            };
-            "unsloth/Qwen2.5-Coder-14B-Instruct-GGUF:Q4_K_M" = {
-              name = "Qwen2.5 Coder 14B Q4_K_M";
-              tools = true;
-            };
-          };
+          models = autoModels;
         };
       };
       permission = {
