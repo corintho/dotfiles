@@ -121,13 +121,23 @@ in
     };
     "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3-14B-GGUF/snapshots/a04a82c4739b3ef5fa6da7d10261db2c67dd1985/Qwen3-14B-UD-Q4_K_XL.gguf";
-      extraArgs = [ "--jinja" "-fa" "on" ];
+      extraArgs = [
+        "--jinja"
+        "-fa"
+        "on"
+      ];
       name = "Qwen3 14B UD Q4_K_XL";
       reasoning = true;
     };
     "unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:UD-IQ1_S" = {
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3-Coder-30B-A3B-Instruct-GGUF/snapshots/b17cb02dd882d5b6ab62fc777ad2995f19668350/Qwen3-Coder-30B-A3B-Instruct-UD-IQ1_S.gguf";
-      extraArgs = [ "--jinja" "-fa" "on" "-ngl" "99" ];
+      extraArgs = [
+        "--jinja"
+        "-fa"
+        "on"
+        "-ngl"
+        "99"
+      ];
       name = "Qwen3 Coder 30B-A3B UD-IQ1_S";
       tools = true;
     };
@@ -325,7 +335,7 @@ in
         model = "opencode/deepseek-v4-flash-free";
         agent = {
           plan.model = "opencode/deepseek-v4-flash-free";
-          build.model = "opencode/minimax-m3-free";
+          build.model = "opencode/deepseek-v4-flash-free";
         };
       };
     };
