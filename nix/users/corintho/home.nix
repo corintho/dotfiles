@@ -115,8 +115,8 @@ in
   # Local llama.cpp models (drives llama-swap + opencode)
   lcars.models = {
     "ggml-org/gemma-4-E4B-it-GGUF:Q8_0" = {
-      modelPath = "${modelsDir}/huggingface/hub/models--ggml-org--gemma-4-E4B-it-GGUF/snapshots/6d556b1304a00d2a95a62f567bb2df5ff5abb936/gemma-4-E4B-it-Q8_0.gguf";
-      mmprojPath = "${modelsDir}/huggingface/hub/models--ggml-org--gemma-4-E4B-it-GGUF/snapshots/6d556b1304a00d2a95a62f567bb2df5ff5abb936/mmproj-gemma-4-E4B-it-Q8_0.gguf";
+      modelPath = "${modelsDir}/huggingface/hub/models--ggml-org--gemma-4-E4B-it-GGUF/snapshots/06f24bb269339b2a19a5167199b81e89ef813c10/gemma-4-E4B-it-Q8_0.gguf";
+      mmprojPath = "${modelsDir}/huggingface/hub/models--ggml-org--gemma-4-E4B-it-GGUF/snapshots/06f24bb269339b2a19a5167199b81e89ef813c10/mmproj-gemma-4-E4B-it-Q8_0.gguf";
       name = "Gemma 4 E4B IT Q8";
     };
     "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
@@ -125,10 +125,11 @@ in
       name = "Qwen3 14B UD Q4_K_XL";
       reasoning = true;
     };
-    "unsloth/Qwen2.5-Coder-14B-Instruct-GGUF:Q4_K_M" = {
-      modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen2.5-Coder-14B-Instruct-GGUF/snapshots/388f3f20271ef903bb2dbe7d8236158903e7edb3/Qwen2.5-Coder-14B-Instruct-Q4_K_M.gguf";
-      extraArgs = [ "--jinja" "-fa" "on" ];
-      name = "Qwen2.5 Coder 14B Q4_K_M";
+    "unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:UD-IQ1_S" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3-Coder-30B-A3B-Instruct-GGUF/snapshots/b17cb02dd882d5b6ab62fc777ad2995f19668350/Qwen3-Coder-30B-A3B-Instruct-UD-IQ1_S.gguf";
+      extraArgs = [ "--jinja" "-fa" "on" "-ngl" "99" ];
+      name = "Qwen3 Coder 30B-A3B UD-IQ1_S";
+      tools = true;
     };
   };
 
