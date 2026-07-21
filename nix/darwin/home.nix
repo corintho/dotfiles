@@ -156,6 +156,10 @@ in
         };
       };
     };
+    zed-editor = {
+      enable = true;
+      package = pkgs.unstable.zed-editor;
+    };
 
     difftastic = {
       enable = true;
