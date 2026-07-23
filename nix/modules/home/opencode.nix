@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, files, ... }:
 
 let
   llmModels = config.lcars.models or {};
@@ -10,6 +10,9 @@ let
   autoModels = lib.mapAttrs mkModel llmModels;
 in
 {
+  xdg.configFile."opencode/AGENTS.md".source =
+    config.lib.file.mkOutOfStoreSymlink "${files}/opencode/AGENTS.md";
+
   programs.opencode = {
     enable = true;
     package = pkgs.unstable.opencode;
