@@ -1,17 +1,26 @@
-{ config, pkgs, lib, files, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  files,
+  ...
+}:
 
 let
-  llmModels = config.lcars.models or {};
+  llmModels = config.lcars.models or { };
 
-  mkModel = name: model:
-    { inherit (model) name tools; }
-    // lib.optionalAttrs model.reasoning { reasoning = true; };
+  mkModel =
+    name: model:
+    { inherit (model) name tools; } // lib.optionalAttrs model.reasoning { reasoning = true; };
 
   autoModels = lib.mapAttrs mkModel llmModels;
 in
 {
   xdg.configFile."opencode/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${files}/opencode/AGENTS.md";
+
+  xdg.configFile."opencode/plugins/override-conciseness.ts".source =
+    ./opencode/plugins/override-conciseness.ts;
 
   programs.opencode = {
     enable = true;
