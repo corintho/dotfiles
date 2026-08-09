@@ -17,6 +17,7 @@ in
     ../modules/home/gitui.nix
     ../modules/home/helix.nix
     ../modules/home/neovim.nix
+    ../modules/home/emacs.nix
     ../modules/home/oh_my_posh.nix
     ../modules/home/opencode.nix
     ../modules/home/models.nix

@@ -56,6 +56,16 @@
       # NOTE: if you experience a build failure with Zen, the first thing to check is to remove this line!
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Doom Emacs source (managed in the store, read-only)
+    doom = {
+      url = "github:doomemacs/doomemacs";
+      flake = false;
+    };
+    # Emacs variants & packages (emacs-pgtk on Wayland, etc.)
+    emacs-overlay = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # Workaround for absolute path requirements
     paths.url = "path:paths";
   };

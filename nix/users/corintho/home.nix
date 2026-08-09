@@ -23,6 +23,7 @@ in
     ../../modules/home/hyprpaper.nix
     ../../modules/home/niri.nix
     ../../modules/home/neovim.nix
+    ../../modules/home/emacs.nix
     ../../modules/home/oh_my_posh.nix
     ../../modules/home/opencode.nix
     # ../../modules/home/qtile.nix

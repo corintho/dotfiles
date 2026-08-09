@@ -112,7 +112,7 @@ repl:
 # Update flake lock file. Remember to redeploy
 [group('maintenance')]
 up: && up-secrets update-brew
-  nix flake update stylix nix-darwin agenix zen-browser --flake ./nix 
+  nix flake update stylix nix-darwin agenix zen-browser doom emacs-overlay --flake ./nix 
 
 # Update flake lock file, fixing unstable to the specified commit. Remember to redeploy. Look at: https://status.nixos.org/ for the current build status
 [group('maintenance')]
@@ -161,6 +161,27 @@ update-comma:
   mkdir -p ~/.cache/nix-index && cd ~/.cache/nix-index
   wget -q -N https://github.com/nix-community/nix-index-database/releases/latest/download/$filename
   ln -f $filename files
+
+# Install Doom at the locked revision (packages into DOOMLOCALDIR)
+[group('maintenance')]
+emacs-setup:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  # Run after deploying, in a fresh shell. First run seeds files/doom; commit
+  # it once. Doom advances via `just up` + this recipe, never `doom upgrade`.
+  emacs_dir="$HOME/.config/emacs"
+  rev="$(jq -r '.nodes.doom.locked.rev' nix/flake.lock)"
+  if [ -L "${emacs_dir}" ]; then
+    rm "${emacs_dir}"
+  fi
+  if [ ! -d "${emacs_dir}" ]; then
+    git clone https://github.com/doomemacs/doomemacs "${emacs_dir}"
+  fi
+  git -C "${emacs_dir}" fetch origin
+  git -C "${emacs_dir}" checkout "${rev}"
+  git -C "${emacs_dir}" submodule update --init --recursive
+  "${emacs_dir}/bin/doom" install
+  "${emacs_dir}/bin/doom" sync --env
 
 # Optimises store usage
 [group('maintenance')]

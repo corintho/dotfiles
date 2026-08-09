@@ -61,6 +61,7 @@ in
       # overlays and modules
       {
         nixpkgs.overlays = [
+          inputs.emacs-overlay.overlays.default
           (final: _prev: {
             unstable = import nixpkgs-unstable {
               inherit system;

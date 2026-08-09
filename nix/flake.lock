@@ -130,6 +130,43 @@
         "type": "github"
       }
     },
+    "doom": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786060488,
+        "narHash": "sha256-zZ/dxK+jO2Z9tjaW9F7RKOlxK80yZJBt2kEv5fvMWeM=",
+        "owner": "doomemacs",
+        "repo": "doomemacs",
+        "rev": "ad55ed08df3a1d3398d136d07b60ba2ad00fb91b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "doomemacs",
+        "repo": "doomemacs",
+        "type": "github"
+      }
+    },
+    "emacs-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "nixpkgs-stable": "nixpkgs-stable"
+      },
+      "locked": {
+        "lastModified": 1786296227,
+        "narHash": "sha256-9Nlr6HGf6IVSAY5nCxu24V4fMb9WYD7pHUJFfC1qPAc=",
+        "owner": "nix-community",
+        "repo": "emacs-overlay",
+        "rev": "f8d9fcf736742e3dcd98754894105eee249e904d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "emacs-overlay",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -361,6 +398,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-stable": {
+      "locked": {
+        "lastModified": 1786089803,
+        "narHash": "sha256-ZuvZfVW2tB5tXYEcpcfhVXB3N4OhdZLOqOviy4OD4b4=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "ee48b147c18c7de1e6ec97dc74792be42724bed1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-26.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1783062881,
@@ -416,6 +469,8 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "doom": "doom",
+        "emacs-overlay": "emacs-overlay",
         "home-manager": "home-manager_2",
         "homebrew-bundle": "homebrew-bundle",
         "homebrew-cask": "homebrew-cask",
