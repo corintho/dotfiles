@@ -1,3 +1,12 @@
+#+title: Config
+* Table of Contents :toc:
+- [[#doom-settings][Doom Settings]]
+- [[#org][Org]]
+- [[#other-settings][Other settings]]
+
+* Doom Settings
+
+#+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
@@ -40,6 +49,11 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'visual)
 
+
+#+end_src
+
+* Org
+#+begin_src emacs-lisp
 (custom-theme-set-faces!
 'doom-one
 
@@ -56,6 +70,12 @@
 (setq org-modern-table-vertical 1)
 (setq org-nodern-table t)
 (add-hook 'org-mode-hook #'hl-todo-mode)
+
+#+end_src
+
+
+* Other settings
+#+begin_src emacs-lisp
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -100,3 +120,7 @@
 (when (string= system-type "darwin")
   (setq insert-directory-program "gls"
         dired-use-ls-dired t))
+
+#+end_src
+
+#+RESULTS:
