@@ -91,6 +91,7 @@ in
             comma
             unstable.devenv
             bat
+            coreutils-prefixed
             curl
             neovim
             tmux

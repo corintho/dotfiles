@@ -73,3 +73,8 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+;; :emacs dired — use GNU ls on macOS (BSD ls lacks required flags)
+(when (string= system-type "darwin")
+  (setq insert-directory-program "gls"
+        dired-use-ls-dired t))
