@@ -2,6 +2,7 @@
 * Table of Contents :toc:
 - [[#doom-settings][Doom Settings]]
 - [[#org][Org]]
+- [[#just][Just]]
 - [[#other-settings][Other settings]]
 
 * Doom Settings
@@ -73,6 +74,16 @@
 
 #+end_src
 
+* Just
+
+#+begin_src emacs-lisp
+(use-package! just-ts-mode
+  :mode ("Justfile" . just-ts-mode)
+  :config
+  (unless (treesit-language-available-p 'just)
+    (just-ts-install-grammar)))
+
+#+end_src
 
 * Other settings
 #+begin_src emacs-lisp

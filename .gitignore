@@ -21,3 +21,4 @@ result
 
 # Emacs
 *.elc
+files/doom/config.el
