@@ -399,6 +399,7 @@ window-rule {
 window-rule {
     match app-id=r#"^kitty$"#
     match app-id=r#"^com.mitchellh.ghostty$"#
+    match app-id=r#"^emacs$"#
     open-on-workspace "Dev"
 }
 

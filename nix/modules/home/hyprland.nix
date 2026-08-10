@@ -101,6 +101,7 @@ in {
           "workspace name:Dev, class:neovide"
           "workspace name:Dev, class:kitty"
           "workspace name:Dev, class:com.mitchellh.ghostty"
+          "workspace name:Dev, class:emacs"
           "workspace name:Gaming, class:steam"
           "workspace name:Gaming, class:heroic"
           "workspace name:Gaming, class:itch"
