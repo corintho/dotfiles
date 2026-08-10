@@ -1,2 +1,6 @@
-{ imports = [ ./aerospace.nix ./sketchybar.nix ]; }
-
+{
+  imports = [
+    ./aerospace.nix
+    ./sketchybar.nix
+  ];
+}

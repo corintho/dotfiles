@@ -1,11 +1,16 @@
-{ appimageTools, fetchurl, lib, writeText, ... }:
+{
+  appimageTools,
+  fetchurl,
+  lib,
+  writeText,
+  ...
+}:
 let
   pname = "OrcaSlicer";
   version = "2.3.2-beta2";
 
   src = fetchurl {
-    url =
-      "https://github.com/OrcaSlicer/OrcaSlicer/releases/download/v${version}/OrcaSlicer_Linux_AppImage_Ubuntu2404_V${version}.AppImage";
+    url = "https://github.com/OrcaSlicer/OrcaSlicer/releases/download/v${version}/OrcaSlicer_Linux_AppImage_Ubuntu2404_V${version}.AppImage";
     hash = "sha256-8IDF6NOzGW0RNO5duprCFNuVoItjv/xSrRILmw0yjZ4=";
   };
 
@@ -22,7 +27,8 @@ let
     Type=Application
     Version=1.5
   '';
-in appimageTools.wrapType2 {
+in
+appimageTools.wrapType2 {
   inherit pname version src;
 
   extraBwrapArgs = [ "--setenv GTK_THEME Adwaita:dark" ];

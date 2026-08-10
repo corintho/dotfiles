@@ -1,10 +1,28 @@
-{ config, lib, modulesPath, ... }:
-let ntfsOptions = [ "rw" "uid=1000" "allow_other" "default_permissions" ];
-in {
+{
+  config,
+  lib,
+  modulesPath,
+  ...
+}:
+let
+  ntfsOptions = [
+    "rw"
+    "uid=1000"
+    "allow_other"
+    "default_permissions"
+  ];
+in
+{
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  boot.initrd.availableKernelModules =
-    [ "xhci_pci" "ahci" "nvme" "usb_storage" "usbhid" "sd_mod" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "ahci"
+    "nvme"
+    "usb_storage"
+    "usbhid"
+    "sd_mod"
+  ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
@@ -26,11 +44,13 @@ in {
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/8572-4959";
     fsType = "vfat";
-    options = [ "fmask=0077" "dmask=0077" ];
+    options = [
+      "fmask=0077"
+      "dmask=0077"
+    ];
   };
 
-  swapDevices =
-    [{ device = "/dev/disk/by-uuid/4c55dccc-a012-419a-8e7e-1eea368233eb"; }];
+  swapDevices = [ { device = "/dev/disk/by-uuid/4c55dccc-a012-419a-8e7e-1eea368233eb"; } ];
 
   # Windows shares
   fileSystems."/windows/c" = {
@@ -66,8 +86,7 @@ in {
   # networking.interfaces.wlp3s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode =
-    lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   # Enable OpenGL
   hardware.graphics = {
@@ -100,7 +119,7 @@ in {
 
     # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
     # Enable this if you have graphical corruption issues or application crashes after waking
-    # up from sleep. This fixes it by saving the entire VRAM memory to /tmp/ instead 
+    # up from sleep. This fixes it by saving the entire VRAM memory to /tmp/ instead
     # of just the bare essentials.
     powerManagement.enable = true;
 
@@ -110,9 +129,9 @@ in {
 
     # Use the NVidia open source kernel module (not to be confused with the
     # independent third-party "nouveau" open source driver).
-    # Support is limited to the Turing and later architectures. Full list of 
-    # supported GPUs is at: 
-    # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus 
+    # Support is limited to the Turing and later architectures. Full list of
+    # supported GPUs is at:
+    # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
     # Only available from driver 515.43.04+
     open = true;
 

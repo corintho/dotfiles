@@ -1,4 +1,10 @@
-{ config, lib, files, pkgs, ... }:
+{
+  config,
+  lib,
+  files,
+  pkgs,
+  ...
+}:
 
 {
 
@@ -13,9 +19,12 @@
   ];
 
   xdg.configFile = {
-    "nvim" = { source = config.lib.file.mkOutOfStoreSymlink "${files}/nvim"; };
+    "nvim" = {
+      source = config.lib.file.mkOutOfStoreSymlink "${files}/nvim";
+    };
   };
-  home.activation.nvim = with config.lib.stylix.colors.withHashtag;
+  home.activation.nvim =
+    with config.lib.stylix.colors.withHashtag;
     let
       theme = ''
         --DO NOT EDIT. Auto generated from current stylix theme during deploy
@@ -45,7 +54,8 @@
         -- Using the command for this one, so we can just change the existing one, instead of replacing it
         vim.cmd \"highlight NeogitDiffDeleteCursor guifg='${base08}' gui=bold\"
       '';
-    in lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    in
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run echo "${theme}" > "${config.home.homeDirectory}/.config/nvim/colors/stylix.lua"
     '';
 }

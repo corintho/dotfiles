@@ -15,20 +15,20 @@ let
 
   boolToDefaults = value: if value then "-bool true" else "-bool false";
 
-  defaultsCommands = lib.concatStringsSep "\n    " (lib.mapAttrsToList
-    (key: value:
+  defaultsCommands = lib.concatStringsSep "\n    " (
+    lib.mapAttrsToList (
+      key: value:
       let
-        valueArg = if lib.isBool value then
-          boolToDefaults value
-        else
-          ''"${toString value}"'';
-      in "run /usr/bin/defaults write com.superultra.Homerow ${key} ${valueArg}")
-    homerowSettings);
+        valueArg = if lib.isBool value then boolToDefaults value else ''"${toString value}"'';
+      in
+      "run /usr/bin/defaults write com.superultra.Homerow ${key} ${valueArg}"
+    ) homerowSettings
+  );
 
-in {
-  home.activation.configureHomerow =
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      echo "Configuring Homerow preferences..."
-      ${defaultsCommands}
-    '';
+in
+{
+  home.activation.configureHomerow = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    echo "Configuring Homerow preferences..."
+    ${defaultsCommands}
+  '';
 }

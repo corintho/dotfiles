@@ -1,19 +1,31 @@
-{ self, pkgs, lib, username, ... }: {
-  system.configurationRevision =
-    if (self ? rev) then self.rev else self.dirtyRev;
+{
+  self,
+  pkgs,
+  lib,
+  username,
+  ...
+}:
+{
+  system.configurationRevision = if (self ? rev) then self.rev else self.dirtyRev;
   # ============================= User related =============================
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${username} = {
     isNormalUser = true;
     description = username;
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
   };
 
   # customise /etc/nix/nix.conf declaratively via `nix.settings`
   nix.settings = {
     # enable flakes globally
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     trusted-users = [ "${username}" ];
     download-buffer-size = 268435456;
   };
@@ -84,7 +96,11 @@
     git = {
       enable = true;
       lfs.enable = true;
-      config = { init = { defaultBranch = "main"; }; };
+      config = {
+        init = {
+          defaultBranch = "main";
+        };
+      };
     };
     # Install zsh
     zsh.enable = true;

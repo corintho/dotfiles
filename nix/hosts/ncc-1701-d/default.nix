@@ -1,4 +1,11 @@
-{ files, inputs, lib, pkgs, username, ... }:
+{
+  files,
+  inputs,
+  lib,
+  pkgs,
+  username,
+  ...
+}:
 
 {
   imports = [
@@ -24,13 +31,16 @@
       # There is no way to change the default boot option from configuration. But it can be done through command line with: `bootctl set-default windows_windows.conf`.
       # It can be undone with `bootctl set-default ""`, then it will revert to whatever nixos sets as the default. Which currently is the latest successful deployment.
       windows = {
-        "windows" = let boot-drive = "HD1c";
-        in {
-          title = "Windows";
-          efiDeviceHandle = boot-drive;
-          # Adding a sort key beginning with a letter earlier than "n", puts it in front of "nixos"
-          sortKey = "a_windows";
-        };
+        "windows" =
+          let
+            boot-drive = "HD1c";
+          in
+          {
+            title = "Windows";
+            efiDeviceHandle = boot-drive;
+            # Adding a sort key beginning with a letter earlier than "n", puts it in front of "nixos"
+            sortKey = "a_windows";
+          };
       };
 
       edk2-uefi-shell.enable = true;
@@ -54,7 +64,7 @@
   # Enable the GNOME Desktop Environment.
   services.desktopManager.gnome.enable = true;
 
-  # Setup GDM 
+  # Setup GDM
   services.displayManager.gdm.enable = true;
   services.displayManager.gdm.autoSuspend = false;
 
@@ -108,14 +118,16 @@
     enable = true;
     # Enable numlock for GUI
     profiles = {
-      gdm.databases = [{
-        settings = {
-          "org/gnome/desktop/peripherals/keyboard" = {
-            numlock-state = true;
-            remember-numlock-state = true;
+      gdm.databases = [
+        {
+          settings = {
+            "org/gnome/desktop/peripherals/keyboard" = {
+              numlock-state = true;
+              remember-numlock-state = true;
+            };
           };
-        };
-      }];
+        }
+      ];
     };
   };
 
@@ -124,11 +136,13 @@
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       # /run/current-system/sw/bin/setleds -D +num < "$tty";
-      ExecStart = lib.mkForce (pkgs.writeShellScript "numLockOnTty" ''
-        for tty in /dev/tty{1..6}; do
-            ${pkgs.kbd}/bin/setleds -D +num < "$tty";
-        done
-      '');
+      ExecStart = lib.mkForce (
+        pkgs.writeShellScript "numLockOnTty" ''
+          for tty in /dev/tty{1..6}; do
+              ${pkgs.kbd}/bin/setleds -D +num < "$tty";
+          done
+        ''
+      );
     };
   };
 
@@ -138,7 +152,9 @@
     cpuFreqGovernor = "powersave";
   };
   services.power-profiles-daemon.enable = false;
-  services.thermald = { enable = true; };
+  services.thermald = {
+    enable = true;
+  };
 
   # AI
   services.open-webui = {
@@ -223,7 +239,9 @@
     package = pkgs.unstable.docker;
   };
   hardware.nvidia-container-toolkit.enable = true;
-  users.users.${username} = { extraGroups = [ "docker" ]; };
+  users.users.${username} = {
+    extraGroups = [ "docker" ];
+  };
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];

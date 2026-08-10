@@ -1,7 +1,14 @@
-{ config, files, pkgs, ... }:
+{
+  config,
+  files,
+  pkgs,
+  ...
+}:
 
-let inherit (config.lib.stylix) colors;
-in {
+let
+  inherit (config.lib.stylix) colors;
+in
+{
   # extra packages for niri
   home.packages = with pkgs; [
     unstable.xdg-desktop-portal-gtk
@@ -21,7 +28,11 @@ in {
       }
     '';
   };
-  xdg.configFile = { "niri/config.kdl" = { source = ./niri/config.kdl; }; };
+  xdg.configFile = {
+    "niri/config.kdl" = {
+      source = ./niri/config.kdl;
+    };
+  };
 
   xdg.desktopEntries = {
     bazecor = {

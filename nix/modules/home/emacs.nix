@@ -1,4 +1,10 @@
-{ config, lib, pkgs, files, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  files,
+  ...
+}:
 
 let
   emacsPackage = if pkgs.stdenv.isLinux then pkgs.emacs-pgtk else pkgs.emacs;

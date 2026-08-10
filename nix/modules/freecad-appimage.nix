@@ -1,4 +1,11 @@
-{ appimageTools, fetchurl, lib, writeText, calculix-ccx, ... }:
+{
+  appimageTools,
+  fetchurl,
+  lib,
+  writeText,
+  calculix-ccx,
+  ...
+}:
 let
   pname = "freecad";
   version = "1.1.1";

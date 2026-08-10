@@ -1,11 +1,16 @@
-{ appimageTools, fetchurl, lib, writeText, ... }:
+{
+  appimageTools,
+  fetchurl,
+  lib,
+  writeText,
+  ...
+}:
 let
   pname = "freecad";
   version = "1.1rc2";
 
   src = fetchurl {
-    url =
-      "https://github.com/FreeCAD/FreeCAD/releases/download/${version}/FreeCAD_${version}-Linux-x86_64-py311.AppImage";
+    url = "https://github.com/FreeCAD/FreeCAD/releases/download/${version}/FreeCAD_${version}-Linux-x86_64-py311.AppImage";
     hash = "sha256-xyYgbpnvcofS/zp+wDa3q87KLrBAq/PXjelGl4mHYww=";
   };
   appimageContents = appimageTools.extractType1 { inherit pname version src; };
@@ -19,7 +24,8 @@ let
     Type=Application
     Version=1.5
   '';
-in appimageTools.wrapType2 {
+in
+appimageTools.wrapType2 {
   inherit pname version src;
   # pkgs = pkgs;
   extraInstallCommands = ''

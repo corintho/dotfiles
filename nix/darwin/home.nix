@@ -85,13 +85,21 @@ in
     };
     "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
       modelPath = "/Users/${username}/.cache/huggingface/hub/models--unsloth--Qwen3-14B-GGUF/snapshots/a04a82c4739b3ef5fa6da7d10261db2c67dd1985/Qwen3-14B-UD-Q4_K_XL.gguf";
-      extraArgs = [ "--jinja" "-fa" "on" ];
+      extraArgs = [
+        "--jinja"
+        "-fa"
+        "on"
+      ];
       name = "Qwen3 14B UD Q4_K_XL";
       reasoning = true;
     };
     "unsloth/Qwen2.5-Coder-14B-Instruct-GGUF:Q4_K_M" = {
       modelPath = "/Users/${username}/.cache/huggingface/hub/models--unsloth--Qwen2.5-Coder-14B-Instruct-GGUF/snapshots/388f3f20271ef903bb2dbe7d8236158903e7edb3/Qwen2.5-Coder-14B-Instruct-Q4_K_M.gguf";
-      extraArgs = [ "--jinja" "-fa" "on" ];
+      extraArgs = [
+        "--jinja"
+        "-fa"
+        "on"
+      ];
       name = "Qwen2.5 Coder 14B Q4_K_M";
     };
   };

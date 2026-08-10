@@ -1,6 +1,13 @@
-{ config, libFiles, pkgs, ... }:
-let inherit (config.lib.stylix) colors;
-in {
+{
+  config,
+  libFiles,
+  pkgs,
+  ...
+}:
+let
+  inherit (config.lib.stylix) colors;
+in
+{
   config = {
     home.file = {
       ".local/lib/hyprland/" = {
@@ -14,8 +21,7 @@ in {
       # Custom scripts on path
       (writeShellApplication {
         name = "h_switch_window_mode";
-        text = ''
-          hyprctl dispatch focuswindow "$(if [[ $(hyprctl activewindow -j | jq .'floating') == 'true' ]]; then echo 'tiled'; else echo 'floating'; fi;)"'';
+        text = ''hyprctl dispatch focuswindow "$(if [[ $(hyprctl activewindow -j | jq .'floating') == 'true' ]]; then echo 'tiled'; else echo 'floating'; fi;)"'';
       })
       # /Custom scripts on path
     ];
@@ -73,16 +79,22 @@ in {
           border_size = 2;
           # "col.active_border" = lib.mkForce "0xff3c2bd0";
         };
-        cursor = { hide_on_key_press = true; };
-        decoration = { rounding = 10; };
+        cursor = {
+          hide_on_key_press = true;
+        };
+        decoration = {
+          rounding = 10;
+        };
         input = {
           kb_layout = "us, us";
           kb_variant = ", intl";
           kb_options = "grp:menu_toggle";
           numlock_by_default = true;
         };
-        monitor =
-          [ "DP-3,1920x1080@119.98,0x0,1" "HDMI-A-1,1920x1080@60,auto-left,1" ];
+        monitor = [
+          "DP-3,1920x1080@119.98,0x0,1"
+          "HDMI-A-1,1920x1080@60,auto-left,1"
+        ];
         # Only needed when going through logs to debug issues
         # debug = { disable_logs = false; };
         # Remember to update waybar settings to match
@@ -226,4 +238,3 @@ in {
     };
   };
 }
-

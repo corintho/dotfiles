@@ -1,12 +1,17 @@
-{ config, pkgs, files, libFiles, ... }:
+{
+  config,
+  pkgs,
+  files,
+  libFiles,
+  ...
+}:
 
 {
   config = {
     home.packages = with pkgs; [
       playerctl # media player cli
       gobject-introspection # for python packages
-      (python3.withPackages
-        (ps: with ps; [ pygobject3 ])) # python with pygobject3
+      (python3.withPackages (ps: with ps; [ pygobject3 ])) # python with pygobject3
       lm_sensors # sensors information library
       jq
       openpomodoro-cli
@@ -16,7 +21,9 @@
       ".config/waybar/config.jsonc" = {
         source = "${files}/waybar/config.jsonc";
       };
-      ".config/waybar/style.css" = { source = "${files}/waybar/style.css"; };
+      ".config/waybar/style.css" = {
+        source = "${files}/waybar/style.css";
+      };
       ".config/waybar/theme.css" = {
         text = ''
           /* Global colors */

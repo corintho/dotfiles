@@ -1,6 +1,13 @@
-{ config, libFiles, pkgs, ... }:
-let inherit (config.lib.stylix) colors;
-in {
+{
+  config,
+  libFiles,
+  pkgs,
+  ...
+}:
+let
+  inherit (config.lib.stylix) colors;
+in
+{
   config = {
     xdg.configFile = {
       "qtile/colors.py".text = ''
@@ -25,4 +32,3 @@ in {
     };
   };
 }
-

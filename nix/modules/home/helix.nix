@@ -17,10 +17,14 @@
               normal = "block";
               select = "underline";
             };
-            indent-guides = { render = true; };
+            indent-guides = {
+              render = true;
+            };
             # Diagnostics
             end-of-line-diagnostics = "hint";
-            inline-diagnostics = { cursor-line = "warning"; };
+            inline-diagnostics = {
+              cursor-line = "warning";
+            };
             # Usability tunings
             jump-label-alphabet = "ntesiroahdmgcxzlpufywqjbkv";
             # Input setup
@@ -35,8 +39,7 @@
               "C-," = "command_mode";
               "C-e" = [
                 ":sh rm -f /tmp/files2open"
-                ''
-                  :insert-output yazi "%{buffer_name}" --chooser-file=/tmp/files2open''
+                '':insert-output yazi "%{buffer_name}" --chooser-file=/tmp/files2open''
                 ":redraw"
                 ":open /tmp/files2open"
                 "select_all"
@@ -44,16 +47,24 @@
                 "goto_file"
                 ":buffer-close! /tmp/files2open"
               ];
-              "C-g" =
-                [ ":new" ":insert-output lazygit" ":buffer-close!" ":redraw" ];
+              "C-g" = [
+                ":new"
+                ":insert-output lazygit"
+                ":buffer-close!"
+                ":redraw"
+              ];
               space = {
                 c = ":buffer-close";
                 q = ":quit";
                 Q = ":quit!";
                 w = ":write";
               };
-              "]" = { b = ":buffer-next"; };
-              "[" = { b = ":buffer-previous"; };
+              "]" = {
+                b = ":buffer-next";
+              };
+              "[" = {
+                b = ":buffer-previous";
+              };
             };
           };
         };

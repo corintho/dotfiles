@@ -70,9 +70,22 @@
     paths.url = "path:paths";
   };
 
-  outputs = inputs@{ self, paths, nixpkgs, nixpkgs-unstable, home-manager
-    , nix-darwin, homebrew-bundle, homebrew-cask, homebrew-core
-    , homebrew-xcodesorg, nix-homebrew, secrets, ... }:
+  outputs =
+    inputs@{
+      self,
+      paths,
+      nixpkgs,
+      nixpkgs-unstable,
+      home-manager,
+      nix-darwin,
+      homebrew-bundle,
+      homebrew-cask,
+      homebrew-core,
+      homebrew-xcodesorg,
+      nix-homebrew,
+      secrets,
+      ...
+    }:
     let
       local_toolchain_path = "$HOME/.toolchain";
       local_flutter_path = "${local_toolchain_path}/flutter-local";
@@ -80,19 +93,46 @@
       flutter-local = import ./modules/flutter.nix {
         inherit nixpkgs local_flutter_path flutter_version;
       };
-    in {
+    in
+    {
       formatter = {
         x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-tree;
         aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-tree;
       };
-      nixosConfigurations = (import ./hosts {
-        inherit self inputs nixpkgs nixpkgs-unstable home-manager paths secrets
-          local_flutter_path flutter-local;
-      });
-      darwinConfigurations = (import ./darwin {
-        inherit self inputs nix-darwin nixpkgs nixpkgs-unstable nix-homebrew
-          home-manager homebrew-bundle homebrew-cask homebrew-core
-          homebrew-xcodesorg paths local_flutter_path flutter-local;
-      });
+      nixosConfigurations = (
+        import ./hosts {
+          inherit
+            self
+            inputs
+            nixpkgs
+            nixpkgs-unstable
+            home-manager
+            paths
+            secrets
+            local_flutter_path
+            flutter-local
+            ;
+        }
+      );
+      darwinConfigurations = (
+        import ./darwin {
+          inherit
+            self
+            inputs
+            nix-darwin
+            nixpkgs
+            nixpkgs-unstable
+            nix-homebrew
+            home-manager
+            homebrew-bundle
+            homebrew-cask
+            homebrew-core
+            homebrew-xcodesorg
+            paths
+            local_flutter_path
+            flutter-local
+            ;
+        }
+      );
     };
 }

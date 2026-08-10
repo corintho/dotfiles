@@ -1,1 +1,7 @@
-{ config = { services.hyprpaper = { enable = true; }; }; }
+{
+  config = {
+    services.hyprpaper = {
+      enable = true;
+    };
+  };
+}

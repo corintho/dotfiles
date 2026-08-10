@@ -1,8 +1,14 @@
 { config, lib, ... }: {
   options.custom.menuBar = {
     autoHide = lib.mkOption {
-      type = lib.types.nullOr
-        (lib.types.enum [ "always" "desktop-only" "fullscreen-only" "never" ]);
+      type = lib.types.nullOr (
+        lib.types.enum [
+          "always"
+          "desktop-only"
+          "fullscreen-only"
+          "never"
+        ]
+      );
       default = null;
       description = ''
         Control macOS menu bar auto-hide behavior.
@@ -15,20 +21,20 @@
     };
   };
 
-  config = let
-    autoHideMap = {
-      always = 0;
-      "desktop-only" = 1;
-      "fullscreen-only" = 2;
-      never = 3;
+  config =
+    let
+      autoHideMap = {
+        always = 0;
+        "desktop-only" = 1;
+        "fullscreen-only" = 2;
+        never = 3;
+      };
+      autoHideValue = autoHideMap.${config.custom.menuBar.autoHide};
+    in
+    lib.mkIf (config.custom.menuBar.autoHide != null) {
+      system.defaults = {
+        CustomUserPreferences."com.apple.controlcenter".AutoHideMenuBarOption = autoHideValue;
+        NSGlobalDomain._HIHideMenuBar = (autoHideValue == 0 || autoHideValue == 1);
+      };
     };
-    autoHideValue = autoHideMap.${config.custom.menuBar.autoHide};
-  in lib.mkIf (config.custom.menuBar.autoHide != null) {
-    system.defaults = {
-      CustomUserPreferences."com.apple.controlcenter".AutoHideMenuBarOption =
-        autoHideValue;
-      NSGlobalDomain._HIHideMenuBar =
-        (autoHideValue == 0 || autoHideValue == 1);
-    };
-  };
 }
