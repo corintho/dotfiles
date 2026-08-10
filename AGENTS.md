@@ -68,8 +68,10 @@ nix flake check ./nix
 
 ### Formatting Validation
 ```bash
-# Check Nix code formatting without modifying files
-nix fmt --check
+# Check Nix code formatting without modifying files (run from repo root)
+just fmt-check
+# Apply formatting (uses the official nixfmt via the flake formatter)
+just fmt
 ```
 
 ## Code Style Guidelines
@@ -79,7 +81,7 @@ nix fmt --check
 **Formatting & Indentation**:
 - Use 2-space indentation (standard Nix convention)
 - Keep lines reasonably short (80-100 characters)
-- Use `nixfmt` or `nix fmt` for automatic formatting
+- Use `just fmt` (backed by the official `nixfmt` via the flake formatter) for automatic formatting
 
 **File Organization and Structure**:
 ```nix
@@ -216,7 +218,7 @@ BREAKING CHANGE: Explanation of what breaks and how to migrate
 #### Making Changes
 1. Make file changes as requested
 2. Run `just check` to validate system changes
-3. Run `nix fmt --check` to validate formatting (or run `nixfmt` to fix)
+3. Run `just fmt-check` to validate formatting (or run `just fmt` to fix)
 4. Show git diff/status to demonstrate what changed
 
 #### Committing Changes
@@ -272,7 +274,7 @@ Before making changes:
 1. Run `just check` for dry-run validation
 2. Verify changes don't break imports
 3. Test configuration compiles with `nix flake check ./nix`
-4. Run `nix fmt --check` to validate formatting
+4. Run `just fmt-check` to validate formatting
 5. Ensure git status is clean
 
 ## Additional Resources
@@ -285,6 +287,6 @@ Before making changes:
 ## Quick Reference: Validation Commands
 
 - `just check`: Platform-specific dry-run (NixOS/macOS)
-- `nix fmt --check`: Nix code formatting validation
+- `just fmt-check`: Nix code formatting validation
 - `nix flake check ./nix`: Flake integrity check
 - `just tree`: View dependency tree

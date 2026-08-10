@@ -81,6 +81,10 @@
         inherit nixpkgs local_flutter_path flutter_version;
       };
     in {
+      formatter = {
+        x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-tree;
+        aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt-tree;
+      };
       nixosConfigurations = (import ./hosts {
         inherit self inputs nixpkgs nixpkgs-unstable home-manager paths secrets
           local_flutter_path flutter-local;

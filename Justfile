@@ -193,6 +193,20 @@ optimise:
 tree:
   nix-tree
 
+#
+# Formatting
+#
+
+# Format all Nix files using the flake formatter
+[group('formatting')]
+fmt:
+  cd nix && nix fmt
+
+# Check Nix formatting without modifying files
+[group('formatting')]
+fmt-check:
+  nixfmt --check nix devenv.nix
+
 # Keep only 5 generations
 [group('cleanup')]
 keep5:
