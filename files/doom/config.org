@@ -3,6 +3,7 @@
 - [[#doom-settings][Doom Settings]]
 - [[#org][Org]]
 - [[#just][Just]]
+- [[#keybinds][Keybinds]]
 - [[#other-settings][Other settings]]
 
 * Doom Settings
@@ -85,6 +86,17 @@
 
 #+end_src
 
+* Keybinds
+`avy-keys` is for jumping with evil-motion
+`aw-keys` I still don't know, but there was a direct match with the previous one
+`lispy-avy-keys` I also don't know and it needs more keybinds
+
+#+begin_src emacs-lisp
+(setq avy-keys '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)
+      aw-keys '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h)
+      lispy-avy-keys '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h ?c ?x ?z ?, ?. ?/ ?p ?l ?f ?u))
+
+#+end_src
 * Other settings
 #+begin_src emacs-lisp
 
