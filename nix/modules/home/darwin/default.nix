@@ -1,5 +1,6 @@
 {
   imports = [
+    ./emacs.nix
     ./wm
     ./homerow.nix
     ./llama-cpp.nix

@@ -1,1 +1,6 @@
-{ imports = [ ./llama-cpp.nix ]; }
+{
+  imports = [
+    ./emacs.nix
+    ./llama-cpp.nix
+  ];
+}

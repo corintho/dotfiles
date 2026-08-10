@@ -40,6 +40,15 @@ in
     DOOMPROFILELOADFILE = "${config.xdg.stateHome}/doom-profiles-load.el";
   };
 
+  # Emacs daemon + emacsclient, shared across platforms. Socket activation is
+  # configured per-platform (see nixos/emacs.nix). EDITOR stays as Helix (`hx`),
+  # so defaultEditor is intentionally left off.
+  services.emacs = {
+    enable = true;
+    package = emacsPackage;
+    client.enable = true;
+  };
+
   home.sessionPath = [ "${config.xdg.configHome}/emacs/bin" ];
 
   fonts.fontconfig.enable = lib.mkIf pkgs.stdenv.isLinux true;
