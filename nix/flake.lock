@@ -146,6 +146,22 @@
         "type": "github"
       }
     },
+    "doom-icon": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1678491647,
+        "narHash": "sha256-TLUzL37X41PBRK9oVtKjZDQ2Laf82OMA9KWzTjGKmyY=",
+        "owner": "jaidetree",
+        "repo": "doom-icon",
+        "rev": "e90e93ff6c05615137a0a3694f4674ba83ff00ae",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jaidetree",
+        "repo": "doom-icon",
+        "type": "github"
+      }
+    },
     "emacs-overlay": {
       "inputs": {
         "nixpkgs": [
@@ -470,6 +486,7 @@
       "inputs": {
         "agenix": "agenix",
         "doom": "doom",
+        "doom-icon": "doom-icon",
         "emacs-overlay": "emacs-overlay",
         "home-manager": "home-manager_2",
         "homebrew-bundle": "homebrew-bundle",

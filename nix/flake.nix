@@ -61,6 +61,11 @@
       url = "github:doomemacs/doomemacs";
       flake = false;
     };
+    # Doom Emacs icon artwork (CC0), used for the macOS bundle and Linux launcher
+    doom-icon = {
+      url = "github:jaidetree/doom-icon";
+      flake = false;
+    };
     # Emacs variants & packages (emacs-pgtk on Wayland, etc.)
     emacs-overlay = {
       url = "github:nix-community/emacs-overlay";

@@ -2,8 +2,9 @@
 * Table of Contents :toc:
 - [[#doom-settings][Doom Settings]]
 - [[#org][Org]]
-- [[#just][Just]]
 - [[#keybinds][Keybinds]]
+- [[#additional-packages][Additional Packages]]
+  - [[#just][Just]]
 - [[#other-settings][Other settings]]
 
 * Doom Settings
@@ -75,17 +76,6 @@
 
 #+end_src
 
-* Just
-
-#+begin_src emacs-lisp
-(use-package! just-ts-mode
-  :mode ("Justfile" . just-ts-mode)
-  :config
-  (unless (treesit-language-available-p 'just)
-    (just-ts-install-grammar)))
-
-#+end_src
-
 * Keybinds
 `avy-keys` is for jumping with evil-motion
 `aw-keys` I still don't know, but there was a direct match with the previous one
@@ -97,6 +87,19 @@
       lispy-avy-keys '(?a ?r ?s ?t ?n ?e ?i ?o ?d ?h ?c ?x ?z ?, ?. ?/ ?p ?l ?f ?u))
 
 #+end_src
+
+* Additional Packages
+** Just
+
+#+begin_src emacs-lisp
+(use-package! just-ts-mode
+  :mode ("Justfile" . just-ts-mode)
+  :config
+  (unless (treesit-language-available-p 'just)
+    (just-ts-install-grammar)))
+
+#+end_src
+
 * Other settings
 #+begin_src emacs-lisp
 

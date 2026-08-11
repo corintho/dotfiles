@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 
@@ -35,8 +36,8 @@ let
       LAUNCHER
       chmod +x $APP/MacOS/EmacsClient
 
-      # Copy icon from the Emacs.app bundle
-      cp ${emacsPackage}/Applications/Emacs.app/Contents/Resources/Emacs.icns \
+      # Copy Doom Emacs icon into the bundle
+      cp ${inputs.doom-icon}/cute-doom/doom.icns \
          $APP/Resources/EmacsClient.icns
 
        # Minimal Info.plist for macOS app bundle
