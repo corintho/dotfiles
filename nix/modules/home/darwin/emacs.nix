@@ -17,5 +17,8 @@ let
   };
 in
 {
-  launchd.agents.emacs.config.EnvironmentVariables = lib.mkIf config.services.emacs.enable doomEnv;
+  launchd.agents.emacs.config = lib.mkIf config.services.emacs.enable {
+    EnvironmentVariables = doomEnv;
+    LimitLoadToSessionType = "Aqua";
+  };
 }
