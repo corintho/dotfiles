@@ -26,18 +26,16 @@ in
 
   xdg.configFile = {
     # User config, writable and version controlled in the repo
-    # Doom itself lives in a writable git clone pinned by `just emacs-setup` to
-    # the flake-locked doom revision (see Justfile), so it is not store-managed
-    "doom".source = config.lib.file.mkOutOfStoreSymlink "${files}/doom";
+    # Spacemacs itself lives in a writable git clone pinned by `just emacs-setup`
+    # to the flake-locked spacemacs revision (see Justfile), so it is not
+    # store-managed
+    "spacemacs".source = config.lib.file.mkOutOfStoreSymlink "${files}/spacemacs";
   };
 
   home.sessionVariables = {
     EMACSDIR = "${config.xdg.configHome}/emacs";
-    DOOMDIR = "${config.xdg.configHome}/doom";
-    # Mutable Doom state (straight.el, caches, package installs) lives
-    # outside both the store and the tracked config
-    DOOMLOCALDIR = "${config.xdg.dataHome}/doom";
-    DOOMPROFILELOADFILE = "${config.xdg.stateHome}/doom-profiles-load.el";
+    # Spacemacs dotfile directory (must exist for the env var to take effect)
+    SPACEMACSDIR = "${config.xdg.configHome}/spacemacs";
   };
 
   # Emacs daemon + emacsclient, shared across platforms. Socket activation is
@@ -48,8 +46,6 @@ in
     package = emacsPackage;
     client.enable = true;
   };
-
-  home.sessionPath = [ "${config.xdg.configHome}/emacs/bin" ];
 
   fonts.fontconfig.enable = lib.mkIf pkgs.stdenv.isLinux true;
 }

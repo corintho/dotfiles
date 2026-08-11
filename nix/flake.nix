@@ -56,14 +56,9 @@
       # NOTE: if you experience a build failure with Zen, the first thing to check is to remove this line!
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Doom Emacs source (managed in the store, read-only)
-    doom = {
-      url = "github:doomemacs/doomemacs";
-      flake = false;
-    };
-    # Doom Emacs icon artwork (CC0), used for the macOS bundle and Linux launcher
-    doom-icon = {
-      url = "github:jaidetree/doom-icon";
+    # Spacemacs source (managed in the store, read-only)
+    spacemacs = {
+      url = "github:syl20bnr/spacemacs/develop";
       flake = false;
     };
     # Emacs variants & packages (emacs-pgtk on Wayland, etc.)

@@ -88,14 +88,12 @@ in
         {
           system.primaryUser = username;
 
-          # Make the Doom vars visible to raw Finder/Dock-launched processes
+          # Make the Spacemacs vars visible to raw Finder/Dock-launched processes
           # (standalone emacs, emacsclient). home-manager session vars only reach
           # shells; launchctl setenv here covers the whole launchd user domain.
           launchd.user.envVariables = {
             EMACSDIR = "/Users/${username}/.config/emacs";
-            DOOMDIR = "/Users/${username}/.config/doom";
-            DOOMLOCALDIR = "/Users/${username}/.local/share/doom";
-            DOOMPROFILELOADFILE = "/Users/${username}/.local/state/doom-profiles-load.el";
+            SPACEMACSDIR = "/Users/${username}/.config/spacemacs";
           };
 
           environment.systemPackages = with pkgs; [
