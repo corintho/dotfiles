@@ -62,10 +62,22 @@ update-brew:
 # Darwin specific
 #
 
+# Boot out the Emacs LaunchAgent
+[group('build')]
+[macos]
+launchctl-stop:
+  sudo launchctl bootout gui/$(id -u)/org.nix-community.home.emacs 2>/dev/null || true
+
+# Bootstrap the Emacs LaunchAgent
+[group('build')]
+[macos]
+launchctl-start:
+  sudo launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/org.nix-community.home.emacs.plist 2>/dev/null || true
+
 # Standard deploy for MacOS
 [group('build')]
 [macos]
-deploy:
+deploy: launchctl-stop && launchctl-start
   sudo -E darwin-rebuild switch --flake ./nix --impure
 
 # Standard deploy with extended debug enabled
@@ -220,6 +232,16 @@ clean:
 # Reclaim unused space after removing older generations. This one is slow to run
 [group('cleanup')]
 gc:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  # Safeguard: verify home-manager profile is valid before GC to prevent dangling symlinks
+  hm_profile="$HOME/.local/state/nix/profiles/home-manager"
+  if [[ -L "$hm_profile" ]]; then
+    if ! nix-store --verify-path "$(readlink -f "$hm_profile")" 2>/dev/null; then
+      echo "ERROR: home-manager profile is dangling/invalid. Run 'just deploy' to fix before gc." >&2
+      exit 1
+    fi
+  fi
   sudo nix store gc
   nix store gc
   @printf "\nRemember to run \"deploy\" again to remove old entries from the boot menu\n"

@@ -15,8 +15,65 @@ let
     DOOMLOCALDIR = "${config.xdg.dataHome}/doom";
     DOOMPROFILELOADFILE = "${config.xdg.stateHome}/doom-profiles-load.el";
   };
+
+  # Emacs client launcher .app bundle for macOS. Provides a Spotlight/Raycast-
+  # launchable shortcut to open a new Emacs frame via emacsclient.
+  emacsPackage = if pkgs.stdenv.isLinux then pkgs.emacs-pgtk else pkgs.emacs;
+
+  emacsClientApp = pkgs.stdenv.mkDerivation {
+    name = "EmacsClient";
+    buildInputs = [ emacsPackage ];
+    phases = [ "installPhase" ];
+    installPhase = ''
+      APP=$out/Applications/EmacsClient.app/Contents
+      mkdir -p $APP/MacOS $APP/Resources
+
+      # Shell script launcher: connect to running daemon, or start Emacs if needed
+      cat > $APP/MacOS/EmacsClient << 'LAUNCHER'
+      #!/bin/sh
+      exec ${emacsPackage}/bin/emacsclient -c -a ""
+      LAUNCHER
+      chmod +x $APP/MacOS/EmacsClient
+
+      # Copy icon from the Emacs.app bundle
+      cp ${emacsPackage}/Applications/Emacs.app/Contents/Resources/Emacs.icns \
+         $APP/Resources/EmacsClient.icns
+
+       # Minimal Info.plist for macOS app bundle
+       cat > $APP/Info.plist << 'PLIST'
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+      <plist version="1.0">
+      <dict>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>en</string>
+        <key>CFBundleExecutable</key>
+        <string>EmacsClient</string>
+        <key>CFBundleIconFile</key>
+        <string>EmacsClient</string>
+        <key>CFBundleIdentifier</key>
+        <string>org.gnu.emacsclient</string>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.0</string>
+        <key>CFBundleName</key>
+        <string>EmacsClient</string>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>CFBundleShortVersionString</key>
+        <string>1.0</string>
+        <key>CFBundleVersion</key>
+        <string>1</string>
+        <key>NSPrincipalClass</key>
+        <string>NSApplication</string>
+      </dict>
+      </plist>
+      PLIST
+    '';
+  };
 in
 {
+  home.packages = lib.mkIf config.services.emacs.enable [ emacsClientApp ];
+
   launchd.agents.emacs.config = lib.mkIf config.services.emacs.enable {
     EnvironmentVariables = doomEnv;
     LimitLoadToSessionType = "Aqua";
