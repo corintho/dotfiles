@@ -231,8 +231,8 @@ It should only modify the values of Spacemacs settings."
    ;; a non-negative integer (pixel size), or a floating-point (point size).
    ;; Point size is recommended, because it's device independent. (default 10.0)
    ;; CHANGED: FiraCode Nerd Font, darwin 14pt / linux 13pt.
-   dotspacemacs-default-font '("FiraCode Nerd Font"
-                               :size (if (eq system-type 'darwin) 14 10)
+   dotspacemacs-default-font `("FiraCode Nerd Font"
+                               :size ,(if (eq system-type 'darwin) 14 10)
                                :weight normal
                                :width normal)
 

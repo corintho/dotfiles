@@ -81,8 +81,12 @@ in
 {
   home.packages = lib.mkIf config.services.emacs.enable [ emacsClientApp ];
 
-  launchd.agents.emacs.config = lib.mkIf config.services.emacs.enable {
-    EnvironmentVariables = spacemacsEnv;
-    LimitLoadToSessionType = "Aqua";
+  launchd.agents.emacs = lib.mkIf config.services.emacs.enable {
+    domain = "gui";
+    config = {
+      EnvironmentVariables = spacemacsEnv;
+      KeepAlive = lib.mkForce true;
+      LimitLoadToSessionType = "Aqua";
+    };
   };
 }

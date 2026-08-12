@@ -77,7 +77,7 @@ launchctl-start:
 # Standard deploy for MacOS
 [group('build')]
 [macos]
-deploy: launchctl-stop && launchctl-start
+deploy:
   sudo -E darwin-rebuild switch --flake ./nix --impure
 
 # Standard deploy with extended debug enabled
