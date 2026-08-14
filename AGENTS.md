@@ -22,6 +22,14 @@ just check
 just check
 ```
 
+**Note**: `just check` and `nix flake check ./nix` only validate Nix configuration
+(`nix/`, `flake.nix`, etc.). Files under `files/` are plain deployment payloads
+copied verbatim to their target locations and are NOT part of the Nix evaluation
+graph. When a change touches **only** files in `files/`, skip `just check` /
+`nix flake check` entirely — there is nothing for Nix to evaluate. Validation of
+those files (e.g. Emacs Lisp, dotfiles consumed by external tools) is the
+responsibility of the consuming application, not the Nix flake.
+
 ### Deploy Configuration
 ```bash
 # NixOS - apply system configuration
@@ -217,8 +225,11 @@ BREAKING CHANGE: Explanation of what breaks and how to migrate
 
 #### Making Changes
 1. Make file changes as requested
-2. Run `just check` to validate system changes
-3. Run `just fmt-check` to validate formatting (or run `just fmt` to fix)
+2. Run `just check` to validate system changes — **SKIP this step if the change
+   touches only files under `files/`** (they are out-of-Nix and not evaluated by
+   the flake; see the Dry Run Validation note above)
+3. Run `just fmt-check` to validate formatting (or run `just fmt` to fix) —
+   applicable only to Nix files; skip for non-Nix files under `files/`
 4. Show git diff/status to demonstrate what changed
 
 #### Committing Changes
@@ -271,10 +282,11 @@ files/                        # Configuration files to deploy
 ## Testing & Validation
 
 Before making changes:
-1. Run `just check` for dry-run validation
+1. Run `just check` for dry-run validation — **skip if the change touches only
+   files under `files/`**, which are out-of-Nix and not evaluated by the flake
 2. Verify changes don't break imports
-3. Test configuration compiles with `nix flake check ./nix`
-4. Run `just fmt-check` to validate formatting
+3. Test configuration compiles with `nix flake check ./nix` — skip for `files/`-only changes
+4. Run `just fmt-check` to validate formatting — skip for non-Nix files under `files/`
 5. Ensure git status is clean
 
 ## Additional Resources
