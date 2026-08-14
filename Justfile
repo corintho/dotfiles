@@ -174,10 +174,7 @@ update-comma:
   wget -q -N https://github.com/nix-community/nix-index-database/releases/latest/download/$filename
   ln -f $filename files
 
-# Tangle the literate Spacemacs config (init.org) into the generated init.el
-# that Spacemacs loads. init.el is an untracked artifact (gitignored); init.org
-# is the committed source of truth. Safe to run even if init.el is broken —
-# batch tangle never loads the generated file.
+# Tangle the literate Spacemacs config (init.org) into init.el.
 emacs-literate:
   #!/usr/bin/env bash
   set -euo pipefail
@@ -190,10 +187,7 @@ emacs-literate:
 emacs-setup: && emacs-literate
   #!/usr/bin/env bash
   set -euo pipefail
-  # Run after deploying, in a fresh shell. Clones Spacemacs at the locked
-  # revision. Packages are installed on the first interactive launch (Spacemacs
-  # has no `doom install`/`doom sync` equivalent). The literate config
-  # (init.org) is tangled to init.el first via the `emacs-literate` dependency.
+  # Clone Spacemacs at the locked revision (run in a fresh shell after deploying).
   emacs_dir="$HOME/.config/emacs"
   rev="$(jq -r '.nodes.spacemacs.locked.rev' nix/flake.lock)"
   if [ -L "${emacs_dir}" ]; then

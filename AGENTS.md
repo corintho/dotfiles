@@ -177,6 +177,11 @@ in
 - Document complex logic
 - Add headers for major sections
 
+**Just Recipe Comments**:
+- Each recipe's doc comment (the `#` line(s) directly above the recipe, shown by `just --list`) MUST be a single line.
+- Keep the description to one concise sentence; never span a recipe comment across multiple lines.
+- Inline comments inside a recipe body must also be a single line each.
+
 ## Testing Tools
 
 - `nix-tree`: Shows searchable dependency tree (run with `just tree`)
