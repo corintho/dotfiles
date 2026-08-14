@@ -1,7 +1,20 @@
-;; -*- mode: emacs-lisp; lexical-binding: t -*-
-;; This file is loaded by Spacemacs at startup.
-;; It must be stored in your home directory.
+#+title: Spacemacs configuration (literate)
+#+property: header-args:elisp :tangle init.el :comments org
 
+This file is the literate source of truth for my Spacemacs configuration.
+Spacemacs loads the generated =init.el= (tangled from this file by
+=just emacs-literate=). It must be stored in your home directory
+(symlinked to =~/.config/spacemacs/init.el=).
+
+* Prologue
+
+#+begin_src elisp :comments no
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
+#+end_src
+
+* Layers
+
+#+begin_src elisp
 (defun dotspacemacs/layers ()
   "Layer configuration:
 This function should only modify configuration layer settings."
@@ -80,7 +93,11 @@ This function should only modify configuration layer settings."
    ;; installs *all* packages supported by Spacemacs and never uninstalls them.
    ;; (default is `used-only')
    dotspacemacs-install-packages 'used-only))
+#+end_src
 
+* Initialization
+
+#+begin_src elisp
 (defun dotspacemacs/init ()
   "Initialization:
 This function is called at the very beginning of Spacemacs startup,
@@ -558,7 +575,11 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil then byte-compile some of Spacemacs files.
    dotspacemacs-byte-compile nil))
+#+end_src
 
+* User environment
+
+#+begin_src elisp
 (defun dotspacemacs/user-env ()
   "Environment variables setup.
 This function defines the environment variables for your Emacs session. By
@@ -567,7 +588,11 @@ variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
 See the header of this file for more information."
   (spacemacs/load-spacemacs-env)
   )
+#+end_src
 
+* User init
+
+#+begin_src elisp
 (defun dotspacemacs/user-init ()
   "Initialization for user code:
 This function is called immediately after `dotspacemacs/init', before layer
@@ -587,7 +612,11 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
     (set-face-attribute 'variable-pitch nil
                         :family "Fira Sans"
                         :height (if (eq system-type 'darwin) 1.0 0.95))))
+#+end_src
 
+* User config
+
+#+begin_src elisp
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
 This function is called at the very end of Spacemacs startup, after layer
@@ -601,10 +630,10 @@ before packages are loaded."
   ;; NOTE: in insert state this enters command mode rather than inserting a
   ;; colon — intentional (global scope).
   (dolist (map (list evil-normal-state-map
-                    evil-insert-state-map
-                    evil-visual-state-map
-                    evil-motion-state-map
-                    evil-emacs-state-map))
+                     evil-insert-state-map
+                     evil-visual-state-map
+                     evil-motion-state-map
+                     evil-emacs-state-map))
     (define-key map (kbd "C-,") 'evil-ex))
 
   ;; org-modern table appearance (only takes effect when the org layer is
@@ -636,7 +665,11 @@ before packages are loaded."
 
   ;; Load the customize file (safe if it does not yet exist on first run).
   (load custom-file 'noerror 'nomessage))
+#+end_src
 
+* Custom settings
+
+#+begin_src elisp
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
 (defun dotspacemacs/emacs-custom-settings ()
@@ -655,5 +688,16 @@ This function is called at the very end of Spacemacs initialization."
    ;; If you edit it by hand, you could mess it up, so be careful.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
-   )
-  )
+   ))
+#+end_src
+
+* Tangle keybinding
+
+Quick re-tangle of the literate config from any Org buffer with =C-c t=
+(Evil normal state). Bound in =org-mode-map= after =org= loads.
+
+#+begin_src elisp
+;; Quick re-tangle of the literate config from any Org buffer (Evil: C-c t).
+(with-eval-after-load 'org
+  (evil-define-key 'normal org-mode-map (kbd "C-c t") #'org-babel-tangle))
+#+end_src

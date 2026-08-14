@@ -22,4 +22,5 @@ result
 # Emacs
 *.elc
 files/doom/config.el
+files/spacemacs/init.el
 /files/spacemacs/.spacemacs.env
