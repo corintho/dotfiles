@@ -1,6 +1,18 @@
 #+title: Spacemacs configuration (literate)
 #+property: header-args:elisp :tangle init.el :comments org
 
+* Table of contents :TOC:
+- [[#intro][Intro]]
+- [[#prologue][Prologue]]
+- [[#layers][Layers]]
+- [[#initialization][Initialization]]
+- [[#user-environment][User environment]]
+- [[#user-init][User init]]
+- [[#user-config][User config]]
+- [[#custom-settings][Custom settings]]
+- [[#tangle-keybinding][Tangle keybinding]]
+
+* Intro
 This file is the literate source of truth for my Spacemacs configuration.
 Spacemacs loads the generated =init.el= (tangled from this file by
 =just emacs-literate=). It must be stored in your home directory
