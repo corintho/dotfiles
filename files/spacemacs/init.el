@@ -46,7 +46,7 @@ This function should only modify configuration layer settings."
      javascript
      markdown
      nixos
-     org
+     (org :variables org-enable-modern-support t)
      shell-scripts
      eglot
      git
@@ -209,7 +209,8 @@ It should only modify the values of Spacemacs settings."
    ;; package can be defined with `:package', or a theme can be defined with
    ;; `:location' to download the theme package, refer the themes section in
    ;; DOCUMENTATION.org for the full theme specifications.
-   dotspacemacs-themes '(spacemacs-dark
+   dotspacemacs-themes '(doom-gruvbox
+                         spacemacs-dark
                          spacemacs-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
@@ -595,6 +596,16 @@ Put your configuration code here, except for variables that should be set
 before packages are loaded."
   ;; Org directory.
   (setq org-directory "~/org/")
+
+  ;; Map Ctrl-, to ":" (evil-ex / Vim command mode) across all Evil states.
+  ;; NOTE: in insert state this enters command mode rather than inserting a
+  ;; colon — intentional (global scope).
+  (dolist (map (list evil-normal-state-map
+                    evil-insert-state-map
+                    evil-visual-state-map
+                    evil-motion-state-map
+                    evil-emacs-state-map))
+    (define-key map (kbd "C-,") 'evil-ex))
 
   ;; org-modern table appearance (only takes effect when the org layer is
   ;; configured with :variables org-enable-modern-support t).
