@@ -318,6 +318,7 @@ in
       enable = true;
       settings = {
         "favorites" = [
+          "applications:emacsclient"
           "applications:obsidian"
           "applications:net.lutris.Lutris"
           "applications:org.prismlauncher.PrismLauncher"
