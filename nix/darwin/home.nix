@@ -14,6 +14,7 @@ in
 {
   imports = [
     ../modules/home/ghostty.nix
+    ../modules/home/gdu.nix
     ../modules/home/gitui.nix
     ../modules/home/helix.nix
     ../modules/home/neovim.nix

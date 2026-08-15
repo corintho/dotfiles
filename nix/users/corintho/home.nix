@@ -17,6 +17,7 @@ in
     ../../home/core.nix
     ../../modules/home/user_secrets.nix
     ../../modules/home/ghostty.nix
+    ../../modules/home/gdu.nix
     ../../modules/home/gitui.nix
     ../../modules/home/helix.nix
     ../../modules/home/hyprland.nix
