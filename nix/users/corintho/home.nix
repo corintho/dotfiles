@@ -70,6 +70,7 @@ in
     unstable.alpaca
     unstable.ollama
     unstable.handy
+    google-chrome
     # unstable.oterm
     # Terminal tools
     fd
