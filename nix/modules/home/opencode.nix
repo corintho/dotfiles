@@ -19,9 +19,6 @@ in
   xdg.configFile."opencode/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${files}/opencode/AGENTS.md";
 
-  xdg.configFile."opencode/plugins/override-conciseness.ts".source =
-    ./opencode/plugins/override-conciseness.ts;
-
   programs.opencode = {
     enable = true;
     package = pkgs.unstable.opencode;
