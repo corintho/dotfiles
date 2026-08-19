@@ -31,85 +31,90 @@ Spacemacs loads the generated =init.el= (tangled from this file by
 * Layers
 
 #+begin_src elisp
-(defun dotspacemacs/layers ()
-  "Layer configuration:
-This function should only modify configuration layer settings."
-  (setq-default
-   ;; Base distribution to use. This is a layer contained in the directory
-   ;; `+distribution'. For now available distributions are `spacemacs-base'
-   ;; or `spacemacs'. (default 'spacemacs)
-   dotspacemacs-distribution 'spacemacs
+  (defun dotspacemacs/layers ()
+    "Layer configuration:
+  This function should only modify configuration layer settings."
+    (setq-default
+     ;; Base distribution to use. This is a layer contained in the directory
+     ;; `+distribution'. For now available distributions are `spacemacs-base'
+     ;; or `spacemacs'. (default 'spacemacs)
+     dotspacemacs-distribution 'spacemacs
 
-   ;; Lazy installation of layers (i.e. layers are installed only when a file
-   ;; with a supported type is opened). Possible values are `all', `unused'
-   ;; and `nil'. `unused' will lazy install only unused layers (i.e. layers
-   ;; not listed in variable `dotspacemacs-configuration-layers'), `all' will
-   ;; lazy install any layer that support lazy installation even the layers
-   ;; listed in `dotspacemacs-configuration-layers'. `nil' disable the lazy
-   ;; installation feature and you have to explicitly list a layer in the
-   ;; variable `dotspacemacs-configuration-layers' to install it.
-   ;; (default 'unused)
-   dotspacemacs-enable-lazy-installation 'unused
+     ;; Lazy installation of layers (i.e. layers are installed only when a file
+     ;; with a supported type is opened). Possible values are `all', `unused'
+     ;; and `nil'. `unused' will lazy install only unused layers (i.e. layers
+     ;; not listed in variable `dotspacemacs-configuration-layers'), `all' will
+     ;; lazy install any layer that support lazy installation even the layers
+     ;; listed in `dotspacemacs-configuration-layers'. `nil' disable the lazy
+     ;; installation feature and you have to explicitly list a layer in the
+     ;; variable `dotspacemacs-configuration-layers' to install it.
+     ;; (default 'unused)
+     dotspacemacs-enable-lazy-installation 'unused
 
-   ;; If non-nil then Spacemacs will ask for confirmation before installing
-   ;; a layer lazily. (default t)
-   dotspacemacs-ask-for-lazy-installation t
+     ;; If non-nil then Spacemacs will ask for confirmation before installing
+     ;; a layer lazily. (default t)
+     dotspacemacs-ask-for-lazy-installation t
 
-   ;; List of additional paths where to look for configuration layers.
-   ;; Paths must have a trailing slash (i.e. "~/.mycontribs/")
-   ;; CHANGED from default '() — needed for the private direnv layer.
-   dotspacemacs-configuration-layer-path '("~/.config/spacemacs/private/")
+     ;; List of additional paths where to look for configuration layers.
+     ;; Paths must have a trailing slash (i.e. "~/.mycontribs/")
+     ;; CHANGED from default '() — needed for the private direnv layer.
+     dotspacemacs-configuration-layer-path '("~/.config/spacemacs/private/")
 
-   ;; List of configuration layers to load.
-   ;; CHANGED from default (emacs-lisp helm multiple-cursors treemacs):
-   ;; Added: auto-completion, javascript, markdown, nixos, org, shell-scripts,
-   ;; eglot (replaces lsp+eglot), git, tree-sitter, direnv (private layer —
-   ;; not built into Spacemacs, lives in private/layers/direnv/).
-   dotspacemacs-configuration-layers
-   '(toml
-     python
-     helm
-     auto-completion
-     multiple-cursors
-     emacs-lisp
-     javascript
-     markdown
-     nixos
-     (org :variables org-enable-modern-support t)
-     shell-scripts
-     eglot
-     git
-     tree-sitter
-     treemacs
-     direnv
-     just-ts)
+     ;; List of configuration layers to load.
+     ;; CHANGED from default (emacs-lisp helm multiple-cursors treemacs):
+     ;; Added: auto-completion, javascript, markdown, nixos, org, shell-scripts,
+     ;; eglot (replaces lsp+eglot), git, tree-sitter, direnv (private layer —
+     ;; not built into Spacemacs, lives in private/layers/direnv/).
+     ;; Shell layer uses ghostel (package, not layer) as default + system fish.
+     dotspacemacs-configuration-layers
+     '(toml
+       python
+       helm
+       auto-completion
+       multiple-cursors
+       emacs-lisp
+       javascript
+       markdown
+       nixos
+       (org :variables org-enable-modern-support t)
+       shell-scripts
+       eglot
+       git
+       tree-sitter
+       treemacs
+       direnv
+       (shell :variables
+              shell-default-shell 'ghostel
+              shell-default-term-shell "/etc/profiles/per-user/corintho/bin/fish"
+              multi-term-program "/etc/profiles/per-user/corintho/bin/fish")
+       just-ts)
 
-   ;; List of additional packages that will be installed without being wrapped
-   ;; in a layer (generally the packages are installed only and should still be
-   ;; loaded using load/require/use-package in the user-config section below in
-   ;; this file). If you need some configuration for these packages, then
-   ;; consider creating a layer. You can also put the configuration in
-   ;; `dotspacemacs/user-config'. To use a local version of a package, use the
-   ;; `:location' property: '(your-package :location "~/path/to/your-package/")
-   ;; Also include the dependencies as they will not be resolved automatically.
-    ;; CHANGED from default '() — just-ts-mode for Justfile support,
-    ;; hl-todo for TODO/FIXME highlighting in code comments.
-    dotspacemacs-additional-packages '(hl-todo)
+     ;; List of additional packages that will be installed without being wrapped
+     ;; in a layer (generally the packages are installed only and should still be
+     ;; loaded using load/require/use-package in the user-config section below in
+     ;; this file). If you need some configuration for these packages, then
+     ;; consider creating a layer. You can also put the configuration in
+     ;; `dotspacemacs/user-config'. To use a local version of a package, use the
+     ;; `:location' property: '(your-package :location "~/path/to/your-package/")
+     ;; Also include the dependencies as they will not be resolved automatically.
+     ;; CHANGED from default '() — just-ts-mode for Justfile support,
+     ;; hl-todo for TODO/FIXME highlighting in code comments.
+     dotspacemacs-additional-packages '(hl-todo)
 
-   ;; A list of packages that cannot be updated.
-   dotspacemacs-frozen-packages '()
+     ;; A list of packages that cannot be updated.
+     dotspacemacs-frozen-packages '()
 
-   ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '()
+     ;; A list of packages that will not be installed and loaded.
+     dotspacemacs-excluded-packages '()
 
-   ;; Defines the behaviour of Spacemacs when installing packages.
-   ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
-   ;; `used-only' installs only explicitly used packages and deletes any unused
-   ;; packages as well as their unused dependencies. `used-but-keep-unused'
-   ;; installs only the used packages but won't delete unused ones. `all'
-   ;; installs *all* packages supported by Spacemacs and never uninstalls them.
-   ;; (default is `used-only')
-   dotspacemacs-install-packages 'used-only))
+     ;; Defines the behaviour of Spacemacs when installing packages.
+     ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
+     ;; `used-only' installs only explicitly used packages and deletes any unused
+     ;; packages as well as their unused dependencies. `used-but-keep-unused'
+     ;; installs only the used packages but won't delete unused ones. `all'
+     ;; installs *all* packages supported by Spacemacs and never uninstalls them.
+     ;; (default is `used-only')
+     dotspacemacs-install-packages 'used-only))
 #+end_src
 
 * Initialization

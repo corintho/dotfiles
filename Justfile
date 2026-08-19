@@ -124,13 +124,19 @@ repl:
 # Update flake lock file. Remember to redeploy
 [group('maintenance')]
 up: && up-secrets update-brew
-  nix flake update stylix nix-darwin agenix zen-browser spacemacs emacs-overlay --flake ./nix 
+  nix flake update stylix nix-darwin agenix zen-browser emacs-overlay --flake ./nix 
 
 # Update flake lock file, fixing unstable to the specified commit. Remember to redeploy. Look at: https://status.nixos.org/ for the current build status
 [group('maintenance')]
 up-unstable-to hash:
   nix flake update nixpkgs --override-input nixpkgs github:nixos/nixpkgs/{{hash}} --flake ./nix
   nix flake update nixpkgs-unstable --override-input nixpkgs-unstable github:nixos/nixpkgs/{{hash}} --flake ./nix
+
+# Update spacemacs to the specific commit. Remember to redeploy
+[group('maintenance')]
+up-spacemacs-to hash: && emacs-setup
+  nix flake update spacemacs --override-input spacemacs github:syl20bnr/spacemacs/{{hash}} --flake ./nix
+
 # Update secrets - macOS version (uses HTTPS via override to bypass SSH blockage)
 [group('maintenance')]
 [macos]
@@ -187,7 +193,7 @@ emacs-literate:
 emacs-setup: && emacs-literate
   #!/usr/bin/env bash
   set -euo pipefail
-  # Clone Spacemacs at the locked revision (run in a fresh shell after deploying).
+  # Clone Spacemacs at the locked revision.
   emacs_dir="$HOME/.config/emacs"
   rev="$(jq -r '.nodes.spacemacs.locked.rev' nix/flake.lock)"
   if [ -L "${emacs_dir}" ]; then
