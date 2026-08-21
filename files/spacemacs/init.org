@@ -13,9 +13,10 @@
     - [[#avy-jump][Avy jump]]
     - [[#workspace][Workspace]]
   - [[#org-mode][Org Mode]]
-  - [[#margin][Margin]]
   - [[#keyword-colors][Keyword colors]]
   - [[#hl-todo][hl-todo]]
+  - [[#margin][Margin]]
+  - [[#which-key-amendments][Which-key amendments]]
   - [[#footer][Footer]]
 - [[#custom-settings][Custom settings]]
 
@@ -85,7 +86,12 @@ Spacemacs loads the generated =init.el= (tangled from this file by
        (org :variables org-enable-modern-support t)
        shell-scripts
        eglot
-       git
+       (git :variables
+            git-magit-status-fullscreen t
+            magit-diff-refine-hunk t)
+       (version-control :variables
+                        version-control-diff-tool 'diff-hl
+                        version-control-global-margin t)
        tree-sitter
        treemacs
        (spacemacs-layouts :variables
@@ -108,10 +114,10 @@ Spacemacs loads the generated =init.el= (tangled from this file by
      ;; `dotspacemacs/user-config'. To use a local version of a package, use the
      ;; `:location' property: '(your-package :location "~/path/to/your-package/")
      ;; Also include the dependencies as they will not be resolved automatically.
-      ;; CHANGED from default '() — just-ts-mode for Justfile support,
-      ;; hl-todo for TODO/FIXME highlighting in code comments, org-superstar
-      ;; for per-level heading markers that inherit org-level-N (color + scale).
-      dotspacemacs-additional-packages '(hl-todo org-superstar)
+     ;; CHANGED from default '() — just-ts-mode for Justfile support,
+     ;; hl-todo for TODO/FIXME highlighting in code comments, org-superstar
+     ;; for per-level heading markers that inherit org-level-N (color + scale).
+     dotspacemacs-additional-packages '(hl-todo org-superstar)
 
      ;; A list of packages that cannot be updated.
      dotspacemacs-frozen-packages '()
@@ -733,12 +739,6 @@ See the header of this file for more information."
       '(org-document-title ((t (:height 1.8 :weight bold :underline nil)))))
 #+end_src
 
-** Margin
-Keep a 5-line gutter above/below point during normal scrolling.
-#+begin_src elisp
-    (setq scroll-margin 5)
-#+end_src
-
 ** Keyword colors
 
 #+begin_src elisp
@@ -819,6 +819,85 @@ Keep a 5-line gutter above/below point during normal scrolling.
   ;; Enable hl-todo for code comments/strings (faces supplied by my/apply-todo-colors).
   (require 'hl-todo nil t)
   (global-hl-todo-mode 1)
+#+end_src
+
+** Margin
+Keep a 5-line gutter above/below point during normal scrolling.
+#+begin_src elisp
+    (setq scroll-margin 5)
+#+end_src
+
+** Which-key amendments
+Show iedit keybindings on demand via which-key (triggered by `C-;' in iedit mode).
+Each key is bound to its real command (so `C-<key>' executes). Letters are labeled
+via `which-key-add-keymap-based-replacements'; `TAB'/`ESC'/`q' use key-based
+replacements (keymap-based vector keys don't match for those in this build).
+#+begin_src elisp
+  (defvar my/iedit-help-map (make-sparse-keymap)
+    "Prefix keymap mirroring iedit bindings, shown by which-key on `C-;'.")
+
+  (defun my/iedit-lookup (key)
+    (or (and (boundp 'evil-iedit-state-map)
+             (lookup-key evil-iedit-state-map (kbd key)))
+        (and (boundp 'iedit-occurrence-keymap-default)
+             (lookup-key iedit-occurrence-keymap-default (kbd key)))
+        (and (boundp 'iedit-mode-keymap)
+             (lookup-key iedit-mode-keymap (kbd key)))))
+
+  (defun my/iedit-build-help-map ()
+    (require 'which-key nil t)
+    (setq my/iedit-help-map (make-sparse-keymap))
+    (dolist (spec '(("n" . "next")        ("N" . "prev")
+                    ("p" . "yank-repl")   ("A" . "append→ins")
+                    ("D" . "delete")      ("F" . "scope fn")
+                    ("gg" . "first")      ("G" . "last")
+                    ("I" . "insert→ins")  ("J" . "scope ↓")
+                    ("K" . "scope ↑")     ("L" . "scope line")
+                    ("S" . "subst→ins")   ("V" . "toggle vis")
+                    ("U" . "upcase")      ("C-u" . "downcase")
+                    ("0" . "occ start")   ("$" . "occ end")
+                    ("#" . "number")
+                    ("TAB" . "toggle sel")
+                    ("ESC" . "exit")
+                    ("q" . "exit")))
+      (let* ((key (car spec))
+             (label (cdr spec))
+             (cmd (cond
+                   ((member key '("ESC" "q"))
+                    (lambda () (interactive)
+                      (cond ((fboundp 'evil-iedit-state-exit) (evil-iedit-state-exit))
+                            ((fboundp 'iedit-exit) (iedit-exit))
+                            ((fboundp 'iedit-mode) (iedit-mode -1)))))
+                   (t (my/iedit-lookup key)))))
+        (when (commandp cmd)
+          (define-key my/iedit-help-map (kbd key) cmd))))
+    ;; Letters: keymap-based replacements (proven to work here).
+    (when (fboundp 'which-key-add-keymap-based-replacements)
+      (which-key-add-keymap-based-replacements my/iedit-help-map
+        "n"   "next"        "N"   "prev"        "p"   "yank-repl"
+        "A"   "append→ins"  "D"   "delete"      "F"   "scope fn"
+        "gg"  "first"       "G"   "last"        "I"   "insert→ins"
+        "J"   "scope ↓"     "K"   "scope ↑"     "L"   "scope line"
+        "S"   "subst→ins"   "V"   "toggle vis"  "U"   "upcase"
+        "C-u" "downcase"    "0"   "occ start"   "$"   "occ end"
+        "#"   "number"))
+    ;; TAB / ESC / q: key-based replacements (keymap-based vector keys don't
+    ;; match for these; ESC also must be a leaf so `C-; ESC' exits in one press).
+    (cond
+     ((fboundp 'which-key-add-key-based-replacements)
+      (which-key-add-key-based-replacements
+        "C-; TAB" "toggle sel" "C-; ESC" "exit" "C-; q" "exit"))
+     ((fboundp 'which-key-add-key-based-replacement)
+      (which-key-add-key-based-replacement "C-; TAB" "toggle sel")
+      (which-key-add-key-based-replacement "C-; ESC" "exit")
+      (which-key-add-key-based-replacement "C-; q" "exit"))))
+
+  ;; Build once the iedit-state keymap (and its commands) exist, then make `C-;'
+  ;; a prefix: real commands stay bound (so `C-<key>' executes) and the labels
+  ;; above are shown by which-key.
+  (with-eval-after-load 'evil-iedit-state
+    (my/iedit-build-help-map)
+    (define-key iedit-mode-keymap (kbd "C-;") my/iedit-help-map))
 #+end_src
 
 ** Footer
