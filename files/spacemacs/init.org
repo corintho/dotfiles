@@ -9,6 +9,9 @@
 - [[#user-environment][User environment]]
 - [[#user-init][User init]]
 - [[#user-config][User config]]
+  - [[#keybinds][Keybinds]]
+    - [[#avy-jump][Avy jump]]
+    - [[#workspace][Workspace]]
   - [[#org-mode][Org Mode]]
   - [[#margin][Margin]]
   - [[#keyword-colors][Keyword colors]]
@@ -105,9 +108,10 @@ Spacemacs loads the generated =init.el= (tangled from this file by
      ;; `dotspacemacs/user-config'. To use a local version of a package, use the
      ;; `:location' property: '(your-package :location "~/path/to/your-package/")
      ;; Also include the dependencies as they will not be resolved automatically.
-     ;; CHANGED from default '() — just-ts-mode for Justfile support,
-     ;; hl-todo for TODO/FIXME highlighting in code comments.
-     dotspacemacs-additional-packages '(hl-todo)
+      ;; CHANGED from default '() — just-ts-mode for Justfile support,
+      ;; hl-todo for TODO/FIXME highlighting in code comments, org-superstar
+      ;; for per-level heading markers that inherit org-level-N (color + scale).
+      dotspacemacs-additional-packages '(hl-todo org-superstar)
 
      ;; A list of packages that cannot be updated.
      dotspacemacs-frozen-packages '()
@@ -318,7 +322,7 @@ Spacemacs loads the generated =init.el= (tangled from this file by
      ;; and TAB or `C-m' and `RET'.
      ;; In the terminal, these pairs are generally indistinguishable, so this only
      ;; works in the GUI. (default nil)
-     dotspacemacs-distinguish-gui-tab nil
+     dotspacemacs-distinguish-gui-tab t
 
      ;; Name of the default layout (default "Default")
      dotspacemacs-default-layout-name "Default"
@@ -552,7 +556,7 @@ Spacemacs loads the generated =init.el= (tangled from this file by
      ;; performance issues, instead of calculating the frame title by
      ;; `spacemacs/title-prepare' all the time.
      ;; (default "%I@%S")
-     dotspacemacs-frame-title-format "%I@%S"
+     dotspacemacs-frame-title-format "%t - %a"
 
      ;; Format specification for setting the icon title format
      ;; (default nil - same as frame-title-format)
@@ -623,25 +627,25 @@ See the header of this file for more information."
 * User init
 
 #+begin_src elisp
-(defun dotspacemacs/user-init ()
-  "Initialization for user code:
-This function is called immediately after `dotspacemacs/init', before layer
-configuration.
-It is mostly for variables that should be set before packages are loaded.
-If you are unsure, try setting them in `dotspacemacs/user-config' first."
-  ;; Route `M-x customize' output to a dedicated file outside the
-  ;; version-controlled dotfile. Otherwise customize appends to
-  ;; `dotspacemacs/emacs-custom-settings' in this tracked init.el.
-  ;; XDG path works on Linux and macOS (fallback used where XDG is unset).
-  (let ((custom-dir (or (getenv "XDG_DATA_HOME")
-                        (expand-file-name ".local/share" (getenv "HOME")))))
-    (make-directory custom-dir t)
-    (setq custom-file (expand-file-name "emacs/custom.el" custom-dir)))
-  ;; Variable-pitch face: Fira Sans if available, for org and plain text.
-  (when (member "Fira Sans" (font-family-list))
-    (set-face-attribute 'variable-pitch nil
-                        :family "Fira Sans"
-                        :height (if (eq system-type 'darwin) 1.0 0.95))))
+  (defun dotspacemacs/user-init ()
+    "Initialization for user code:
+  This function is called immediately after `dotspacemacs/init', before layer
+  configuration.
+  It is mostly for variables that should be set before packages are loaded.
+  If you are unsure, try setting them in `dotspacemacs/user-config' first."
+    ;; Route `M-x customize' output to a dedicated file outside the
+    ;; version-controlled dotfile. Otherwise customize appends to
+    ;; `dotspacemacs/emacs-custom-settings' in this tracked init.el.
+    ;; XDG path works on Linux and macOS (fallback used where XDG is unset).
+    (let ((custom-dir (or (getenv "XDG_DATA_HOME")
+                          (expand-file-name ".local/share" (getenv "HOME")))))
+      (make-directory custom-dir t)
+      (setq custom-file (expand-file-name "emacs/custom.el" custom-dir)))
+    ;; Variable-pitch face: Fira Sans if available, for org and plain text.
+    (when (member "Fira Sans" (font-family-list))
+      (set-face-attribute 'variable-pitch nil
+                          :family "Fira Sans"
+                          :height (if (eq system-type 'darwin) 1.0 0.95))))
 #+end_src
 
 * User config
@@ -673,6 +677,22 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
             dired-use-ls-dired t))
 #+end_src
 
+** Keybinds
+
+*** Avy jump
+#+begin_src elisp
+  (define-key evil-normal-state-map (kbd "M-s") #'avy-goto-char-timer)
+  (define-key evil-normal-state-map (kbd "M-w") #'avy-goto-word-1)
+  (define-key evil-motion-state-map (kbd "M-w") #'avy-goto-word-1)
+#+end_src
+
+*** Workspace
+#+begin_src elisp
+  ;; Alt+arrow: previous/next workspace, normal state only.
+  (define-key evil-normal-state-map (kbd "M-<left>") #'eyebrowse-prev-window-config)
+  (define-key evil-normal-state-map (kbd "M-<right>") #'eyebrowse-next-window-config)
+#+end_src
+
 ** Org Mode
 
 #+begin_src elisp
@@ -682,16 +702,31 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; org-modern table appearance (only takes effect when the org layer is
   ;; configured with :variables org-enable-modern-support t).
   (with-eval-after-load 'org-modern
-    (setq org-modern-table-vertical 1))
+    (setq org-modern-table-vertical 1)
+    ;; Disable org-modern's heading-star styling; markers are rendered by
+    ;; org-superstar instead (so each level's glyph inherits org-level-N, giving
+    ;; per-level color + scale). org-modern still styles tables/labels/timestamps.
+    (setq org-modern-star nil)
+    (setq org-modern-hide-stars nil))
+
+  ;; Per-level heading markers (Nerd Font numeric-N-circle). org-superstar
+  ;; composes these in place, inheriting org-level-N, so level N's glyph is
+  ;; colored + scaled per its own level. The Nth entry is used for level N.
+  (with-eval-after-load 'org-superstar
+    (setq org-superstar-headline-bullets-list
+          (list (string #xF0CA0) (string #xF0CA2) (string #xF0CA4) (string #xF0CA6)
+                (string #xF0CA8) (string #xF0CAA) (string #xF0CAC) (string #xF0CAE)))
+    (setq org-superstar-leading-bullet " "))
+  (add-hook 'org-mode-hook #'org-superstar-mode)
   (setq org-todo-keywords '(( sequence "TODO" "PROGRESS" "FIXME" "BLOCKED" "|" "DONE" "DELEGATED" "CANCELLED")))
 
   ;; Scaled org heading faces.
   (custom-set-faces
-      '(org-level-8 ((t (:inherit outline-3 :height 1.0))))
-      '(org-level-7 ((t (:inherit outline-3 :height 1.0))))
-      '(org-level-6 ((t (:inherit outline-3 :height 1.1))))
-      '(org-level-5 ((t (:inherit outline-3 :height 1.2))))
-      '(org-level-4 ((t (:inherit outline-3 :height 1.3))))
+      '(org-level-8 ((t (:inherit outline-8 :height 1.0))))
+      '(org-level-7 ((t (:inherit outline-7 :height 1.0))))
+      '(org-level-6 ((t (:inherit outline-6 :height 1.1))))
+      '(org-level-5 ((t (:inherit outline-5 :height 1.2))))
+      '(org-level-4 ((t (:inherit outline-4 :height 1.3))))
       '(org-level-3 ((t (:inherit outline-3 :height 1.4))))
       '(org-level-2 ((t (:inherit outline-2 :height 1.5))))
       '(org-level-1 ((t (:inherit outline-1 :height 1.6))))
@@ -788,31 +823,31 @@ Keep a 5-line gutter above/below point during normal scrolling.
 
 ** Footer
 #+begin_src elisp
-    ;; Load the customize file (safe if it does not yet exist on first run).
-    (load custom-file 'noerror 'nomessage))
+  ;; Load the customize file (safe if it does not yet exist on first run).
+  (load custom-file 'noerror 'nomessage))
 #+end_src
 
 * Custom settings
 
 #+begin_src elisp
-;; Do not write anything past this comment. This is where Emacs will
-;; auto-generate custom variable definitions.
-(defun dotspacemacs/emacs-custom-settings ()
-  "Emacs custom settings.
-This is an auto-generated function, do not modify its content directly, use
-Emacs customize menu instead.
-This function is called at the very end of Spacemacs initialization."
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   )
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   ))
+  ;; Do not write anything past this comment. This is where Emacs will
+  ;; auto-generate custom variable definitions.
+  (defun dotspacemacs/emacs-custom-settings ()
+    "Emacs custom settings.
+  This is an auto-generated function, do not modify its content directly, use
+  Emacs customize menu instead.
+  This function is called at the very end of Spacemacs initialization."
+    (custom-set-variables
+     ;; custom-set-variables was added by Custom.
+     ;; If you edit it by hand, you could mess it up, so be careful.
+     ;; Your init file should contain only one such instance.
+     ;; If there is more than one, they won't work right.
+     )
+    (custom-set-faces
+     ;; custom-set-faces was added by Custom.
+     ;; If you edit it by hand, you could mess it up, so be careful.
+     ;; Your init file should contain only one such instance.
+     ;; If there is more than one, they won't work right.
+     ))
 #+end_src
 
