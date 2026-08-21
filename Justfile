@@ -53,10 +53,10 @@ list:
 [private]
 [linux]
 update-brew:
-  nix flake update homebrew-bundle --flake ./nix 
-  nix flake update homebrew-cask --flake ./nix 
-  nix flake update homebrew-core --flake ./nix 
-  nix flake update homebrew-xcodesorg --flake ./nix 
+  nix flake update homebrew-bundle --flake ./nix
+  nix flake update homebrew-cask --flake ./nix
+  nix flake update homebrew-core --flake ./nix
+  nix flake update homebrew-xcodesorg --flake ./nix
 
 #
 # Darwin specific
@@ -124,7 +124,7 @@ repl:
 # Update flake lock file. Remember to redeploy
 [group('maintenance')]
 up: && up-secrets update-brew
-  nix flake update stylix nix-darwin agenix zen-browser emacs-overlay --flake ./nix 
+  nix flake update stylix nix-darwin agenix zen-browser emacs-overlay --flake ./nix
 
 # Update flake lock file, fixing unstable to the specified commit. Remember to redeploy. Look at: https://status.nixos.org/ for the current build status
 [group('maintenance')]
@@ -188,23 +188,30 @@ emacs-literate:
     --eval '(require (quote org))' \
     --eval '(org-babel-tangle-file "files/spacemacs/init.org")'
 
-# Install Spacemacs at the locked revision
+# Install Spacemacs at the locked revision (copied from the Nix store, offline)
 [group('maintenance')]
 emacs-setup: && emacs-literate
   #!/usr/bin/env bash
   set -euo pipefail
-  # Clone Spacemacs at the locked revision.
+  # Materialize the flake-locked Spacemacs source from the Nix store (offline).
   emacs_dir="$HOME/.config/emacs"
+  owner="$(jq -r '.nodes.spacemacs.locked.owner' nix/flake.lock)"
+  repo="$(jq -r '.nodes.spacemacs.locked.repo' nix/flake.lock)"
   rev="$(jq -r '.nodes.spacemacs.locked.rev' nix/flake.lock)"
+  narHash="$(jq -r '.nodes.spacemacs.locked.narHash' nix/flake.lock)"
+  spacemacs_src="$(nix eval --raw --expr "builtins.toString (builtins.fetchTree { type=\"github\"; owner=\"${owner}\"; repo=\"${repo}\"; rev=\"${rev}\"; narHash=\"${narHash}\"; })")"
   if [ -L "${emacs_dir}" ]; then
     rm "${emacs_dir}"
   fi
-  if [ ! -d "${emacs_dir}" ]; then
-    git clone --branch develop https://github.com/syl20bnr/spacemacs "${emacs_dir}"
+  # Drop the stale .git from the prior git-managed install (not runtime data).
+  if [ -d "${emacs_dir}/.git" ]; then
+    rm -rf "${emacs_dir}/.git"
   fi
-  git -C "${emacs_dir}" fetch origin
-  git -C "${emacs_dir}" checkout "${rev}"
-  git -C "${emacs_dir}" submodule update --init --recursive
+  # Overlay the locked distribution over the existing install. Preserves all
+  # runtime state (elpa/, .cache/, quelpa/, eln-cache/, tree-sitter/) and any
+  # untracked files; never deletes. Matches prior `git checkout` behavior.
+  cp -r "${spacemacs_src}/." "${emacs_dir}/"
+  chmod -R u+w "${emacs_dir}"
 
 # Optimises store usage
 [group('maintenance')]
