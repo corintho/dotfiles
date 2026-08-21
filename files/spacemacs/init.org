@@ -64,7 +64,10 @@ Spacemacs loads the generated =init.el= (tangled from this file by
      ;; CHANGED from default (emacs-lisp helm multiple-cursors treemacs):
      ;; Added: auto-completion, javascript, markdown, nixos, org, shell-scripts,
      ;; eglot (replaces lsp+eglot), git, tree-sitter, direnv (private layer —
-     ;; not built into Spacemacs, lives in private/layers/direnv/).
+     ;; not built into Spacemacs, lives in private/layers/direnv/), spacemacs-
+     ;; layouts (with autosave so persisted layouts survive daemon restarts),
+     ;; project-layout (private layer — auto-templates fresh project layouts,
+     ;; lives in private/layers/project-layout/).
      ;; Shell layer uses ghostel (package, not layer) as default + system fish.
      dotspacemacs-configuration-layers
      '(toml
@@ -82,12 +85,17 @@ Spacemacs loads the generated =init.el= (tangled from this file by
        git
        tree-sitter
        treemacs
+       (spacemacs-layouts :variables
+                          spacemacs-layouts-restrict-spc-tab t
+                          layouts-enable-autosave t
+                          layouts-autosave-delay 60)
        direnv
        (shell :variables
               shell-default-shell 'ghostel
               shell-default-term-shell "/etc/profiles/per-user/corintho/bin/fish"
               multi-term-program "/etc/profiles/per-user/corintho/bin/fish")
-       just-ts)
+       just-ts
+       project-layout)
 
      ;; List of additional packages that will be installed without being wrapped
      ;; in a layer (generally the packages are installed only and should still be
@@ -321,7 +329,7 @@ Spacemacs loads the generated =init.el= (tangled from this file by
 
      ;; If non-nil then the last auto saved layouts are resumed automatically upon
      ;; start. (default nil)
-     dotspacemacs-auto-resume-layouts nil
+     dotspacemacs-auto-resume-layouts t
 
      ;; If non-nil, auto-generate layout name when creating new layouts. Only has
      ;; effect when using the "jump to layout by number" commands. (default nil)
