@@ -54,6 +54,7 @@ in
     libreoffice
     kdePackages.okular
     unstable.lazygit
+    unstable.nvitop
     # Gaming
     prismlauncher
     unstable.discord
