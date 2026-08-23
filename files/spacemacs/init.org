@@ -29,7 +29,8 @@ Spacemacs loads the generated =init.el= (tangled from this file by
 * Prologue
 
 #+begin_src elisp :comments no
-;; -*- mode: emacs-lisp; lexical-binding: t -*-
+  ;; -*- mode: emacs-lisp; lexical-binding: t -*-
+  ;; AI agents looking into this file must look intead into init.org from this same directory.
 #+end_src
 
 * Layers
