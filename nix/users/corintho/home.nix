@@ -116,84 +116,110 @@ in
     # /Custom scripts on path
   ];
 
-  # Local llama.cpp models (drives llama-swap + opencode)
+  # Local inference models (engine-agnostic: drives llama-swap, koboldcpp, opencode)
   lcars.models = {
     "unsloth/gemma-4-E4B-it-GGUF:Q4_K_M" = {
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--gemma-4-E4B-it-GGUF/snapshots/bfc15c382204943c3a8fff0c750b94ae2364d7a3/gemma-4-E4B-it-Q4_K_M.gguf";
       mmprojPath = "${modelsDir}/huggingface/hub/models--unsloth--gemma-4-E4B-it-GGUF/snapshots/bfc15c382204943c3a8fff0c750b94ae2364d7a3/mmproj-BF16.gguf";
-      extraArgs = [
-        "-ngl"
-        "-1"
-        "-fa"
-        "on"
-        "--ctx-size"
-        "16384"
-      ];
+      gpuLayers = -1;
+      contextSize = 16384;
+      flashAttention = true;
+      jinja = true;
+      useswa = true;
       name = "Gemma 4 E4B IT Q4_K_M";
     };
     "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3-14B-GGUF/snapshots/a04a82c4739b3ef5fa6da7d10261db2c67dd1985/Qwen3-14B-UD-Q4_K_XL.gguf";
-      extraArgs = [
-        "-ngl"
-        "20"
-        "--jinja"
-        "-fa"
-        "on"
-        "--ctx-size"
-        "16384"
-      ];
+      gpuLayers = 20;
+      contextSize = 16384;
+      flashAttention = true;
+      jinja = true;
+      chatAdapter = "chatml";
       name = "Qwen3 14B UD Q4_K_XL";
       reasoning = true;
     };
     "unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:UD-IQ1_S" = {
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3-Coder-30B-A3B-Instruct-GGUF/snapshots/b17cb02dd882d5b6ab62fc777ad2995f19668350/Qwen3-Coder-30B-A3B-Instruct-UD-IQ1_S.gguf";
-      extraArgs = [
-        "-ngl"
-        "24"
-        "--jinja"
-        "-fa"
-        "on"
-        "--ctx-size"
-        "16384"
-      ];
+      gpuLayers = 24;
+      contextSize = 16384;
+      flashAttention = true;
+      jinja = true;
+      chatAdapter = "chatml";
       name = "Qwen3 Coder 30B-A3B UD-IQ1_S";
       tools = true;
     };
     "unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL" = {
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3.8-27B-GGUF/Qwen3.8-27B-UD-Q3_K_XL.gguf";
-      extraArgs = [
-        "-ngl"
-        "-1"
-        "--jinja"
-        "-fa"
-        "on"
-        "--cache-type-k"
-        "q8_0"
-        "--cache-type-v"
-        "q8_0"
-        "--ctx-size"
-        "65536"
-      ];
+      gpuLayers = -1;
+      contextSize = 65536;
+      flashAttention = true;
+      jinja = true;
+      chatAdapter = "chatml";
+      kvQuant = {
+        k = "q8_0";
+        v = "q8_0";
+      };
       environment = [ "CUDA_VISIBLE_DEVICES=0" ];
       name = "Qwen3.8 27B UD Q3_K_XL";
     };
     "williamliao/Qwen3.8-27B-NVFP4-GGUF:NVFP4-Quality-v2" = {
       modelPath = "${modelsDir}/huggingface/hub/models--williamliao--Qwen3.8-27B-NVFP4-GGUF/Qwen3.8-27B-NVFP4-Quality-v2.gguf";
-      extraArgs = [
-        "-ngl"
-        "-1"
-        "--jinja"
-        "-fa"
-        "on"
-        "--cache-type-k"
-        "q4_0"
-        "--cache-type-v"
-        "q4_0"
-        "--ctx-size"
-        "49152"
-      ];
+      gpuLayers = -1;
+      contextSize = 24576;
+      flashAttention = true;
+      jinja = true;
+      chatAdapter = "chatml";
+      kvQuant = {
+        k = "q4_0";
+        v = "q4_0";
+      };
       environment = [ "CUDA_VISIBLE_DEVICES=0" ];
       name = "Qwen3.8 27B NVFP4 Quality-v2";
+    };
+
+    # Vision / OCR / GUI (Qwen3-VL, ChatML)
+    "Qwen/Qwen3-VL-8B-Instruct:Q4_K_M" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--bartowski--Qwen_Qwen3-VL-8B-Instruct-GGUF/snapshots/6398fcccbd940691854d2cffd85b435ed8eee4ca/Qwen_Qwen3-VL-8B-Instruct-Q4_K_M.gguf";
+      mmprojPath = "${modelsDir}/huggingface/hub/models--bartowski--Qwen_Qwen3-VL-8B-Instruct-GGUF/snapshots/6398fcccbd940691854d2cffd85b435ed8eee4ca/mmproj-Qwen_Qwen3-VL-8B-Instruct-bf16.gguf";
+      gpuLayers = -1;
+      contextSize = 32768;
+      flashAttention = true;
+      jinja = true;
+      chatAdapter = "chatml";
+      kvQuant = {
+        k = "q8_0";
+        v = "q8_0";
+      };
+      name = "Qwen3-VL 8B Instruct Q4_K_M";
+    };
+
+    # Coding (Qwen2.5-Coder-14B, ChatML) — added alongside the 30B-MoE coder
+    "Qwen/Qwen2.5-Coder-14B:Q4_K_M" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--bartowski--Qwen2.5-Coder-14B-GGUF/snapshots/0e179a81290a5e9b04bb1b4f1badf79bc880b261/Qwen2.5-Coder-14B-Q4_K_M.gguf";
+      gpuLayers = -1;
+      contextSize = 32768;
+      flashAttention = true;
+      jinja = true;
+      chatAdapter = "chatml";
+      kvQuant = {
+        k = "q8_0";
+        v = "q8_0";
+      };
+      name = "Qwen2.5 Coder 14B Q4_K_M";
+    };
+
+    # Roleplay / creative writing (Llama-based -> native jinja, no chatAdapter)
+    "bartowski/writing-roleplay-20k-context-nemo-12b-v1.0:Q4_K_M" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--bartowski--writing-roleplay-20k-context-nemo-12b-v1.0-GGUF/snapshots/cecefa746b717ffb42ec31c42fb4faf977cf6ca2/writing-roleplay-20k-context-nemo-12b-v1.0-Q4_K_M.gguf";
+      gpuLayers = -1;
+      contextSize = 24576;
+      flashAttention = true;
+      jinja = true;
+      kvQuant = {
+        k = "q8_0";
+        v = "q8_0";
+      };
+      name = "Writing-Roleplay Nemo 12B v1.0 Q4_K_M";
     };
   };
 

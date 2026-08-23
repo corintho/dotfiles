@@ -12,10 +12,63 @@
             default = null;
             description = "Path to multimodal projection file (optional).";
           };
+          gpuLayers = lib.mkOption {
+            type = lib.types.int;
+            default = -1;
+            description = "Number of layers to offload to the GPU (-1 = all). Engine-agnostic.";
+          };
+          contextSize = lib.mkOption {
+            type = lib.types.int;
+            default = 4096;
+            description = "Context window size in tokens. Engine-agnostic.";
+          };
+          flashAttention = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Enable flash attention. Engine-agnostic.";
+          };
+          jinja = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Use the model's Jinja chat template (koboldcpp / llama.cpp).";
+          };
+          chatAdapter = lib.mkOption {
+            type = lib.types.nullOr (
+              lib.types.enum [
+                "chatml"
+                "gemma"
+              ]
+            );
+            default = null;
+            description = "KoboldCpp Chat Completions Adapter preset for the OpenAI-compatible /v1 endpoint (chatml = Qwen ChatML, gemma = Gemma). Null = koboldcpp default (Alpaca fallback).";
+          };
+          useswa = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Enable sliding-window attention (koboldcpp).";
+          };
+          kvQuant = lib.mkOption {
+            type = lib.types.nullOr (
+              lib.types.submodule {
+                options = {
+                  k = lib.mkOption {
+                    type = lib.types.str;
+                    description = "KV cache quantization type for K (llama.cpp only).";
+                  };
+                  v = lib.mkOption {
+                    type = lib.types.str;
+                    description = "KV cache quantization type for V (llama.cpp only).";
+                  };
+                };
+              }
+            );
+            default = null;
+            description = "KV cache quantization types (llama.cpp only).";
+          };
           extraArgs = lib.mkOption {
             type = lib.types.listOf lib.types.str;
             default = [ ];
-            description = "Extra arguments for llama-server (e.g. --jinja, -fa on).";
+            description = "Raw passthrough arguments for llama-server (llama.cpp escape hatch).";
           };
           environment = lib.mkOption {
             type = lib.types.listOf lib.types.str;
@@ -41,9 +94,11 @@
     );
     default = { };
     description = ''
-      Local llama.cpp models available on this system.
-      Each entry automatically generates:
-      - A route in llama-swap config
+      Local inference models available on this system. Engine-agnostic:
+      each backend (llama.cpp, koboldcpp, ...) translates these fields into
+      its own native flags. Each entry automatically generates:
+      - A route in llama-swap config (llama.cpp)
+      - A .kcpps launcher config (koboldcpp, launched via kobold-select)
       - A provider model entry in opencode
     '';
   };

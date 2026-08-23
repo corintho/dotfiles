@@ -26,8 +26,25 @@ let
       ++ [
         "--port"
         port
-        "-c"
-        "0"
+        "-ngl"
+        (toString model.gpuLayers)
+      ]
+      ++ lib.optionals model.flashAttention [
+        "-fa"
+        "on"
+      ]
+      ++ lib.optionals model.jinja [
+        "--jinja"
+      ]
+      ++ lib.optionals (model.kvQuant != null) [
+        "--cache-type-k"
+        model.kvQuant.k
+        "--cache-type-v"
+        model.kvQuant.v
+      ]
+      ++ [
+        "--ctx-size"
+        (toString model.contextSize)
       ]
       ++ model.extraArgs;
     in

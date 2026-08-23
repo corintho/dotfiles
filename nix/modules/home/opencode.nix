@@ -32,6 +32,7 @@ in
         "lm-studio"
         "llamacpp"
         "llama.cpp"
+        "kobold"
       ];
       provider = {
         ollama = {
@@ -68,6 +69,14 @@ in
           name = "llama.cpp (local)";
           options = {
             baseURL = "http://127.0.0.1:1234/v1";
+          };
+          models = autoModels;
+        };
+        kobold = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "KoboldCpp (local)";
+          options = {
+            baseURL = "http://127.0.0.1:5001/v1";
           };
           models = autoModels;
         };
