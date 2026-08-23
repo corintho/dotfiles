@@ -159,6 +159,42 @@ in
       name = "Qwen3 Coder 30B-A3B UD-IQ1_S";
       tools = true;
     };
+    "unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3.8-27B-GGUF/Qwen3.8-27B-UD-Q3_K_XL.gguf";
+      extraArgs = [
+        "-ngl"
+        "-1"
+        "--jinja"
+        "-fa"
+        "on"
+        "--cache-type-k"
+        "q8_0"
+        "--cache-type-v"
+        "q8_0"
+        "--ctx-size"
+        "65536"
+      ];
+      environment = [ "CUDA_VISIBLE_DEVICES=0" ];
+      name = "Qwen3.8 27B UD Q3_K_XL";
+    };
+    "williamliao/Qwen3.8-27B-NVFP4-GGUF:NVFP4-Quality-v2" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--williamliao--Qwen3.8-27B-NVFP4-GGUF/Qwen3.8-27B-NVFP4-Quality-v2.gguf";
+      extraArgs = [
+        "-ngl"
+        "-1"
+        "--jinja"
+        "-fa"
+        "on"
+        "--cache-type-k"
+        "q4_0"
+        "--cache-type-v"
+        "q4_0"
+        "--ctx-size"
+        "49152"
+      ];
+      environment = [ "CUDA_VISIBLE_DEVICES=0" ];
+      name = "Qwen3.8 27B NVFP4 Quality-v2";
+    };
   };
 
   # Custom launcher for "fixed" apps

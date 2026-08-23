@@ -17,6 +17,11 @@
             default = [ ];
             description = "Extra arguments for llama-server (e.g. --jinja, -fa on).";
           };
+          environment = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ ];
+            description = "Per-model environment variables for the inference server (e.g. CUDA_VISIBLE_DEVICES).";
+          };
           name = lib.mkOption {
             type = lib.types.str;
             description = "Human-readable name for display in clients.";

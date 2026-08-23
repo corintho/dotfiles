@@ -35,6 +35,7 @@ let
   modelConfigs = builtins.mapAttrs (name: model: {
     cmd = mkCmd model;
     proxy = "http://127.0.0.1:\${PORT}";
+    env = model.environment;
   }) models;
 
   llamaSwapConfig = yamlFmt.generate "llama-swap-config.yaml" {

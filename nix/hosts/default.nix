@@ -48,6 +48,23 @@ in
             unstable = import nixpkgs-unstable {
               inherit system;
               inherit (final) config;
+              overlays = [
+                # Pin llama.cpp to upstream nightly b10581 for Blackwell GDN / NVFP4 support.
+                # Override source only; keep nixpkgs' CUDA toolchain/flags to avoid the
+                # known sm_120 codegen bug from newer CUDA.
+                (uFinal: uPrev: {
+                  llama-cpp = uPrev.llama-cpp.overrideAttrs (old: {
+                    version = "10581";
+                    src = uPrev.fetchFromGitHub {
+                      owner = "ggml-org";
+                      repo = "llama.cpp";
+                      rev = "b10581";
+                      hash = "sha256-/BOx808d4TV/oraX92sarx5VExvxF3sCofIy9h3Akgg==";
+                    };
+                    npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
+                  });
+                })
+              ];
             };
           })
           # TODO: Remove this override once Sphinx/docutils compatibility is fixed
