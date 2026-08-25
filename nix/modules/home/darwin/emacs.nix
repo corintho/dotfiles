@@ -13,6 +13,16 @@ let
   spacemacsEnv = {
     EMACSDIR = "${config.xdg.configHome}/emacs";
     SPACEMACSDIR = "${config.xdg.configHome}/spacemacs";
+    PATH = lib.concatStringsSep ":" [
+      "${config.home.homeDirectory}/.nix-profile/bin"
+      "/etc/profiles/per-user/${config.home.username}/bin"
+      "/run/current-system/sw/bin"
+      "/nix/var/nix/profiles/default/bin"
+      "/usr/bin"
+      "/bin"
+      "/usr/sbin"
+      "/sbin"
+    ];
   };
 
   # Emacs client launcher .app bundle for macOS. Provides a Spotlight/Raycast-
