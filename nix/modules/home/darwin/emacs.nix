@@ -13,6 +13,8 @@ let
   spacemacsEnv = {
     EMACSDIR = "${config.xdg.configHome}/emacs";
     SPACEMACSDIR = "${config.xdg.configHome}/spacemacs";
+    NIX_SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
+    SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
     PATH = lib.concatStringsSep ":" [
       "${config.home.homeDirectory}/.nix-profile/bin"
       "/etc/profiles/per-user/${config.home.username}/bin"
