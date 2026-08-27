@@ -1,3 +1,5 @@
+; -*- lexical-binding: t; -*-
+
 ;; Build the workspace template when a projectile project switch begins.
 (add-hook 'projectile-before-switch-project-hook #'project-layout//before-project-switch)
 

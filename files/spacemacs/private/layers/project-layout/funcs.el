@@ -1,3 +1,5 @@
+; -*- lexical-binding: t; -*-
+
 (defun project-layout//code-buffer (root)
   "Return the buffer to display in the code workspace of project ROOT."
   (if (and (current-buffer)

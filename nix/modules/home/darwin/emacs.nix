@@ -29,7 +29,7 @@ let
 
   # Emacs client launcher .app bundle for macOS. Provides a Spotlight/Raycast-
   # launchable shortcut to open a new Emacs frame via emacsclient.
-  emacsPackage = if pkgs.stdenv.isLinux then pkgs.emacs-pgtk else pkgs.emacs;
+  emacsPackage = pkgs.emacs-unstable;
 
   # Generate a Spacemacs .icns from the repo's SVG artwork: SVG -> PNG (rsvg)
   # -> .icns (icnsify). The bundle references the icon by its bare name.
