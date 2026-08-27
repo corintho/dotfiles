@@ -311,7 +311,8 @@ Spacemacs loads the generated =init.el= (tangled from this file by
 
      ;; The leader key accessible in `emacs state' and `insert state'
      ;; (default "M-m")
-     dotspacemacs-emacs-leader-key "M-m"
+     ;; CHANGED to "C-." — M-m is bound to workspace switching in macOS
+     dotspacemacs-emacs-leader-key "C-."
 
      ;; Major mode leader key is a shortcut key which is the equivalent of
      ;; pressing `<leader> m`. Set it to `nil` to disable it. (default ",")
@@ -682,7 +683,18 @@ Spacemacs loads the generated =init.el= (tangled from this file by
     (when (eq system-type 'darwin)
       (setq insert-directory-program "gls"
             dired-use-ls-dired t))
-#+end_src
+
+    ;; Forward C-x to ghostel terminal (for OpenCode) instead of using it as evil prefix.
+    ;; In semi-char mode (shell prompt), C-x reaches the terminal.
+    ;; Falls back to evil's C-x prefix when not in semi-char mode.
+    ;; NOTE: uses evil-ghostel--passthrough-ctrl, a private API; subject to change.
+    (with-eval-after-load 'evil-ghostel
+      (evil-define-key* 'insert evil-ghostel-mode-map
+        (kbd "C-x")
+        (lambda ()
+          (interactive)
+          (evil-ghostel--passthrough-ctrl "x"))))
+ #+end_src
 
 ** Keybinds
 
@@ -695,7 +707,13 @@ Spacemacs loads the generated =init.el= (tangled from this file by
 
 *** Workspace
 #+begin_src elisp
-  ;; Alt+arrow: previous/next workspace, normal state only.
+  ;; Alt+arrow: previous/next workspace in ghostel terminal insert state.
+  (with-eval-after-load 'evil-ghostel
+    (evil-define-key* 'insert evil-ghostel-mode-map
+      (kbd "M-<left>")  #'eyebrowse-prev-window-config
+      (kbd "M-<right>") #'eyebrowse-next-window-config))
+
+  ;; Alt+arrow: previous/next workspace in normal state.
   (define-key evil-normal-state-map (kbd "M-<left>") #'eyebrowse-prev-window-config)
   (define-key evil-normal-state-map (kbd "M-<right>") #'eyebrowse-next-window-config)
 #+end_src
