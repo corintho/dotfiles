@@ -1,4 +1,5 @@
 {
+  config,
   files,
   inputs,
   lib,
@@ -152,9 +153,9 @@
     cpuFreqGovernor = "powersave";
   };
   services.power-profiles-daemon.enable = false;
-  services.thermald = {
-    enable = true;
-  };
+  # thermald only manages thermals on mobile/laptop platforms; on this desktop it
+  # exits immediately ("Non mobile platform") and fails the switch.
+  services.thermald.enable = false;
 
   # AI
   services.open-webui = {
@@ -239,6 +240,19 @@
     package = pkgs.unstable.docker;
   };
   hardware.nvidia-container-toolkit.enable = true;
+
+  # nvidia-container-toolkit 1.19.1's vendored NVML expects the legacy
+  # `libnvsandboxutils.so`, but driver 595 only ships `libnvidia-sandboxutils.so`,
+  # so the CDI generator fails ("libnvsandboxutils is not available").
+  # Shim the legacy name and expose it (plus the nvidia lib dir) on LD_LIBRARY_PATH.
+  systemd.services.nvidia-container-toolkit-cdi-generator.environment.LD_LIBRARY_PATH =
+    let
+      nvidiaSandboxShim = pkgs.runCommand "nvidia-sandboxutils-shim" { } ''
+        mkdir -p $out/lib
+        ln -s ${config.hardware.nvidia.package}/lib/libnvidia-sandboxutils.so $out/lib/libnvsandboxutils.so
+      '';
+    in
+    "${nvidiaSandboxShim}/lib:${config.hardware.nvidia.package}/lib";
   users.users.${username} = {
     extraGroups = [ "docker" ];
   };

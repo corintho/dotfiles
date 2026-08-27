@@ -7,8 +7,7 @@
 }:
 
 let
-  emacsPackage =
-    if pkgs.stdenv.isLinux then pkgs.emacs-unstable-pgtk else pkgs.emacs-unstable;
+  emacsPackage = if pkgs.stdenv.isLinux then pkgs.emacs-unstable-pgtk else pkgs.emacs-unstable;
 in
 {
   home.packages = with pkgs; [

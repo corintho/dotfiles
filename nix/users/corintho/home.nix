@@ -116,6 +116,25 @@ in
     # /Custom scripts on path
   ];
 
+  # Workaround: `handy` (cjpais/Handy speech-to-text) bundles its own ggml
+  # runtime (libggml-*.so), and so does `llama-cpp`. Both land in home.packages,
+  # so buildEnv refuses to merge the profile on the conflicting subpath
+  # `/lib/libggml-base.so`. Force the profile buildEnv to tolerate the collision:
+  # each program resolves its own ggml copy via its store-path RPATH, so the
+  # single shadowed copy in the merged profile is never actually loaded.
+  home.path = lib.mkForce (
+    pkgs.buildEnv {
+      name = "home-manager-path";
+      paths = config.home.packages;
+      inherit (config.home) extraOutputsToInstall;
+      postBuild = config.home.extraProfileCommands;
+      ignoreCollisions = true;
+      meta = {
+        description = "Environment of packages installed through home-manager";
+      };
+    }
+  );
+
   # Local inference models (engine-agnostic: drives llama-swap, koboldcpp, opencode)
   lcars.models = {
     "unsloth/gemma-4-E4B-it-GGUF:Q4_K_M" = {
