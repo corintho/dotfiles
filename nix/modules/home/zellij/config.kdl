@@ -405,6 +405,20 @@ styled_underlines false
 // Default: true
 // 
 // stacked_resize false
+
+// Whether stacked panes render as a list of one-line titles (true in 0.45.0+)
+// or render panes normally with collapsed panes hidden (false - legacy behavior)
+// Default: true (0.45.0+), false (pre-0.45.0)
+//
+stacked_pane_list false
+
+// Pane frame style after 0.45.0 changed to title-only ("title")
+// Options:
+//   - "full" - full border (legacy)
+//   - "title" - title bar only (0.45.0+ default)
+// Default: "title"
+//
+pane_frame_style "full"
  
 // Whether to show tips on startup
 // Default: true
