@@ -10,7 +10,7 @@ let
     use-search-predicate = true;
     launch-at-login = true;
     scroll-keys = "";
-    scroll-shortcut = "⌥X";
+    scroll-shortcut = "⌥⇧X";
   };
 
   boolToDefaults = value: if value then "-bool true" else "-bool false";
