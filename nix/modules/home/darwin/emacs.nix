@@ -41,15 +41,23 @@ let
 
   emacsClientApp = pkgs.stdenv.mkDerivation {
     name = "EmacsClient";
-    buildInputs = [ emacsPackage ];
+    buildInputs = [
+      emacsPackage
+      pkgs.coreutils
+    ];
     phases = [ "installPhase" ];
     installPhase = ''
       APP=$out/Applications/EmacsClient.app/Contents
       mkdir -p $APP/MacOS $APP/Resources
 
-      # Shell script launcher: connect to running daemon, or start Emacs if needed
+      # Shell script launcher: wait for daemon to become ready, then connect
       cat > $APP/MacOS/EmacsClient << 'LAUNCHER'
       #!/bin/sh
+      ${pkgs.coreutils}/bin/timeout 10 sh -c '
+        until "${emacsPackage}/bin/emacsclient" -e "(server-running-p)" >/dev/null 2>&1; do
+          sleep 0.2
+        done
+      '
       exec ${emacsPackage}/bin/emacsclient -c -a ""
       LAUNCHER
       chmod +x $APP/MacOS/EmacsClient
