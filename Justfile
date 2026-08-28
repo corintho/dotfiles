@@ -181,12 +181,41 @@ update-comma:
   ln -f $filename files
 
 # Tangle the literate Spacemacs config (init.org) into init.el.
-emacs-literate:
+emacs-literate: && validate-spacemacs-layers
   #!/usr/bin/env bash
   set -euo pipefail
+  if ! command -v emacs >/dev/null 2>&1; then
+    echo "emacs not found on PATH — run 'just emacs-setup' first"
+    exit 1
+  fi
   emacs --batch \
     --eval '(require (quote org))' \
     --eval '(org-babel-tangle-file "files/spacemacs/init.org")'
+  if ! emacs --batch \
+    --eval '(setq byte-compile-warnings nil)' \
+    --eval '(kill-emacs (if (byte-compile-file "files/spacemacs/init.el") 0 1))'; then
+    echo "init.el failed to byte-compile after tangling — inspect files/spacemacs/init.el"
+    exit 1
+  fi
+
+# Byte-compile all custom Spacemacs layer files and report failures in one pass.
+[private]
+validate-spacemacs-layers:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  failures=()
+  while IFS= read -r -d '' file; do
+    if ! emacs --batch \
+      --eval '(setq byte-compile-warnings nil)' \
+      --eval "(kill-emacs (if (byte-compile-file \"$file\") 0 1))" >/dev/null 2>&1; then
+      failures+=("$file")
+    fi
+  done < <(find files/spacemacs/private/layers -name '*.el' -print0)
+  if [ "${#failures[@]}" -gt 0 ]; then
+    echo "The following Spacemacs layer file(s) failed to byte-compile:"
+    printf '  - %s\n' "${failures[@]}"
+    exit 1
+  fi
 
 # Install Spacemacs at the locked revision (copied from the Nix store, offline)
 [group('maintenance')]
