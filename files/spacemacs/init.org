@@ -15,6 +15,7 @@
   - [[#org-mode][Org Mode]]
   - [[#keyword-colors][Keyword colors]]
   - [[#hl-todo][hl-todo]]
+  - [[#direnv][direnv]]
   - [[#margin][Margin]]
   - [[#which-key-amendments][Which-key amendments]]
   - [[#footer][Footer]]
@@ -62,18 +63,12 @@ Spacemacs loads the generated =init.el= (tangled from this file by
 
      ;; List of additional paths where to look for configuration layers.
      ;; Paths must have a trailing slash (i.e. "~/.mycontribs/")
-     ;; CHANGED from default '() — needed for the private direnv layer.
+     ;; CHANGED from default '() — needed for private layers.
      dotspacemacs-configuration-layer-path '("~/.config/spacemacs/private/")
 
      ;; List of configuration layers to load.
-     ;; CHANGED from default (emacs-lisp helm multiple-cursors treemacs):
-     ;; Added: auto-completion, javascript, markdown, nixos, org, shell-scripts,
-     ;; eglot (replaces lsp+eglot), git, tree-sitter, direnv (private layer —
-     ;; not built into Spacemacs, lives in private/layers/direnv/), spacemacs-
-     ;; layouts (with autosave so persisted layouts survive daemon restarts),
-     ;; project-layout (private layer — auto-templates fresh project layouts,
-     ;; lives in private/layers/project-layout/).
-     ;; Shell layer uses ghostel (package, not layer) as default + system fish.
+     ;; CHANGED from default (emacs-lisp helm multiple-cursors treemacs).
+     ;; Includes private layers — see private/layers/.
      dotspacemacs-configuration-layers
      '(toml
        python
@@ -99,11 +94,11 @@ Spacemacs loads the generated =init.el= (tangled from this file by
                           spacemacs-layouts-restrict-spc-tab t
                           layouts-enable-autosave t
                           layouts-autosave-delay 60)
-       direnv
        (shell :variables
               shell-default-shell 'ghostel
               shell-default-term-shell (executable-find "fish")
               multi-term-program (executable-find "fish"))
+       ;; Private layers
        just-ts
        project-layout)
 
@@ -115,10 +110,8 @@ Spacemacs loads the generated =init.el= (tangled from this file by
      ;; `dotspacemacs/user-config'. To use a local version of a package, use the
      ;; `:location' property: '(your-package :location "~/path/to/your-package/")
      ;; Also include the dependencies as they will not be resolved automatically.
-     ;; CHANGED from default '() — just-ts-mode for Justfile support,
-     ;; hl-todo for TODO/FIXME highlighting in code comments, org-superstar
-     ;; for per-level heading markers that inherit org-level-N (color + scale).
-     dotspacemacs-additional-packages '(hl-todo org-superstar)
+     ;; CHANGED from default '().
+     dotspacemacs-additional-packages '(direnv hl-todo org-superstar)
 
      ;; A list of packages that cannot be updated.
      dotspacemacs-frozen-packages '()
@@ -842,9 +835,20 @@ Spacemacs loads the generated =init.el= (tangled from this file by
 ** hl-todo
 
 #+begin_src elisp
-  ;; Enable hl-todo for code comments/strings (faces supplied by my/apply-todo-colors).
-  (require 'hl-todo nil t)
-  (global-hl-todo-mode 1)
+  (use-package hl-todo
+    :defer t
+    :init
+    ;; Faces supplied by my/apply-todo-colors.
+    (global-hl-todo-mode 1))
+#+end_src
+
+** direnv
+
+#+begin_src elisp
+  (use-package direnv
+    :defer t
+    :init
+    (direnv-mode))
 #+end_src
 
 ** Margin
