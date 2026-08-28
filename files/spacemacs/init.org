@@ -9,6 +9,7 @@
 - [[#user-environment][User environment]]
 - [[#user-init][User init]]
 - [[#user-config][User config]]
+  - [[#layer-suggestion-notifications][Layer suggestion notifications]]
   - [[#keybinds][Keybinds]]
     - [[#avy-jump][Avy jump]]
     - [[#workspace][Workspace]]
@@ -18,6 +19,7 @@
   - [[#direnv][direnv]]
   - [[#margin][Margin]]
   - [[#which-key-amendments][Which-key amendments]]
+  - [[#javascript--typescript][JavaScript / TypeScript]]
   - [[#footer][Footer]]
 - [[#custom-settings][Custom settings]]
 
@@ -77,11 +79,12 @@ Spacemacs loads the generated =init.el= (tangled from this file by
        multiple-cursors
        emacs-lisp
        javascript
+       typescript
        markdown
        nixos
        (org :variables org-enable-modern-support t)
        shell-scripts
-       eglot
+       lsp
        (git :variables
             git-magit-status-fullscreen t
             magit-diff-refine-hunk t)
@@ -694,7 +697,21 @@ Spacemacs loads the generated =init.el= (tangled from this file by
     (with-eval-after-load 'dired
       (define-key dired-mode-map (kbd "SPC") nil))
 
- #+end_src
+  #+end_src
+
+** Layer suggestion notifications
+
+When Spacemacs detects a file type matching an uninstalled layer, display an
+informational message (rather than prompting for installation). The layer name
+is shown, so you know exactly what to add to init.org.
+
+#+begin_src elisp
+  (advice-add 'configuration-layer//lazy-install-packages :before-until
+    (lambda (layer-name mode)
+      (message "Layer '%s' is available for %s — add it to init.org to enable."
+               layer-name mode)
+      t))
+#+end_src
 
 ** Keybinds
 
@@ -848,7 +865,10 @@ Spacemacs loads the generated =init.el= (tangled from this file by
   (use-package direnv
     :defer t
     :init
-    (direnv-mode))
+    (direnv-mode)
+    :config
+    ;; Update environment before lsp-mode searches for the language server binary.
+    (advice-add 'lsp :before (lambda (&rest _) (direnv-update-environment))))
 #+end_src
 
 ** Margin
@@ -929,6 +949,22 @@ replacements (keymap-based vector keys don't match for those in this build).
     (my/iedit-build-help-map)
     (define-key iedit-mode-keymap (kbd "C-;") my/iedit-help-map))
 #+end_src
+
+** JavaScript / TypeScript
+ #+begin_src elisp
+   ;; Prevent Tide from self-activating when the lsp backend is in use.
+   (with-eval-after-load 'tide
+     (remove-hook 'typescript-mode-hook #'tide-setup)
+     (remove-hook 'typescript-tsx-mode-hook #'tide-setup))
+
+   ;; Enable inlay hints globally wherever lsp-mode is active.
+   (add-hook 'lsp-managed-mode-hook #'lsp-inlay-hints-mode)
+
+   ;; Configure which inlay hints to display for TypeScript.
+   (with-eval-after-load 'lsp-javascript
+     (setq lsp-javascript-display-variable-type-hints t
+           lsp-javascript-display-return-type-hints t))
+ #+end_src
 
 ** Footer
  #+begin_src elisp
