@@ -3,8 +3,8 @@
   "permission": {
     "external_directory": {
       "/nix/store/**": "allow",
-      "~/.config": "allow",
-      "~/.local/share": "allow"
+      "~/.config/**": "allow",
+      "~/.local/share/**": "allow"
     },
   },
 }
