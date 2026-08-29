@@ -17,7 +17,7 @@ deploy:
 [group('build')]
 [linux]
 verbose:
-  nixos-rebuild --sudo switch --flake ./nix --show-trace --verbose
+  systemd-inhibit nixos-rebuild --sudo switch --flake ./nix --impure --show-trace --verbose
 
 # Dry run. Makes it easy to catch errors without generating a new profile and boot entry
 [group('build')]
