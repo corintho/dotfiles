@@ -21,8 +21,8 @@ in
         recursive = true;
       };
       "zellij/plugins/zjstatus.wasm".source = pkgs.fetchurl {
-        url = "https://github.com/dj95/zjstatus/releases/download/v0.22.0/zjstatus.wasm";
-        sha256 = "sha256-TeQm0gscv4YScuknrutbSdksF/Diu50XP4W/fwFU3VM=";
+        url = "https://github.com/dj95/zjstatus/releases/download/v0.25.0/zjstatus.wasm";
+        sha256 = "sha256-KCzqshnlbhkIyfrDOQckH+bD4e99hfqrPl9DjO+HuP4=";
       };
       "zellij/plugins/zjstatus-hints.wasm".source = pkgs.fetchurl {
         url = "https://github.com/b0o/zjstatus-hints/releases/download/v0.1.4/zjstatus-hints.wasm";
