@@ -68,6 +68,10 @@
     };
     # Workaround for absolute path requirements
     paths.url = "path:paths";
+    # oh-my-pi ("omp") coding-agent harness (provides the Home Manager module)
+    omp.url = "github:can1357/oh-my-pi";
+    # Prebuilt oh-my-pi binary (avoids compiling Rust/Bun from source locally)
+    omp-nix.url = "github:yuxqiu/omp-nix";
   };
 
   outputs =

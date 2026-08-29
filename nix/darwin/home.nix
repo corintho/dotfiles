@@ -13,6 +13,7 @@ let
 in
 {
   imports = [
+    inputs.omp.homeManagerModules.default
     ../modules/home/ghostty.nix
     ../modules/home/gdu.nix
     ../modules/home/gitui.nix
@@ -21,6 +22,7 @@ in
     ../modules/home/emacs.nix
     ../modules/home/oh_my_posh.nix
     ../modules/home/opencode.nix
+    ../modules/home/oh_my_pi.nix
     ../modules/home/models.nix
     # ../modules/home/zed.nix
     ../modules/home/zellij.nix

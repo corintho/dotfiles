@@ -14,6 +14,7 @@ in
 {
   imports = [
     inputs.agenix.homeManagerModules.default
+    inputs.omp.homeManagerModules.default
     ../../home/core.nix
     ../../modules/home/user_secrets.nix
     ../../modules/home/ghostty.nix
@@ -27,6 +28,7 @@ in
     ../../modules/home/emacs.nix
     ../../modules/home/oh_my_posh.nix
     ../../modules/home/opencode.nix
+    ../../modules/home/oh_my_pi.nix
     # ../../modules/home/qtile.nix
     ../../modules/home/rofi.nix
     ../../modules/home/waybar.nix
