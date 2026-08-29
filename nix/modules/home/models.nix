@@ -73,7 +73,17 @@
           environment = lib.mkOption {
             type = lib.types.listOf lib.types.str;
             default = [ ];
-            description = "Per-model environment variables for the inference server (e.g. CUDA_VISIBLE_DEVICES).";
+            description = "Per-model environment variables for the inference server. For CUDA backends, a CUDA_VISIBLE_DEVICES entry here is superseded by cudaDevices when that is set.";
+          };
+          cudaDevices = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "CUDA device list for CUDA backends (sets CUDA_VISIBLE_DEVICES), e.g. \"0,1\". When set, overrides any CUDA_VISIBLE_DEVICES entry in environment. Null = backend default.";
+          };
+          tensorSplit = lib.mkOption {
+            type = lib.types.nullOr (lib.types.listOf lib.types.int);
+            default = null;
+            description = "KoboldCpp --tensor_split ratios across visible GPUs, e.g. [ 2 1 ] (proportional to VRAM).";
           };
           name = lib.mkOption {
             type = lib.types.str;

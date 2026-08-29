@@ -170,7 +170,7 @@ in
     "unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL" = {
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3.8-27B-GGUF/Qwen3.8-27B-UD-Q3_K_XL.gguf";
       gpuLayers = -1;
-      contextSize = 65536;
+      contextSize = 131072;
       flashAttention = true;
       jinja = true;
       chatAdapter = "chatml";
@@ -178,7 +178,11 @@ in
         k = "q8_0";
         v = "q8_0";
       };
-      environment = [ "CUDA_VISIBLE_DEVICES=0" ];
+      cudaDevices = "0,1";
+      tensorSplit = [
+        2
+        1
+      ];
       name = "Qwen3.8 27B UD Q3_K_XL";
     };
     "williamliao/Qwen3.8-27B-NVFP4-GGUF:NVFP4-Quality-v2" = {

@@ -90,6 +90,8 @@ let
         // lib.optionalAttrs (model.jinja or false) { jinja = model.jinja; }
         // lib.optionalAttrs (model.useswa or false) { useswa = model.useswa; }
         // lib.optionalAttrs (model.kvQuant or null != null) { quantkv = model.kvQuant.k; }
+        // lib.optionalAttrs (model.cudaDevices or null != null) { lcars_cuda_devices = model.cudaDevices; }
+        // lib.optionalAttrs (model.tensorSplit or null != null) { lcars_tensor_split = model.tensorSplit; }
       )
     );
 
@@ -147,6 +149,19 @@ let
       ADAPTER_ARG=()
       [ -f "$ADAPTER" ] && ADAPTER_ARG=(--chatcompletionsadapter "$ADAPTER")
 
+      # Per-model CUDA device selection (source of truth: cudaDevices). Overrides
+      # the top-of-script default so models without it stay on GPU 0.
+      DEVICES=$(jq -r '.lcars_cuda_devices // empty' "$KCPPS")
+      [ -n "$DEVICES" ] && export CUDA_VISIBLE_DEVICES="$DEVICES"
+
+      # Tensor split ratios must be passed as separate argv tokens, not one
+      # glued string (koboldcpp argparse expects `--tensor_split 2 1`).
+      mapfile -t TS_VALS < <(jq -r '.lcars_tensor_split // [] | .[]' "$KCPPS")
+      TS_ARG=()
+      if [ ''${#TS_VALS[@]} -gt 0 ]; then
+        TS_ARG=(--tensor_split "''${TS_VALS[@]}")
+      fi
+
       echo "Launching koboldcpp (GPU CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES)"
       echo "  model : $ARG"
       echo "  config: $KCPPS"
@@ -155,7 +170,7 @@ let
       export PYTHONPATH="${
         pkgs.python3.withPackages (ps: [ ps.jinja2 ])
       }/${pkgs.python3.sitePackages}:''${PYTHONPATH:+:$PYTHONPATH}"
-      exec koboldcpp --skiplauncher --usecuda mmq --config "$KCPPS" --host 127.0.0.1 --port "$PORT" "''${ADAPTER_ARG[@]}"
+      exec koboldcpp --skiplauncher --usecuda mmq --config "$KCPPS" --host 127.0.0.1 --port "$PORT" "''${ADAPTER_ARG[@]}" "''${TS_ARG[@]}"
     '';
   };
 in
