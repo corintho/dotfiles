@@ -90,8 +90,23 @@ let
         // lib.optionalAttrs (model.jinja or false) { jinja = model.jinja; }
         // lib.optionalAttrs (model.useswa or false) { useswa = model.useswa; }
         // lib.optionalAttrs (model.kvQuant or null != null) { quantkv = model.kvQuant.k; }
-        // lib.optionalAttrs (model.cudaDevices or null != null) { lcars_cuda_devices = model.cudaDevices; }
-        // lib.optionalAttrs (model.tensorSplit or null != null) { lcars_tensor_split = model.tensorSplit; }
+        // lib.optionalAttrs (model.tensorSplit or null != null) { tensor_split = model.tensorSplit; }
+        // lib.optionalAttrs (model.cudaDevices or null != null && (model.tensorSplit or null == null)) (
+          # Backward-compat: derive a native tensor_split from cudaDevices so old
+          # configs keep pinning. Builds a vector over physical GPU order (router
+          # leaves CUDA_VISIBLE_DEVICES unset) where included GPUs get weight 1 and
+          # excluded GPUs get 0, e.g. "1" -> [0,1], "0,1" -> [1,1].
+          let
+            cudaInts = map builtins.toInt (lib.splitString "," model.cudaDevices);
+            maxIdx = lib.lists.foldl' (a: b: if b > a then b else a) 0 cudaInts;
+            derived = map (i: if lib.lists.elem i cudaInts then 1 else 0) (
+              builtins.genList (x: x) (maxIdx + 1)
+            );
+          in
+          {
+            tensor_split = derived;
+          }
+        )
       )
     );
 
@@ -112,7 +127,6 @@ let
       MANIFEST="$CFG/manifest.json"
       PORT=${toString port}
 
-      export CUDA_VISIBLE_DEVICES="''${CUDA_VISIBLE_DEVICES:-0}"
       export LD_PRELOAD="/run/opengl-driver/lib/libcuda.so''${LD_PRELOAD:+:$LD_PRELOAD}"
 
       [ -f "$MANIFEST" ] || { echo "No koboldcpp models configured (manifest.json missing at $MANIFEST)." >&2; exit 1; }
@@ -149,20 +163,16 @@ let
       ADAPTER_ARG=()
       [ -f "$ADAPTER" ] && ADAPTER_ARG=(--chatcompletionsadapter "$ADAPTER")
 
-      # Per-model CUDA device selection (source of truth: cudaDevices). Overrides
-      # the top-of-script default so models without it stay on GPU 0.
-      DEVICES=$(jq -r '.lcars_cuda_devices // empty' "$KCPPS")
-      [ -n "$DEVICES" ] && export CUDA_VISIBLE_DEVICES="$DEVICES"
-
       # Tensor split ratios must be passed as separate argv tokens, not one
-      # glued string (koboldcpp argparse expects `--tensor_split 2 1`).
-      mapfile -t TS_VALS < <(jq -r '.lcars_tensor_split // [] | .[]' "$KCPPS")
+      # glued string (koboldcpp argparse expects `--tensor_split 2 1`). Read the
+      # native tensor_split key (the single source of truth, shared with router mode).
+      mapfile -t TS_VALS < <(jq -r '.tensor_split // [] | .[]' "$KCPPS")
       TS_ARG=()
       if [ ''${#TS_VALS[@]} -gt 0 ]; then
         TS_ARG=(--tensor_split "''${TS_VALS[@]}")
       fi
 
-      echo "Launching koboldcpp (GPU CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES)"
+      echo "Launching koboldcpp (all GPUs visible; tensor_split pins placement)"
       echo "  model : $ARG"
       echo "  config: $KCPPS"
       [ -f "$ADAPTER" ] && echo "  adapter: $ADAPTER"
@@ -173,9 +183,47 @@ let
       exec koboldcpp --skiplauncher --usecuda mmq --config "$KCPPS" --host 127.0.0.1 --port "$PORT" "''${ADAPTER_ARG[@]}" "''${TS_ARG[@]}"
     '';
   };
+
+  # Persistent KoboldCpp admin/router instance. This is KoboldCpp's built-in
+  # llama-swap-like layer: one always-on process on :5001 that hotswaps
+  # between the .kcpps configs in admindir, either by the OpenAI `model` field
+  # (router mode) or via the Admin panel in KoboldAI Lite. --adminunloadtimeout
+  # mirrors a llama-swap ttl (600s) so idle models free their VRAM.
+  koboldRouter = pkgs.writeShellApplication {
+    name = "kobold-router";
+    runtimeInputs = [ koboldcpp ];
+    text = ''
+      set -euo pipefail
+      CFG="${cfgDir}"
+      PORT=5001
+
+      # Mirror kobold-select's runtime environment so CUDA and Jinja-based chat
+      # templates work for whatever model the router loads on demand.
+      export LD_PRELOAD="/run/opengl-driver/lib/libcuda.so''${LD_PRELOAD:+:$LD_PRELOAD}"
+      export PYTHONPATH="${
+        pkgs.python3.withPackages (ps: [ ps.jinja2 ])
+      }/${pkgs.python3.sitePackages}:''${PYTHONPATH:+:$PYTHONPATH}"
+
+      # CUDA_VISIBLE_DEVICES is intentionally left unset so the router can use
+      # every GPU and honor each .kcpps tensor_split. Per-model GPU pinning
+      # (lcars_cuda_devices) is NOT honored by admin/router mode, which only
+      # swaps .kcpps configs through the admin API, not our custom keys.
+
+      exec koboldcpp --skiplauncher --usecuda mmq \
+        --admin --admindir "$CFG" --routermode --nomodel \
+        --adminunloadtimeout 600 \
+        --host 127.0.0.1 --port "$PORT"
+    '';
+  };
 in
 lib.mkIf (models != { }) {
-  home.packages = [ koboldcpp ] ++ [ koboldSelect ];
+  home.packages = [
+    koboldcpp
+  ]
+  ++ [
+    koboldSelect
+    koboldRouter
+  ];
 
   xdg.configFile = lib.mkMerge (
     [ { "koboldcpp/manifest.json".source = manifest; } ]
@@ -196,4 +244,18 @@ lib.mkIf (models != { }) {
       ) models
     )
   );
+
+  systemd.user.services."kobold-router" = {
+    Unit = {
+      Description = "KoboldCpp admin/router model server";
+      After = [ "network.target" ];
+    };
+    Service = {
+      ExecStart = "${koboldRouter}/bin/kobold-router";
+      Restart = "on-failure";
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+  };
 }
