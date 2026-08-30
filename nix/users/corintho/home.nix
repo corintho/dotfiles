@@ -159,15 +159,24 @@ in
       name = "Qwen3 14B UD Q4_K_XL";
       reasoning = true;
     };
-    "unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:UD-IQ1_S" = {
-      modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3-Coder-30B-A3B-Instruct-GGUF/snapshots/b17cb02dd882d5b6ab62fc777ad2995f19668350/Qwen3-Coder-30B-A3B-Instruct-UD-IQ1_S.gguf";
-      gpuLayers = 24;
-      contextSize = 16384;
+    "unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:UD-Q4_K_XL" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3-Coder-30B-A3B-Instruct-GGUF/snapshots/b17cb02dd882d5b6ab62fc777ad2995f19668350/Qwen3-Coder-30B-A3B-Instruct-UD-Q4_K_XL.gguf";
+      gpuLayers = -1;
+      contextSize = 131072;
       flashAttention = true;
       jinja = true;
       chatAdapter = "chatml";
-      name = "Qwen3 Coder 30B-A3B UD-IQ1_S";
+      kvQuant = {
+        k = "q4_0";
+        v = "q4_0";
+      };
+      tensorSplit = [
+        2
+        1
+      ];
+      name = "Qwen3 Coder 30B-A3B UD-Q4_K_XL";
       tools = true;
+      reasoning = true;
     };
     "unsloth/Qwen3.8-27B-GGUF:UD-Q3_K_XL" = {
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3.8-27B-GGUF/Qwen3.8-27B-UD-Q3_K_XL.gguf";
