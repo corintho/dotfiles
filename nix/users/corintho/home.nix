@@ -180,7 +180,6 @@ in
         k = "q8_0";
         v = "q8_0";
       };
-      cudaDevices = "0,1";
       tensorSplit = [
         2
         1
@@ -198,7 +197,10 @@ in
         k = "q4_0";
         v = "q4_0";
       };
-      environment = [ "CUDA_VISIBLE_DEVICES=0" ];
+      tensorSplit = [
+        1
+        0
+      ];
       name = "Qwen3.8 27B NVFP4 Quality-v2";
     };
 

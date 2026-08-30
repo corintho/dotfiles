@@ -91,22 +91,6 @@ let
         // lib.optionalAttrs (model.useswa or false) { useswa = model.useswa; }
         // lib.optionalAttrs (model.kvQuant or null != null) { quantkv = model.kvQuant.k; }
         // lib.optionalAttrs (model.tensorSplit or null != null) { tensor_split = model.tensorSplit; }
-        // lib.optionalAttrs (model.cudaDevices or null != null && (model.tensorSplit or null == null)) (
-          # Backward-compat: derive a native tensor_split from cudaDevices so old
-          # configs keep pinning. Builds a vector over physical GPU order (router
-          # leaves CUDA_VISIBLE_DEVICES unset) where included GPUs get weight 1 and
-          # excluded GPUs get 0, e.g. "1" -> [0,1], "0,1" -> [1,1].
-          let
-            cudaInts = map builtins.toInt (lib.splitString "," model.cudaDevices);
-            maxIdx = lib.lists.foldl' (a: b: if b > a then b else a) 0 cudaInts;
-            derived = map (i: if lib.lists.elem i cudaInts then 1 else 0) (
-              builtins.genList (x: x) (maxIdx + 1)
-            );
-          in
-          {
-            tensor_split = derived;
-          }
-        )
       )
     );
 

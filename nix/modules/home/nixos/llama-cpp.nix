@@ -45,6 +45,10 @@ let
         "--ctx-size"
         (toString model.contextSize)
       ]
+      ++ lib.optionals (model.tensorSplit != null) [
+        "--tensor-split"
+        (lib.concatMapStringsSep "," toString model.tensorSplit)
+      ]
       ++ model.extraArgs;
     in
     "${llamaBin} ${lib.concatStringsSep " " args}";
@@ -52,15 +56,7 @@ let
   modelConfigs = builtins.mapAttrs (name: model: {
     cmd = mkCmd model;
     proxy = "http://127.0.0.1:\${PORT}";
-    # cudaDevices is the source of truth for CUDA device selection: when set it
-    # overrides any CUDA_VISIBLE_DEVICES entry in environment. Models without it
-    # keep their environment untouched (no regression).
-    env =
-      if model.cudaDevices or null != null then
-        (lib.filter (s: !lib.hasPrefix "CUDA_VISIBLE_DEVICES=" s) model.environment)
-        ++ [ "CUDA_VISIBLE_DEVICES=${model.cudaDevices}" ]
-      else
-        model.environment;
+    env = model.environment;
   }) models;
 
   llamaSwapConfig = yamlFmt.generate "llama-swap-config.yaml" {
