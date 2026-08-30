@@ -1,0 +1,18 @@
+startup:
+  quiet: true
+  checkUpdate: true
+task:
+  eager: preferred
+modelRoles:
+  default: opencode-zen/big-pickle
+symbolPreset: nerd
+composer:
+  shape: box
+theme:
+  dark: dark-cosmos
+setupVersion: 2
+plan:
+  defaultOnStartup: true
+contextPromotion:
+  enabled: true
+hideThinkingBlock: true
