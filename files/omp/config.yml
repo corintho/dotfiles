@@ -16,3 +16,5 @@ plan:
 contextPromotion:
   enabled: true
 hideThinkingBlock: true
+power:
+  sleepPrevention: system
