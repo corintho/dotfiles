@@ -4,7 +4,7 @@ default:
   @just --list --unsorted
 
 #
-# NixOS specific
+# build
 #
 
 # Standard deploy for Linux
@@ -25,55 +25,6 @@ verbose:
 check:
   nixos-rebuild dry-build --flake ./nix --impure
 
-# Remove dirty generations, except the current one
-[group('cleanup')]
-[linux]
-sanitize:
-  #!/usr/bin/env bash
-  DIRTY_GENS="$(just list |  grep '[0-9]' | grep --invert-match 'True$' | grep 'dirty' | awk '{ print $1; }' | tr '\n' ' ')"
-  if [ -z "${DIRTY_GENS}" ];
-  then echo "No dirty generations to clean up";
-  else
-    sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations $DIRTY_GENS;
-  fi
-
-# All steps for full sanitization
-[group('cleanup')]
-[linux]
-sanitize-all: check-git-status sanitize keep5 gc deploy
-
-# List all current available generations
-[group('info')]
-[linux]
-list:
-  @nixos-rebuild list-generations
-
-# Update brew. The Linux version only updates the flakes
-[group('maintenance')]
-[private]
-[linux]
-update-brew:
-  nix flake update homebrew-bundle --flake ./nix
-  nix flake update homebrew-cask --flake ./nix
-  nix flake update homebrew-core --flake ./nix
-  nix flake update homebrew-xcodesorg --flake ./nix
-
-#
-# Darwin specific
-#
-
-# Boot out the Emacs LaunchAgent
-[group('build')]
-[macos]
-launchctl-stop:
-  sudo launchctl bootout gui/$(id -u)/org.nix-community.home.emacs 2>/dev/null || true
-
-# Bootstrap the Emacs LaunchAgent
-[group('build')]
-[macos]
-launchctl-start:
-  sudo launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/org.nix-community.home.emacs.plist 2>/dev/null || true
-
 # Standard deploy for MacOS
 [group('build')]
 [macos]
@@ -92,11 +43,57 @@ verbose:
 check:
   sudo -E darwin-rebuild build --flake ./nix --impure
 
+# Boot out the Emacs LaunchAgent
+[group('build')]
+[macos]
+launchctl-stop:
+  sudo launchctl bootout gui/$(id -u)/org.nix-community.home.emacs 2>/dev/null || true
+
+# Bootstrap the Emacs LaunchAgent
+[group('build')]
+[macos]
+launchctl-start:
+  sudo launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/org.nix-community.home.emacs.plist 2>/dev/null || true
+
+#
+# info
+#
+
+# List all current available generations
+[group('info')]
+[linux]
+list:
+  @nixos-rebuild list-generations
+
 # List all current available generations
 [group('info')]
 [macos]
 list:
   sudo darwin-rebuild --list-generations
+
+# Shows a searchable dependency tree
+[group('info')]
+tree:
+  nix-tree
+
+#
+# maintenance
+#
+
+# Update flake lock file. Remember to redeploy
+[group('maintenance')]
+up: && up-secrets update-brew
+  nix flake update stylix nix-darwin agenix zen-browser emacs-overlay --flake ./nix
+
+# Update brew. The Linux version only updates the flakes
+[group('maintenance')]
+[private]
+[linux]
+update-brew:
+  nix flake update homebrew-bundle --flake ./nix
+  nix flake update homebrew-cask --flake ./nix
+  nix flake update homebrew-core --flake ./nix
+  nix flake update homebrew-xcodesorg --flake ./nix
 
 # Update brew. Remember to redeploy
 [group('maintenance')]
@@ -108,29 +105,10 @@ update-brew:
   nix flake update homebrew-xcodesorg --flake ./nix
   brew update
 
-# All steps for full sanitization - as far as Darwin allows
-[group('cleanup')]
-[macos]
-sanitize-all: check-git-status keep5 gc deploy
-#
-# Universal commands
-#
-
-# Loads up the current flake in the repl
-[group('debug')]
-repl:
-  nix repl -f flake:nixpkgs
-
-# Update flake lock file. Remember to redeploy
-[group('maintenance')]
-up: && up-secrets update-brew
-  nix flake update stylix nix-darwin agenix zen-browser emacs-overlay --flake ./nix
-
 # Update flake lock file, fixing unstable to the specified commit. Remember to redeploy. Look at: https://status.nixos.org/ for the current build status
 [group('maintenance')]
 up-unstable-to hash:
   nix flake update nixpkgs --override-input nixpkgs github:nixos/nixpkgs/{{hash}} --flake ./nix
-  nix flake update nixpkgs-unstable --override-input nixpkgs-unstable github:nixos/nixpkgs/{{hash}} --flake ./nix
 
 # Update spacemacs to the specific commit. Remember to redeploy
 [group('maintenance')]
@@ -149,6 +127,10 @@ up-secrets:
 up-secrets:
   nix flake update secrets --flake ./nix
 
+# Update omp to the latest commits, commit changes and redeploy
+[group('maintenance')]
+up-omp: check-git-status omp-update omp-commit deploy
+
 # Update omp flake inputs (harness + prebuilt binary) to the latest commits
 [private]
 omp-update:
@@ -159,28 +141,6 @@ omp-update:
 omp-commit:
   git add .
   git commit -m "chore(omp): update version"
-
-# Update omp to the latest commits, commit changes and redeploy
-[group('maintenance')]
-up-omp: check-git-status omp-update omp-commit deploy
-
-# Check if git status is clean before deploying
-[private]
-check-git-status:
-  #!/usr/bin/env bash
-  changes=$(git status --porcelain | wc -l)
-  if [ 0 -eq $changes ]; then
-    exit 0
-  else
-    echo "Git status is not clean. Please commit or stash your changes before deploying."
-    exit 1
-  fi
-
-# Commit after updating
-[private]
-update-commit:
-  git add .
-  git commit -m "chore: update dependencies"
 
 # Update flake lock file, commit changes and redeploy
 [group('maintenance')]
@@ -195,7 +155,35 @@ update-comma:
   wget -q -N https://github.com/nix-community/nix-index-database/releases/latest/download/$filename
   ln -f $filename files
 
+# Commit after updating
+[private]
+update-commit:
+  git add .
+  git commit -m "chore: update dependencies"
+
+# Check if git status is clean before deploying
+[private]
+check-git-status:
+  #!/usr/bin/env bash
+  changes=$(git status --porcelain | wc -l)
+  if [ 0 -eq $changes ]; then
+    exit 0
+  else
+    echo "Git status is not clean. Please commit or stash your changes before deploying."
+    exit 1
+  fi
+
+# Optimises store usage
+[group('maintenance')]
+optimise:
+  nix store optimise
+
+#
+# emacs
+#
+
 # Tangle the literate Spacemacs config (init.org) into init.el.
+[group('emacs')]
 emacs-literate: && validate-spacemacs-layers
   #!/usr/bin/env bash
   set -euo pipefail
@@ -233,7 +221,7 @@ validate-spacemacs-layers:
   fi
 
 # Install Spacemacs at the locked revision (copied from the Nix store, offline)
-[group('maintenance')]
+[group('emacs')]
 emacs-setup: && emacs-literate
   #!/usr/bin/env bash
   set -euo pipefail
@@ -257,29 +245,31 @@ emacs-setup: && emacs-literate
   cp -r "${spacemacs_src}/." "${emacs_dir}/"
   chmod -R u+w "${emacs_dir}"
 
-# Optimises store usage
-[group('maintenance')]
-optimise:
-  nix store optimise
-
-# Shows a searcheable dependency tree
-[group('info')]
-tree:
-  nix-tree
-
 #
-# Formatting
+# cleanup
 #
 
-# Format all Nix files using the flake formatter
-[group('formatting')]
-fmt:
-  cd nix && nix fmt
+# Remove dirty generations, except the current one
+[group('cleanup')]
+[linux]
+sanitize:
+  #!/usr/bin/env bash
+  DIRTY_GENS="$(just list |  grep '[0-9]' | grep --invert-match 'True$' | grep 'dirty' | awk '{ print $1; }' | tr '\n' ' ')"
+  if [ -z "${DIRTY_GENS}" ];
+  then echo "No dirty generations to clean up";
+  else
+    sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations $DIRTY_GENS;
+  fi
 
-# Check Nix formatting without modifying files
-[group('formatting')]
-fmt-check:
-  nixfmt --check nix devenv.nix
+# All steps for full sanitization
+[group('cleanup')]
+[linux]
+sanitize-all: check-git-status sanitize keep5 gc deploy
+
+# All steps for full sanitization - as far as Darwin allows
+[group('cleanup')]
+[macos]
+sanitize-all: check-git-status keep5 gc deploy
 
 # Keep only 5 generations
 [group('cleanup')]
@@ -314,3 +304,26 @@ gc:
 prune:
   # garbage collect all unused nix store generations
   sudo nix-collect-garbage --delete-old
+
+#
+# debug
+#
+
+# Loads up the current flake in the repl
+[group('debug')]
+repl:
+  nix repl -f flake:nixpkgs
+
+#
+# formatting
+#
+
+# Format all Nix files using the flake formatter
+[group('formatting')]
+fmt:
+  cd nix && nix fmt
+
+# Check Nix formatting without modifying files
+[group('formatting')]
+fmt-check:
+  nixfmt --check nix devenv.nix
