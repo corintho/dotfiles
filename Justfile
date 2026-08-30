@@ -149,6 +149,21 @@ up-secrets:
 up-secrets:
   nix flake update secrets --flake ./nix
 
+# Update omp flake inputs (harness + prebuilt binary) to the latest commits
+[private]
+omp-update:
+  nix flake update omp omp-nix --flake ./nix
+
+# Commit after updating omp
+[private]
+omp-commit:
+  git add .
+  git commit -m "chore(omp): update version"
+
+# Update omp to the latest commits, commit changes and redeploy
+[group('maintenance')]
+up-omp: check-git-status omp-update omp-commit deploy
+
 # Check if git status is clean before deploying
 [private]
 check-git-status:
