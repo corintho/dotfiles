@@ -27,4 +27,6 @@
   home.file.".omp/agent/extensions".source =
     config.lib.file.mkOutOfStoreSymlink "${files}/omp/extensions";
   home.file.".omp/plugins".source = config.lib.file.mkOutOfStoreSymlink "${files}/omp/plugins";
+  home.file.".omp/agent/AGENTS.md".source =
+    config.lib.file.mkOutOfStoreSymlink "${files}/agents/AGENTS.md";
 }

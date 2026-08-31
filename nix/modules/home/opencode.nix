@@ -17,7 +17,7 @@ let
 in
 {
   xdg.configFile."opencode/AGENTS.md".source =
-    config.lib.file.mkOutOfStoreSymlink "${files}/opencode/AGENTS.md";
+    config.lib.file.mkOutOfStoreSymlink "${files}/agents/AGENTS.md";
 
   programs.opencode = {
     enable = true;
