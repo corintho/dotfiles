@@ -257,6 +257,46 @@ in
       };
       name = "Writing-Roleplay Nemo 12B v1.0 Q4_K_M";
     };
+
+    # huihui abliterated ("uncensored") — pinned to GPU1 (2060, 8 GB), tensorSplit [ 0 1 ]
+    "huihui/Huihui-Qwen3-8B-abliterated-v2:i1-Q4_K_M" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--mradermacher--Huihui-Qwen3-8B-abliterated-v2-i1-GGUF/snapshots/6daf7f7c2a51d6565f78df65e5930ee5f28707e4/Huihui-Qwen3-8B-abliterated-v2.i1-Q4_K_M.gguf";
+      gpuLayers = -1;
+      contextSize = 49152;                 # 48k
+      flashAttention = true;
+      jinja = true;
+      chatAdapter = "chatml";
+      kvQuant = {
+        k = "q4_0";                        # fp16 KV @48k = ~6.9 GB -> q4_0 = ~1.8 GB; fits
+        v = "q4_0";
+      };
+      tensorSplit = [
+        0
+        1
+      ];                                   # pin to GPU1 (2060)
+      name = "Huihui Qwen3-8B Abliterated v2 (i1 Q4_K_M)";
+      tools = true;
+      reasoning = true;
+    };
+    "huihui/Huihui-Qwen3.5-4B-abliterated:i1-Q4_K_M" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--mradermacher--Huihui-Qwen3.5-4B-abliterated-i1-GGUF/snapshots/d9b9a9650c8c52635ab327bb8ceea77bc705e6d7/Huihui-Qwen3.5-4B-abliterated.i1-Q4_K_M.gguf";
+      gpuLayers = -1;
+      contextSize = 131072;                # 256k OOM'd on GPU1 (8 GB); 131072 is largest that loads
+      flashAttention = true;
+      jinja = true;
+      chatAdapter = "chatml";
+      kvQuant = {
+        k = "q8_0";                        # hybrid: only 8 full-attn layers; q8 KV @256k ~4 GB
+        v = "q8_0";
+      };
+      tensorSplit = [
+        0
+        1
+      ];                                   # pin to GPU1 (2060)
+      name = "Huihui Qwen3.5-4B Abliterated (i1 Q4_K_M)";
+      tools = true;
+      reasoning = true;
+    };
   };
 
   # Custom launcher for "fixed" apps
