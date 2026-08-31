@@ -760,7 +760,7 @@ is shown, so you know exactly what to add to init.org.
                 (string #xF0CA8) (string #xF0CAA) (string #xF0CAC) (string #xF0CAE)))
     (setq org-superstar-leading-bullet " "))
   (add-hook 'org-mode-hook #'org-superstar-mode)
-  (setq org-todo-keywords '(( sequence "TODO" "PROGRESS" "FIXME" "BLOCKED" "|" "DONE" "DELEGATED" "CANCELLED")))
+  (setq org-todo-keywords '(( sequence "TODO(t!)" "PROGRESS(p!)" "FIXME(f!)" "BLOCKED(b!)" "|" "DELEGATED(d!)" "CANCELLED(c!)" "DONE(D!)")))
 
   ;; Scaled org heading faces.
   (custom-set-faces
