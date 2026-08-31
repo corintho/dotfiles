@@ -2,6 +2,7 @@
   lcars,
   lib,
   pkgs,
+  inputs,
   username,
   local_flutter_path,
   flutter-local,
@@ -112,6 +113,7 @@ in
   home.sessionVariables = {
     EDITOR = "hx";
     PATH = "${local_flutter_path}/flutter/bin:$PATH";
+    NODE_EXTRA_CA_CERTS = "/etc/ssl/certs/ca-certificates.crt";
   };
 
   home.activation = {
