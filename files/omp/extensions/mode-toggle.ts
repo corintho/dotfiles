@@ -186,4 +186,15 @@ export default function modeToggle(pi: ExtensionAPI) {
       ctx.ui.notify("Execution mode — tools restored", "info");
     },
   });
+
+  pi.registerShortcut("Tab", {
+    description: "Toggle discuss/execution mode",
+    handler: async (_ctx) => {
+      if (discussActive) {
+        if (switchToRun()) _ctx.ui.notify("Execution mode — tools restored", "info");
+      } else {
+        if (switchToDiscussion()) _ctx.ui.notify("Discussion mode — exec/write tools off", "info");
+      }
+    },
+  });
 }
