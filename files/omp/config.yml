@@ -4,17 +4,24 @@ startup:
 task:
   eager: preferred
 modelRoles:
-  default: opencode-zen/big-pickle
+  default: github-copilot/claude-sonnet-4.6
 symbolPreset: nerd
 composer:
-  shape: box
+  shape: mode-box
 theme:
   dark: dark-cosmos
 setupVersion: 2
 plan:
-  defaultOnStartup: true
+  defaultOnStartup: false
 contextPromotion:
   enabled: true
 hideThinkingBlock: true
 power:
   sleepPrevention: system
+defaultThinkingLevel: auto
+share:
+  serverUrl: http://127.0.0.1:0/s
+collab:
+  relayUrl: ws://127.0.0.1:0
+tools:
+  approvalMode: yolo
