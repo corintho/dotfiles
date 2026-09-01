@@ -54,6 +54,7 @@ let
     cmd = mkCmd model;
     proxy = "http://127.0.0.1:\${PORT}";
     env = model.environment;
+    inherit (model) name;
   }) models;
 
   llamaSwapConfig = yamlFmt.generate "llama-swap-config.yaml" {

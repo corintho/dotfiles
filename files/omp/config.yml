@@ -4,7 +4,7 @@ startup:
 task:
   eager: preferred
 modelRoles:
-  default: github-copilot/claude-sonnet-4.6
+  default: opencode-zen/big-pickle
 symbolPreset: nerd
 composer:
   shape: mode-box

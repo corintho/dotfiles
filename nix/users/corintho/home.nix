@@ -143,11 +143,37 @@ in
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--gemma-4-E4B-it-GGUF/snapshots/bfc15c382204943c3a8fff0c750b94ae2364d7a3/gemma-4-E4B-it-Q4_K_M.gguf";
       mmprojPath = "${modelsDir}/huggingface/hub/models--unsloth--gemma-4-E4B-it-GGUF/snapshots/bfc15c382204943c3a8fff0c750b94ae2364d7a3/mmproj-BF16.gguf";
       gpuLayers = -1;
-      contextSize = 16384;
+      contextSize = 131072;              # 128k
       flashAttention = true;
       jinja = true;
       useswa = true;
-      name = "Gemma 4 E4B IT Q4_K_M";
+      kvQuant = {
+        k = "q8_0";
+        v = "q8_0";
+      };
+      tensorSplit = [
+        1
+        0
+      ];
+      name = "Gemma 4 E4B IT Q4_K_M - 128k (unsloth) (5060)";
+    };
+    "unsloth/gemma-4-E4B-it-GGUF:Q4_K_M-2060" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--unsloth--gemma-4-E4B-it-GGUF/snapshots/bfc15c382204943c3a8fff0c750b94ae2364d7a3/gemma-4-E4B-it-Q4_K_M.gguf";
+      mmprojPath = "${modelsDir}/huggingface/hub/models--unsloth--gemma-4-E4B-it-GGUF/snapshots/bfc15c382204943c3a8fff0c750b94ae2364d7a3/mmproj-BF16.gguf";
+      gpuLayers = -1;
+      contextSize = 24576;                 # 24k
+      flashAttention = true;
+      jinja = true;
+      useswa = true;
+      kvQuant = {
+        k = "q8_0";
+        v = "q8_0";
+      };
+      tensorSplit = [
+        0
+        1
+      ];
+      name = "Gemma 4 E4B IT Q4_K_M - 24k (unsloth) (2060)";
     };
     "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3-14B-GGUF/snapshots/a04a82c4739b3ef5fa6da7d10261db2c67dd1985/Qwen3-14B-UD-Q4_K_XL.gguf";
@@ -156,7 +182,7 @@ in
       flashAttention = true;
       jinja = true;
       chatAdapter = "chatml";
-      name = "Qwen3 14B UD Q4_K_XL";
+      name = "Qwen3 14B UD Q4_K_XL - 16k (unsloth) (Both)";
       reasoning = true;
     };
     "unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:UD-Q4_K_XL" = {
@@ -174,7 +200,7 @@ in
         2
         1
       ];
-      name = "Qwen3 Coder 30B-A3B UD-Q4_K_XL";
+      name = "Qwen3 Coder 30B-A3B UD-Q4_K_XL - 128k (unsloth) (Both)";
       tools = true;
       reasoning = true;
     };
@@ -193,7 +219,7 @@ in
         2
         1
       ];
-      name = "Qwen3.8 27B UD Q3_K_XL";
+      name = "Qwen3.8 27B UD Q3_K_XL - 128k (unsloth) (Both)";
     };
     "williamliao/Qwen3.8-27B-NVFP4-GGUF:NVFP4-Quality-v2" = {
       modelPath = "${modelsDir}/huggingface/hub/models--williamliao--Qwen3.8-27B-NVFP4-GGUF/Qwen3.8-27B-NVFP4-Quality-v2.gguf";
@@ -210,7 +236,7 @@ in
         1
         0
       ];
-      name = "Qwen3.8 27B NVFP4 Quality-v2";
+      name = "Qwen3.8 27B NVFP4 Quality-v2 - 24k (williamliao) (5060)";
     };
 
     # Vision / OCR / GUI (Qwen3-VL, ChatML)
@@ -226,7 +252,7 @@ in
         k = "q8_0";
         v = "q8_0";
       };
-      name = "Qwen3-VL 8B Instruct Q4_K_M";
+      name = "Qwen3-VL 8B Instruct Q4_K_M - 32k (Qwen) (Both)";
     };
 
     # Coding (Qwen2.5-Coder-14B, ChatML) — added alongside the 30B-MoE coder
@@ -241,7 +267,7 @@ in
         k = "q8_0";
         v = "q8_0";
       };
-      name = "Qwen2.5 Coder 14B Q4_K_M";
+      name = "Qwen2.5 Coder 14B Q4_K_M - 32k (Qwen) (Both)";
     };
 
     # Roleplay / creative writing (Llama-based -> native jinja, no chatAdapter)
@@ -255,7 +281,7 @@ in
         k = "q8_0";
         v = "q8_0";
       };
-      name = "Writing-Roleplay Nemo 12B v1.0 Q4_K_M";
+      name = "Writing-Roleplay Nemo 12B v1.0 Q4_K_M - 24k (bartowski) (Both)";
     };
 
     # huihui abliterated ("uncensored") — pinned to GPU1 (2060, 8 GB), tensorSplit [ 0 1 ]
@@ -274,7 +300,7 @@ in
         0
         1
       ];                                   # pin to GPU1 (2060)
-      name = "Huihui Qwen3-8B Abliterated v2 (i1 Q4_K_M)";
+      name = "Huihui Qwen3-8B Abliterated v2 (i1 Q4_K_M) - 48k (huihui) (2060)";
       tools = true;
       reasoning = true;
     };
@@ -293,7 +319,7 @@ in
         0
         1
       ];                                   # pin to GPU1 (2060)
-      name = "Huihui Qwen3.5-4B Abliterated (i1 Q4_K_M)";
+      name = "Huihui Qwen3.5-4B Abliterated (i1 Q4_K_M) - 128k (huihui) (2060)";
       tools = true;
       reasoning = true;
     };

@@ -54,6 +54,7 @@ let
     "${llamaBin} ${lib.concatStringsSep " " args}";
 
   modelConfigs = builtins.mapAttrs (name: model: {
+    inherit (model) name;
     cmd = mkCmd model;
     proxy = "http://127.0.0.1:\${PORT}";
     env = model.environment;
