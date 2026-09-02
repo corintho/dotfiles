@@ -20,7 +20,7 @@ let discussActive = false;
 export default function modeToggle(pi: ExtensionAPI) {
   let removedExecTools: string[] | undefined;
   let prevMode = "none";
-  
+
     pi.registerComposerShape({
       label: "Box",
       description: "Standard box layout with Discuss mode chip in the status bar",
@@ -50,8 +50,8 @@ export default function modeToggle(pi: ExtensionAPI) {
           const right = borderColor(`${box.horizontal.repeat(paddingX)}${box.topRight}`);
           const inner = Math.max(0, width - (paddingX + 1) * 2);
           // Both modes always visible; Discuss uses accent color, Execute uses border color
-          const modeChip = discussActive ? accentColor(" Discuss ") : borderColor(" Execute ");
-          const modeW = 9; // " Discuss " === " Execute " === 9 visible chars
+          const modeChip = discussActive ? accentColor(" Talk ") : borderColor(" Run  ");
+          const modeW = 6; // " Talk " === " Run  " === 6 visible chars
           const rawContent = topBorder?.content ?? "";
           const rawW = topBorder?.width ?? 0;
           // Reserve space on right for chip; truncate status gauge if needed
@@ -111,25 +111,39 @@ export default function modeToggle(pi: ExtensionAPI) {
       return true;
     }
 
-  // Restores previously removed exec/write tools and sets "Run" in the status bar.
-  // Returns true when a state change occurred, false when already in run mode.
-  // Always sets "Run" status before returning.
+  // Restores exec/write tools to the active set and clears "Discuss" state.
+  // Returns true when tools were added, false when exec tools were already present.
+  // Handles both tracked removals (removedExecTools) and untracked harness
+  // restrictions (e.g., plan-mode restrictions, process restart with restricted state).
   function switchToRun(): boolean {
-      if (!removedExecTools || removedExecTools.length === 0) {
+    const current = pi.getActiveTools();
+    if (!removedExecTools || removedExecTools.length === 0) {
+      // No tools tracked for removal. Check for harness-restricted exec/write
+      // tools that are registered but missing from the active set.
+      const missing = pi
+        .getAllTools()
+        .map((t) => t.name)
+        .filter((name) => EXEC_WRITE_TOOLS[name] && !current.includes(name));
+      if (missing.length === 0) {
+        discussActive = false;
         return false;
       }
-      const current = pi.getActiveTools();
-      pi.setActiveTools([...new Set([...current, ...removedExecTools])]);
+      pi.setActiveTools([...new Set([...current, ...missing])]);
       removedExecTools = undefined;
       discussActive = false;
       return true;
     }
+    pi.setActiveTools([...new Set([...current, ...removedExecTools])]);
+    removedExecTools = undefined;
+    discussActive = false;
+    return true;
+  }
 
   // Auto-enter discuss mode on fresh sessions only (not resumes).
   pi.on("session_start", async (_event, ctx) => {
     const branch = ctx.sessionManager.getBranch();
 
-    // Seed prevMode from existing history so goal_updated works correctly on resumes.
+    // Seed prevMode from existing history so turn_start works correctly on resumes.
     const modeEntry = [...branch].reverse().find((e) => e.type === "mode_change");
     prevMode =
       modeEntry && typeof modeEntry === "object" && "mode" in modeEntry && typeof modeEntry.mode === "string"
@@ -137,8 +151,9 @@ export default function modeToggle(pi: ExtensionAPI) {
         : "none";
 
     if (branch.some((e) => e.type === "message")) {
-      // Resume: tool registry is reset on process restart; exec tools are present.
-      // switchToRun sets "Run" status (removedExecTools is undefined → returns false).
+      // Resume: tool registry is reset on process restart. switchToRun() restores
+      // exec tools if the harness left them restricted, or is a no-op (returns
+      // false) if they're already present.
       switchToRun();
       return;
     }
@@ -151,7 +166,12 @@ export default function modeToggle(pi: ExtensionAPI) {
   });
 
   // Auto-restore tools only on the specific plan → none transition.
-  pi.on("goal_updated", async (_event, ctx) => {
+  // NOTE: this used to listen on "goal_updated", which never fires here — that
+  // event belongs to the unrelated autonomous Goal-tracking system (budget/status),
+  // not Plan Mode. Plan approval only shows up as a "mode_change" branch entry;
+  // "turn_start" is the first extension-observable event after that entry lands,
+  // confirmed by tracing a real plan-approve flow end to end.
+  pi.on("turn_start", async (_event, ctx) => {
     const branch = ctx.sessionManager.getBranch();
     const modeEntry = [...branch].reverse().find((e) => e.type === "mode_change");
     const currentMode =
