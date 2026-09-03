@@ -6,6 +6,7 @@
   username,
   local_flutter_path,
   flutter-local,
+  files,
   ...
 }:
 
@@ -114,6 +115,7 @@ in
     EDITOR = "hx";
     PATH = "${local_flutter_path}/flutter/bin:$PATH";
     NODE_EXTRA_CA_CERTS = "/etc/ssl/certs/ca-certificates.crt";
+    PI_CONFIG_FILES = "${files}/omp/omp_darwin_config.yml";
   };
 
   home.activation = {

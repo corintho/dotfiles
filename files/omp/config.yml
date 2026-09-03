@@ -3,8 +3,6 @@ startup:
   checkUpdate: true
 task:
   eager: preferred
-modelRoles:
-  default: opencode-zen/big-pickle
 symbolPreset: nerd
 composer:
   shape: mode-box
@@ -33,3 +31,7 @@ autolearn:
   enabled: false
 display:
   hideToolActivity: false
+cycleOrder:
+  - smol
+  - slow
+  - default
