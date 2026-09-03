@@ -691,6 +691,18 @@ Spacemacs loads the generated =init.el= (tangled from this file by
           (interactive)
           (evil-ghostel--passthrough-ctrl "x"))))
 
+    ;; Forward C-' to ghostel terminal, mirroring the C-x passthrough above.
+    (with-eval-after-load 'evil-ghostel
+      (evil-define-key* 'insert evil-ghostel-mode-map
+        (kbd "C-'")
+        (lambda ()
+          (interactive)
+          (evil-ghostel--passthrough-ctrl "'"))))
+
+    ;; Always send ESC to the ghostel terminal instead of evil.
+    (with-eval-after-load 'evil-ghostel
+      (setq evil-ghostel-escape 'terminal))
+
     ;; Emacs 31 added SPC → dired-next-line in dired-mode-map, stealing the
     ;; Spacemacs evil leader key in dired buffers. Unbind it to restore normal
     ;; leader key behaviour. See: https://github.com/syl20bnr/spacemacs/issues/17138

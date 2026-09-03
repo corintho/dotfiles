@@ -25,3 +25,11 @@ collab:
   relayUrl: ws://127.0.0.1:0
 tools:
   approvalMode: yolo
+memory:
+  backend: mnemopi
+providers:
+  memoryModel: online
+autolearn:
+  enabled: false
+display:
+  hideToolActivity: false
