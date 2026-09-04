@@ -118,7 +118,10 @@ in
       text = builtins.readFile ./scripts/windows_junctions;
     })
     # /Custom scripts on path
-    (import ../../modules/home/herdr-package.nix { inherit inputs pkgs; system = pkgs.stdenv.hostPlatform.system; })
+    (import ../../modules/home/herdr-package.nix {
+      inherit inputs pkgs;
+      system = pkgs.stdenv.hostPlatform.system;
+    })
   ];
 
   # Workaround: `handy` (cjpais/Handy speech-to-text) bundles its own ggml
@@ -406,6 +409,7 @@ in
   home.sessionVariables = {
     EDITOR = "hx";
     OLLAMA_MODELS = "/windows/e/__Slow_AI_E/ollama";
+    LLAMA_CPP_BASE_URL = "http://127.0.0.1:1234/v1";
     HF_HOME = "${modelsDir}/huggingface";
     PI_CONFIG_FILES = "${files}/omp/omp_nixos_config.yml";
   };
