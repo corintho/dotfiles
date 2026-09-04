@@ -22,6 +22,7 @@ in
     ../../modules/home/gdu.nix
     ../../modules/home/gitui.nix
     ../../modules/home/helix.nix
+    ../../modules/home/herdr.nix
     ../../modules/home/hyprland.nix
     ../../modules/home/hyprpaper.nix
     ../../modules/home/niri.nix
