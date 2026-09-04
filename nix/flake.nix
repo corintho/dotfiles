@@ -56,6 +56,16 @@
       # NOTE: if you experience a build failure with Zen, the first thing to check is to remove this line!
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # herdr terminal workspace manager for AI coding agents
+    herdr = {
+      url = "github:herdrdev/herdr/v0.8.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    # Rust toolchain overlay (used to trim herdr's rustup profile)
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # Spacemacs source (managed in the store, read-only)
     spacemacs = {
       url = "github:syl20bnr/spacemacs/develop";
@@ -88,6 +98,8 @@
       homebrew-xcodesorg,
       nix-homebrew,
       secrets,
+      herdr,
+      rust-overlay,
       ...
     }:
     let
@@ -113,6 +125,8 @@
             home-manager
             paths
             secrets
+            herdr
+            rust-overlay
             local_flutter_path
             flutter-local
             ;
@@ -133,6 +147,8 @@
             homebrew-core
             homebrew-xcodesorg
             paths
+            herdr
+            rust-overlay
             local_flutter_path
             flutter-local
             ;

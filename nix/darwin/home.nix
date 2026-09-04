@@ -79,6 +79,7 @@ in
         sudo pmset -a networkoversleep 1
       '';
     })
+    (import ../modules/home/herdr-package.nix { inherit inputs pkgs; system = pkgs.stdenv.hostPlatform.system; })
   ];
 
   # Local inference models (engine-agnostic: drives llama-swap, koboldcpp, opencode)

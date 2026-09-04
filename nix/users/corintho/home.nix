@@ -117,6 +117,7 @@ in
       text = builtins.readFile ./scripts/windows_junctions;
     })
     # /Custom scripts on path
+    (import ../../modules/home/herdr-package.nix { inherit inputs pkgs; system = pkgs.stdenv.hostPlatform.system; })
   ];
 
   # Workaround: `handy` (cjpais/Handy speech-to-text) bundles its own ggml
