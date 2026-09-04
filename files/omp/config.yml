@@ -5,9 +5,9 @@ task:
   eager: preferred
 symbolPreset: nerd
 composer:
-  shape: mode-box
+  shape: box
 theme:
-  dark: dark-cosmos
+  dark: obsidian
 setupVersion: 2
 plan:
   defaultOnStartup: false
@@ -36,7 +36,27 @@ cycleOrder:
   - slow
   - default
 statusLine:
-  sessionAccent: true
+  sessionAccent: false
   transparent: false
   compactThinkingLevel: true
   showHookStatus: true
+  preset: custom
+  contextLine: "off"
+  leftSegments:
+    - pi
+    - time_spent
+    - subagents
+    - model
+    - path
+    - git
+    - mode
+    - cache_hit
+    - context_pct
+    - token_rate
+  rightSegments:
+    - session_name
+    - time
+  segmentOptions:
+    time:
+      format: 24h
+      showSeconds: false
