@@ -8,16 +8,25 @@ This system hardware affects model and quantization recommendations:
 
 | Component | Spec |
 |---|---|
-| GPU | NVIDIA GeForce RTX 2060 SUPER (8 GB VRAM) |
+| GPU | NVIDIA GeForce RTX 5060 Ti (16 GB VRAM) + NVIDIA GeForce RTX 2060 SUPER (8 GB VRAM) |
 | RAM | 62 GB |
 | CPU | Intel i7-9700KF |
+
+**IMPORTANT**: Do NOT hardcode hardware assumptions. Before evaluating whether a model fits, query the actual hardware:
+
+```bash
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+```
+
+Use the reported VRAM values for all budget calculations. The system has two GPUs — models can be split across both using `tensorSplit` in the model config. If a model fits entirely on the larger GPU alone, `tensorSplit` is still valid for load balancing but not strictly required.
 
 **VRAM calculation methodology** (source: [bmdpat.com/blog/llama-cpp-n-gpu-layers-explained-2026](https://bmdpat.com/blog/llama-cpp-n-gpu-layers-explained-2026)):
 - Get GGUF file size from HF file listing
 - Get layer count from model card (e.g., `config.json` `num_hidden_layers`, or `hf models info` metadata)
 - **Per-layer VRAM = GGUF_file_size / layer_count**
 - **Max GPU layers = (usable_VRAM - KV_cache_headroom) / per_layer_VRAM**
-- This system: RTX 2060 SUPER 8 GB → ~6.5 GB usable, reserve ~1.5 GB for KV cache → **~5 GB for weights**
+- For single-GPU fit: compare total weight size against the target GPU's VRAM
+- For multi-GPU: use `tensorSplit` to distribute weights across GPUs; KV cache budget is the total VRAM minus total weights across all GPUs
 - Always specify `-ngl` in `extraArgs` per model (not a global default)
 - `-ngl -1` offloads all layers (same as 999) — use only when model fits entirely in VRAM with headroom
 - `-ngl 0` = CPU-only (slow on this system)
@@ -50,7 +59,7 @@ Validate the selected repo:
 From the siblings list, filter `.gguf` files:
 - Exclude: `.BF16.gguf` (too large ~30GB), `UD-IQ1_*.gguf`, `UD-IQ2_*.gguf` (too aggressive)
 - **Record the GGUF file size** (shown in HF file listing) — needed later for `-ngl` calculation
-- **Consider VRAM budget on this system (RTX 2060 SUPER 8 GB):**
+- **Consider VRAM budget on the target GPU (query with `nvidia-smi` before recommending):**
   - **7B models at Q4_K_M** (~5-6 GB) = fits entirely on GPU → `-ngl -1`
   - **14B+ models** (partial offload required):
     - Smaller file size = more layers fit on GPU
@@ -253,6 +262,119 @@ Configuration will be activated on next model request to llama-swap.
 - **For multimodal models (Gemma 4 E4B)**: the mmproj takes additional ~1 GB VRAM — reduce `-ngl` further or expect OOM
 - **MoE models**: `-ngl` offloads transformer layers; expert weights are handled separately. The formula still applies but be more conservative (expert layers increase memory pressure)
 - **When unsure**: prefer a lower `-ngl` (run today) over a theoretical maximum (risk OOM)
+
+### KV cache calculation
+
+The KV cache is the main variable in VRAM budgeting. **Never trust the formula alone** — the theoretical per-token cost consistently underestimates by 1.5–2×. Always verify with a smoke test.
+
+**Step 1 — Find model architecture details:**
+
+Look up from `config.json` or the model card:
+- `num_hidden_layers` (total layers)
+- `num_key_value_heads` (KV heads — NOT `num_attention_heads`; GQA models have fewer KV heads)
+- `head_dim` (size per head, often `hidden_size / num_attention_heads`)
+- For hybrid models (Qwen3.8, Gemma 3, etc.): identify which layers use full attention vs. linear/recurrent attention (DeltaNet, etc.) — only attention layers use per-token KV
+
+**Step 2 — Calculate theoretical per-token cost:**
+
+```
+KV_per_token = 2 × num_kv_heads × head_dim × dtype_bytes × num_kv_layers
+```
+
+Where `dtype_bytes` depends on KV quant:
+| KV quant | bytes |
+|----------|-------|
+| f16 | 2 |
+| Q8_0 | 1 |
+| Q4_0 | 0.5 |
+
+For **hybrid models**: only count the full attention layers, NOT recurrent/linear layers. E.g., Qwen3.8-27B has 64 layers but only 16 Gated Attention layers store KV.
+
+**Step 3 — Apply safety margin (1.5–2×):**
+
+The theoretical formula consistently underestimates actual VRAM usage due to:
+- Buffer alignment and padding
+- Flash attention metadata
+- Compute graph scratch buffers
+- Multiple context slots (`n_slots` × `n_ctx_slot`)
+- Recurrent state overhead in hybrid models
+
+Multiply by **1.5–2×** for a realistic estimate. Use 2× for hybrid models to be safe.
+
+**Step 4 — Budget VRAM:**
+1. Get target GPU VRAM: `nvidia-smi --query-gpu=name,memory.total --format=csv,noheader`
+2. Subtract: model weights (GGUF file size) + mmproj (if present) + CUDA overhead (~500 MB)
+3. **Max context** = `available_VRAM / (KV_per_token × safety_margin)`
+4. Round down, leave 10% headroom
+
+**Step 5 — Empirical calibration (REQUIRED before finalizing):**
+
+Don't trust the math — launch and measure:
+1. Query baseline VRAM: `nvidia-smi --query-gpu=memory.used --format=csv,noheader`
+2. Launch server with a small context (`-c 8192`) and target KV quant
+3. Query VRAM after load → delta = actual KV allocation
+4. Calculate real per-token cost: `actual_KV_delta / context_size`
+5. Extrapolate: `available_VRAM / real_per_token = true_max_context`
+
+Then verify at full target context in the final smoke test.
+
+**Example (Qwen3.8-27B, single 5060 Ti):**
+- Theoretical: `2 × 4 × 256 × 1 × 16 = 32 KB/token` (Q8_0)
+- With 2× safety: 64 KB/token
+- Empirically measured: **~52–58 KB/token** at Q8_0
+- Q4_0 empirical: **~28 KB/token**
+- KV budget: 16 GB − 12.6 GiB weights − 0.5 GiB overhead ≈ 2.9 GiB for KV
+- Q8_0 max: ~48–53k tokens | Q4_0 max: ~100–108k tokens
+
+### Smoke test
+
+After adding a model entry, validate it actually loads and runs before telling the user to deploy.
+
+**Step 1 — Query baseline GPU state:**
+```bash
+nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader
+```
+Record the baseline VRAM usage on each GPU.
+
+**Step 2 — Start standalone llama-server:**
+Use `hub` to launch a temporary server with the exact flags from the model config:
+```
+hub start:
+  name: ridge-test
+  application: llama-server
+  args: ["-m", "<modelPath>", "-ngl", "-1", "-c", "<contextSize>", ...]
+  ready: { port: <port>, timeout: 120 }
+```
+Include `--mmproj` if the model has one. Use `-ts <split>` for tensorSplit.
+
+**Step 3 — Verify loading succeeded:**
+```bash
+hub logs --name ridge-test --lines 60
+```
+Check for:
+ ✅ `srv load_model: loading model` appears
+ ✅ No `cudaMalloc failed: out of memory` errors
+ ✅ Server reports `ready`
+
+**Step 4 — Verify GPU assignment:**
+```bash
+nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader
+```
+Compare VRAM usage against baseline. The target GPU should show increased usage consistent with the model weights + KV cache. If the wrong GPU shows usage, the `tensorSplit` is misconfigured.
+
+**Step 5 — Test inference:**
+```bash
+curl -s http://127.0.0.1:<port>/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model": "test", "messages": [{"role": "user", "content": "hi"}], "max_tokens": 50}'
+```
+A non-empty response confirms the model can generate tokens, not just load weights.
+
+**Step 6 — Stop server and report:**
+```
+hub stop --name ridge-test
+```
+Report: load status, VRAM usage per GPU, inference result, and any warnings from logs.
 
 ### YAML format
 
