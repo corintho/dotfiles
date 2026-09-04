@@ -8,6 +8,26 @@
   ...
 }:
 
+let
+  filesDir = builtins.path {
+    path = files;
+    name = "dotfiles-files";
+  };
+  pi-llama-swap = pkgs.fetchzip {
+    url = "https://registry.npmjs.org/@danielmeneses/pi-llama-swap/-/pi-llama-swap-0.1.2.tgz";
+    sha256 = "0wbk556zihw1jngayg89farar1nl7aaai1hiaslv6mzzqfvx1yff";
+  };
+  mergedExtensions = pkgs.runCommand "omp-extensions" { } ''
+    mkdir -p $out
+    cp -r ${filesDir}/omp/extensions/* $out/
+    mkdir -p $out/pi-llama-swap
+    cp -r ${pi-llama-swap}/* $out/pi-llama-swap/
+  '';
+  models = config.lcars.models or { };
+  piLlamaSwapJson = (pkgs.formats.json { }).generate "pi-llama-swap.json" {
+    contextOverrides = builtins.mapAttrs (_: model: model.contextSize) models;
+  };
+in
 {
   # oh-my-pi ("omp") coding-agent harness. The Home Manager module that
   # defines `programs.omp` (and its `package` option) is imported in the user
@@ -25,8 +45,7 @@
     config.lib.file.mkOutOfStoreSymlink "${files}/omp/config.yml";
   home.file.".omp/agent/keybindings.yml".source =
     config.lib.file.mkOutOfStoreSymlink "${files}/omp/keybindings.yml";
-  home.file.".omp/agent/extensions".source =
-    config.lib.file.mkOutOfStoreSymlink "${files}/omp/extensions";
+  home.file.".omp/agent/extensions".source = mergedExtensions;
   home.file.".omp/plugins".source = config.lib.file.mkOutOfStoreSymlink "${files}/omp/plugins";
   home.file.".omp/agent/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${files}/agents/AGENTS.md";
@@ -49,4 +68,8 @@
     run mkdir -p "${rootPath}/.git/hooks"
     run ln -sf "${files}/git-hooks/agents-sync-post-commit" "${rootPath}/.git/hooks/post-commit"
   '';
+  home.file.".pi/agent/pi-llama-swap.json".source = piLlamaSwapJson;
+  home.sessionVariables = {
+    LLAMA_SWAP_PORT = "1234";
+  };
 }
