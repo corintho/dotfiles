@@ -1,4 +1,5 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import type { Component } from "@oh-my-pi/pi-tui";
 import { truncateToWidth } from "@oh-my-pi/pi-tui";
 
 // Tools removed from the active set in Discuss mode. `bash` is intentionally
@@ -40,12 +41,14 @@ function currentModeFromBranch(branch: readonly { type: string; mode?: unknown }
   return modeEntry && typeof modeEntry.mode === "string" ? modeEntry.mode : "none";
 }
 
+const MODE_WIDGET_KEY = "mode-toggle";
+
 export default function modeToggle(pi: ExtensionAPI) {
   let prevMode = "none";
 
   // Single source of truth for Discuss/Run: derived live from which
   // EXEC_WRITE_TOOLS-listed tools are currently missing from the active set.
-  // Never a separately-tracked flag, so the status chip, the context
+  // Never a separately-tracked flag, so the status widget, the context
   // reminder, and the actual tool set can never drift out of sync with each
   // other across a session transition this extension doesn't directly see.
   function isDiscussActive(): boolean {
@@ -53,78 +56,30 @@ export default function modeToggle(pi: ExtensionAPI) {
     return pi.getAllTools().some((t) => EXEC_WRITE_TOOLS[t.name] && !active.includes(t.name));
   }
 
-    pi.registerComposerShape({
-      label: "Box",
-      description: "Standard box layout with Discuss mode chip in the status bar",
-      style: {
-        id: "mode-box",
-        sideBorders: true,
-        verticalChrome: 2,
-        statusAttachment: "top-border",
-        bottomBar: "none",
-        bottomBarGap: false,
-        defaultPromptGutter: undefined,
-        defaultPaddingX(paddingX: number) {
-          return Math.max(0, paddingX ?? 2);
-        },
-        sideChromeWidth(paddingX: number) {
-          return paddingX + 1;
-        },
-        renderTop({ box, paddingX, width, borderColor, accentColor, topBorder }: {
-          box: { topLeft: string; topRight: string; horizontal: string };
-          paddingX: number;
-          width: number;
-          borderColor(s: string): string;
-          accentColor(s: string): string;
-          topBorder?: { content: string; width: number };
-        }) {
-          const left = borderColor(`${box.topLeft}${box.horizontal.repeat(paddingX)}`);
-          const right = borderColor(`${box.horizontal.repeat(paddingX)}${box.topRight}`);
-          const inner = Math.max(0, width - (paddingX + 1) * 2);
-          // Both modes always visible; Discuss uses accent color, Execute uses border color
-          const modeChip = isDiscussActive() ? accentColor(" Talk ") : borderColor(" Run  ");
-          const modeW = 6; // " Talk " === " Run  " === 6 visible chars
-          const rawContent = topBorder?.content ?? "";
-          const rawW = topBorder?.width ?? 0;
-          // Reserve space on right for chip; truncate status gauge if needed
-          const statusRoom = Math.max(0, inner - modeW - 1);
-          const content = rawW <= statusRoom ? rawContent : truncateToWidth(rawContent, statusRoom);
-          const contentW = rawW <= statusRoom ? rawW : statusRoom;
-          const fillW = Math.max(0, inner - contentW - modeW);
-          return left + content + borderColor(box.horizontal.repeat(fillW)) + modeChip + right;
-        },
-        renderRow({ box, paddingX, width, borderColor, text, pad, isLastRow, cursorOverflow, imeSafeCursorTail, scrollbarThumb }: {
-          box: { bottomLeft: string; bottomRight: string; horizontal: string; vertical: string };
-          paddingX: number;
-          width: number;
-          borderColor(s: string): string;
-          text: string;
-          pad: string;
-          isLastRow: boolean;
-          cursorOverflow: number;
-          imeSafeCursorTail: boolean;
-          scrollbarThumb: boolean;
-        }) {
-          const rightW = Math.max(1, paddingX + 1 - cursorOverflow);
-          if (isLastRow && imeSafeCursorTail) {
-            return [
-              borderColor(`${box.vertical}${" ".repeat(paddingX)}`) + text,
-              borderColor(`${box.bottomLeft}${box.horizontal.repeat(Math.max(0, width - 2))}${box.bottomRight}`),
-            ];
-          }
-          if (isLastRow) {
-            const lhs = borderColor(`${box.bottomLeft}${box.horizontal}${" ".repeat(Math.max(0, paddingX - 1))}`);
-            const rhs = borderColor(`${" ".repeat(Math.max(0, rightW - 2))}${rightW >= 2 ? box.horizontal : ""}${box.bottomRight}`);
-            return [`${lhs}${text}${pad}${rhs}`];
-          }
-          const scrollChar = scrollbarThumb ? "\u2588" : box.vertical;
-          return [borderColor(`${box.vertical}${" ".repeat(paddingX)}`) + text + pad + borderColor(`${" ".repeat(Math.max(0, rightW - 1))}${scrollChar}`)];
-        },
-        renderBottom() {
-          return undefined;
-        },
+  // Renders the Discuss/Run indicator styled like the harness's own
+  // built-in `mode` status-line segment renders Plan mode: same icon
+  // (icon.plan, nerd preset — no extension-facing accessor exists for the
+  // active symbol preset, so this is hardcoded to match this dotfiles
+  // config's fixed `symbolPreset: nerd`). "accent" color for Run mirrors
+  // Plan's own non-paused-state token; "warning" for Talk mirrors Plan's
+  // paused-state token. Delivered via ctx.ui.setWidget, which hands back a
+  // real Component whose render(width) is invoked fresh on every repaint —
+  // unlike ctx.ui.setStatus (ANSI stripped), this keeps full color styling.
+  // Registered once in session_start below; isDiscussActive() is queried
+  // fresh inside render(), so no re-registration or explicit re-sync is
+  // needed after /discuss, /go, or the Tab shortcut.
+  function modeStatusWidget(_ui: unknown, theme: { fg(name: string, text: string): string }): Component {
+    const MODE_ICON = "\uf2d2"; // icon.plan (nerd preset)
+    return {
+      render(width: number): readonly string[] {
+        const discuss = isDiscussActive();
+        const label = discuss
+          ? theme.fg("warning", `${MODE_ICON} Talk`)
+          : theme.fg("accent", `${MODE_ICON} Run`);
+        return [truncateToWidth(label, width)];
       },
-    });
+    };
+  }
 
   // Removes write/exec tools from the active set. Discuss/Run status and the
   // context reminder are derived live by isDiscussActive(); this function
@@ -266,6 +221,12 @@ export default function modeToggle(pi: ExtensionAPI) {
     // could have switchToDiscussion() strip its actual write/exec tools —
     // worse than a false reminder, an active tool-registry corruption.
     if (!ctx.hasUI) return;
+
+    // Registered once per session; render() re-derives isDiscussActive()
+    // live on every repaint, so no re-registration is needed after
+    // /discuss, /go, or the Tab shortcut mutate the tool set below.
+    ctx.ui.setWidget(MODE_WIDGET_KEY, modeStatusWidget, { placement: "aboveEditor" });
+
     const branch = ctx.sessionManager.getBranch();
 
     // Seed prevMode from existing history so before_agent_start's transition
@@ -292,7 +253,7 @@ export default function modeToggle(pi: ExtensionAPI) {
 
     // Defer one tick so the tool registry is populated before we query it.
     ctx.setTimeout(() => {
-      if (!switchToDiscussion()) return; // No exec/write tools present; status already synced.
+      if (!switchToDiscussion()) return; // No exec/write tools present; widget already reflects that.
       ctx.ui.notify("Discussion mode", "info");
     }, 0);
   });
