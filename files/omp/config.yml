@@ -35,3 +35,8 @@ cycleOrder:
   - smol
   - slow
   - default
+statusLine:
+  sessionAccent: true
+  transparent: false
+  compactThinkingLevel: true
+  showHookStatus: true
