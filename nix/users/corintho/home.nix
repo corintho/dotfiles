@@ -241,6 +241,63 @@ in
       ];
       name = "Qwen3.8 27B NVFP4 Quality-v2 - 24k (williamliao) (5060)";
     };
+    "empero-ai/Qwen3.8-27B-Ridge-GGUF:Ridge-3.7bpw" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/Qwen3.8-27B-Ridge-3.7bpw.gguf";
+      mmprojPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/mmproj-Qwen3.8-27B-BF16.gguf";
+      gpuLayers = -1;
+      contextSize = 131072; # 128k — 5060 Ti (16 GB): 16 - 11.73 weights - 0.87 mmproj - 0.3 CUDA ≈ 3.1 GiB for KV; Q4_0 empirical ~28 KB/token × 128k ≈ 3.5 GiB
+      flashAttention = true;
+      jinja = true;
+      chatAdapter = "chatml";
+      kvQuant = {
+        k = "q4_0";
+        v = "q4_0";
+      };
+      tensorSplit = [
+        1
+        0
+      ];
+      name = "Qwen3.8 27B Ridge 3.7bpw - 128k (empero) (5060)";
+      reasoning = true;
+    };
+    "empero-ai/Qwen3.8-27B-Ridge-GGUF:Ridge-3.7bpw-2gpu" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/Qwen3.8-27B-Ridge-3.7bpw.gguf";
+      mmprojPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/mmproj-Qwen3.8-27B-BF16.gguf";
+      gpuLayers = -1;
+      contextSize = 131072; # 128k — Q8_0 fits both GPUs, verified: Q3_K_XL (12.52 GiB, heavier) runs Q8_0@128k with 707 MiB headroom on 2060 SUPER; Ridge is ~0.8 GiB lighter
+      flashAttention = true;
+      jinja = true;
+      chatAdapter = "chatml";
+      kvQuant = {
+        k = "q8_0";
+        v = "q8_0";
+      };
+      tensorSplit = [
+        2
+        1
+      ];
+      name = "Qwen3.8 27B Ridge 3.7bpw - 128k (empero) (Both)";
+      reasoning = true;
+    };
+    "empero-ai/Qwen3.8-27B-Ridge-GGUF:Ridge-3.7bpw-q4max" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/Qwen3.8-27B-Ridge-3.7bpw.gguf";
+      mmprojPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/mmproj-Qwen3.8-27B-BF16.gguf";
+      gpuLayers = -1;
+      contextSize = 262144; # 256k native max — Q4_0 halves per-token KV vs Q8_0; smoke-test to find true limit
+      flashAttention = true;
+      jinja = true;
+      chatAdapter = "chatml";
+      kvQuant = {
+        k = "q4_0";
+        v = "q4_0";
+      };
+      tensorSplit = [
+        2
+        1
+      ];
+      name = "Qwen3.8 27B Ridge 3.7bpw - 256k (empero) (Both)";
+      reasoning = true;
+    };
 
     # Vision / OCR / GUI (Qwen3-VL, ChatML)
     "Qwen/Qwen3-VL-8B-Instruct:Q4_K_M" = {
