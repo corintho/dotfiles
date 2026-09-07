@@ -15,8 +15,6 @@ layout {
     }
   }
   tab name="agent" {
-    pane command="opencode" start_suspended=true {
-      args "--continue"
-    }
+    pane command="omp" start_suspended=true
   }
 }

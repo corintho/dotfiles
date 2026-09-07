@@ -1,4 +1,8 @@
-{ inputs, pkgs, system }:
+{
+  inputs,
+  pkgs,
+  system,
+}:
 let
   herdrToolchainFile = builtins.fromTOML (builtins.readFile "${inputs.herdr}/rust-toolchain.toml");
   rustOverlayPkgs = import inputs.nixpkgs {
