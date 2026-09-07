@@ -4,7 +4,7 @@ let
 in
 {
   config = {
-    xdg.configFile."herdr/config.toml".text = ''
+    xdg.configFile."herdr/config.toml.off".text = ''
       # Herdr "obsidian" theme override, derived from the active stylix base16Scheme.
       # 17 of 19 tokens track the active scheme automatically; two (selection_bg,
       # subtext0) have no base16 equivalent and stay hardcoded to oh-my-pi's
