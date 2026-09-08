@@ -1,6 +1,6 @@
-# add-llama-model-to-opencode
+# add-llama-model
 
-Downloads a GGUF model from HuggingFace, configures it for llama.cpp with intelligent flag inference, and adds it to both llama-swap and OpenCode settings.
+Downloads a GGUF model from HuggingFace, configures it for llama.cpp with intelligent flag inference, and adds it to both llama-swap and the coding agent's model settings.
 
 ## Hardware Context
 
@@ -164,7 +164,7 @@ Once confirmed, the snapshot path is ready:
 
 ### Step 5 — Update `lcars.models`
 
-**Important:** Models are now declared in a single location per platform, which drives both **llama-swap** and **opencode** automatically.
+**Important:** Models are now declared in a single location per platform, which drives both **llama-swap** and the coding agent's provider list automatically.
 
 Determine which platform file to edit:
 - **macOS (Darwin)**: `nix/darwin/home.nix`
@@ -194,7 +194,7 @@ Locate the `lcars.models` attribute set and add a new entry with the captured pa
 | `modelPath` | yes | Full path to the GGUF file |
 | `mmprojPath` | no | Multimodal projection file path |
 | `extraArgs` | no | Model-specific llama-server flags (including `-ngl`) |
-| `name` | yes | Human-readable label for opencode |
+| `name` | yes | Human-readable label shown in the coding agent's model list |
 | `tools` | no (default: true) | Tool-calling capability |
 | `reasoning` | no (default: false) | Reasoning capability |
 
@@ -202,9 +202,9 @@ The `-c 0` base flag is added automatically by the module. `-ngl` is NOT a base 
 
 Validate with `just check` before proceeding to Step 6.
 
-### Step 6 — No manual opencode edit needed
+### Step 6 — No manual provider edit needed
 
-The `llama.cpp` provider models in opencode are **auto-generated** from `lcars.models`. No separate edit is required — just adding the model entry in Step 5 is sufficient.
+The `llama.cpp` provider models in the coding agent are **auto-generated** from `lcars.models`. No separate edit is required — just adding the model entry in Step 5 is sufficient.
 
 ### Step 7 — Validate
 
@@ -438,7 +438,7 @@ extraArgs = [ "-ngl" "20" "--jinja" "-fa" "on" ];
        tools = true;
        reasoning = false;
      };
-   (llama-swap + opencode updated automatically)
+   (llama-swap + coding agent config updated automatically)
 
 ✅ Validation passed (just check)
 
