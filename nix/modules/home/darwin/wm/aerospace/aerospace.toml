@@ -126,7 +126,6 @@ alt-b = 'workspace Browsers'
 alt-o = 'workspace cOmms'
 alt-d = 'workspace Dev'
 alt-m = 'workspace Misc'     # In your config, you can drop workspace bindings that you don't need
-alt-r = 'workspace Retail'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 alt-shift-1 = 'move-node-to-workspace 1'
@@ -134,7 +133,6 @@ alt-shift-b = 'move-node-to-workspace Browsers'
 alt-shift-o = 'move-node-to-workspace cOmms'
 alt-shift-d = 'move-node-to-workspace Dev'
 alt-shift-m = 'move-node-to-workspace Misc'
-alt-shift-r = 'move-node-to-workspace Retail'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 alt-tab = 'workspace-back-and-forth'
@@ -201,6 +199,17 @@ run = ['layout floating']
 [[on-window-detected]]
 if.app-id = 'com.apple.iphonesimulator'
 run = ['layout floating']
+
+# Dev windows
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+run = ['move-node-to-workspace Dev']
+
+# Emacs (launchd daemon, no CFBundleIdentifier — 'aerospace list-apps' reports
+# NULL-APP-BUNDLE-ID for it) must be matched by app name instead of app-id.
+[[on-window-detected]]
+if.app-name-regex-substring = 'emacs'
+run = ['move-node-to-workspace Dev']
 
 # Browsers windows
 [[on-window-detected]]
