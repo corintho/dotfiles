@@ -1,0 +1,10 @@
+{
+  "servers": {
+    "nil": {
+      "rootMarkers": ["flake.nix", "default.nix", "shell.nix", "devenv.nix"]
+    },
+    "nixd": {
+      "disabled": true
+    }
+  }
+}

@@ -55,7 +55,6 @@ statusLine:
     - token_rate
   rightSegments:
     - session_name
-    - time
   segmentOptions:
     time:
       format: 24h

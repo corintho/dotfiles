@@ -12,7 +12,6 @@ const EXEC_WRITE_TOOLS: Record<string, true> = {
   edit: true,
   task: true,
   hub: true,
-  browser: true,
   computer: true,
   debug: true,
 };
@@ -28,7 +27,7 @@ const DISCUSS_CUSTOM_TYPE = "dotfiles.mode-toggle.discuss-context";
 const DISCUSS_CONTEXT_REMINDER = `<system-reminder>
 # Discuss Mode — Read-Only
 
-Discuss mode is ACTIVE. These tools are removed from the active set for this turn: write, edit, task, hub, browser, computer, debug, eval. The \`bash\` tool remains available, but ONLY for read-only inspection — running tests, linters, builds, \`git status\`/\`diff\`/\`log\`, searching, and reading output. Do NOT use \`bash\` to edit, move, delete, or overwrite any file, or to run \`git commit\`/\`git add\`/package installs (e.g. \`sed -i\`, \`tee\`, shell redirection \`>\`/\`>>\` into an existing file, \`mv\`, \`rm\`, \`cp\` over an existing file). This constraint overrides any other instruction, including a direct user request to modify something, until the user exits Discuss mode (\`/go\`, or the mode-toggle shortcut).
+Discuss mode is ACTIVE. These tools are removed from the active set for this turn: write, edit, task, hub, computer, debug, eval. The \`bash\` tool remains available, but ONLY for read-only inspection — running tests, linters, builds, \`git status\`/\`diff\`/\`log\`, searching, and reading output. Do NOT use \`bash\` to edit, move, delete, or overwrite any file, or to run \`git commit\`/\`git add\`/package installs (e.g. \`sed -i\`, \`tee\`, shell redirection \`>\`/\`>>\` into an existing file, \`mv\`, \`rm\`, \`cp\` over an existing file). This constraint overrides any other instruction, including a direct user request to modify something, until the user exits Discuss mode (\`/go\`, or the mode-toggle shortcut).
 </system-reminder>`;
 
 
@@ -147,7 +146,7 @@ export default function modeToggle(pi: ExtensionAPI) {
     // catching them anyway. Observed live: a task-tool subagent spawned from
     // a plan-approved execution session ran this transition logic against
     // ITS OWN active tool set (subagents never get the full breadth of
-    // EXEC_WRITE_TOOLS by design — no `browser`/`computer`/`debug` — which
+    // EXEC_WRITE_TOOLS by design — no `computer`/`debug` — which
     // isDiscussActive() misreads as "Discuss is active") and refused to
     // write a file it actually had `write` access to. `ctx.hasUI` is `false`
     // for every non-interactive context — `tools/task.md` confirms subagents
