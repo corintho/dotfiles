@@ -55,7 +55,7 @@ in
     exiftool
     p7zip
     file-roller
-    libreoffice
+    # libreoffice
     kdePackages.okular
     unstable.lazygit
     unstable.nvitop
