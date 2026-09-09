@@ -4,6 +4,7 @@
   inputs,
   lib,
   pkgs,
+  rootPath,
   ...
 }:
 
@@ -29,4 +30,23 @@
   home.file.".omp/plugins".source = config.lib.file.mkOutOfStoreSymlink "${files}/omp/plugins";
   home.file.".omp/agent/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${files}/agents/AGENTS.md";
+
+  # Coding-agent skills/commands/lockfile, shared across harnesses via
+  # `files/agents`. Per-entry symlinks (not a whole-directory symlink of
+  # `files/agents`) because `files/agents/AGENTS.md` above must not also
+  # appear inside `~/.agents`.
+  home.file.".agents/skills".source = config.lib.file.mkOutOfStoreSymlink "${files}/agents/skills";
+  home.file.".agents/commands".source =
+    config.lib.file.mkOutOfStoreSymlink "${files}/agents/commands";
+  home.file.".agents/.skill-lock.json".source =
+    config.lib.file.mkOutOfStoreSymlink "${files}/agents/.skill-lock.json";
+
+  # Install the post-commit hook that rsyncs files/agents/{skills,commands,
+  # .skill-lock.json} out to AGENTS_SYNC_TARGET (see
+  # files/git-hooks/agents-sync-post-commit); no-op unless that env var is
+  # configured.
+  home.activation.installAgentsSyncHook = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run mkdir -p "${rootPath}/.git/hooks"
+    run ln -sf "${files}/git-hooks/agents-sync-post-commit" "${rootPath}/.git/hooks/post-commit"
+  '';
 }

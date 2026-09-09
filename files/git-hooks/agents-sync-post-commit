@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Local-only post-commit hook: mirrors files/agents/{skills,commands,.skill-lock.json}
+# into an external agent-skills checkout after any commit that touches them.
+#
+# The mirror target is never hardcoded here. It is read exclusively from the
+# AGENTS_SYNC_TARGET variable, sourced from an untracked env file outside this
+# repo (~/.config/dotfiles-agents-sync.env), e.g.:
+#   AGENTS_SYNC_TARGET=/path/to/other/repo/.agents
+#
+# On a machine without that env file (or without AGENTS_SYNC_TARGET set), this
+# hook is a silent no-op so it never breaks a commit.
+set -euo pipefail
+
+changed_paths="$(git diff-tree --no-commit-id --name-only -r HEAD)"
+
+relevant=false
+while IFS= read -r path; do
+  [ -z "$path" ] && continue
+  if [[ "$path" =~ ^files/agents/(skills|commands)/ ]] || [ "$path" = "files/agents/.skill-lock.json" ]; then
+    relevant=true
+    break
+  fi
+done <<<"$changed_paths"
+
+if [ "$relevant" != true ]; then
+  exit 0
+fi
+
+sync_env="$HOME/.config/dotfiles-agents-sync.env"
+if [ ! -f "$sync_env" ]; then
+  exit 0
+fi
+
+# shellcheck disable=SC1090
+source "$sync_env"
+
+if [ -z "${AGENTS_SYNC_TARGET:-}" ]; then
+  exit 0
+fi
+
+rsync -a --delete files/agents/skills/ "$AGENTS_SYNC_TARGET/skills/"
+rsync -a --delete files/agents/commands/ "$AGENTS_SYNC_TARGET/commands/"
+rsync -a files/agents/.skill-lock.json "$AGENTS_SYNC_TARGET/.skill-lock.json"

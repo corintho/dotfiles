@@ -68,9 +68,6 @@ in
               inherit (final) config;
             };
           })
-          (final: _prev: {
-            markpad = final.callPackage ../modules/markpad.nix { };
-          })
         ];
       }
       inputs.stylix.darwinModules.stylix

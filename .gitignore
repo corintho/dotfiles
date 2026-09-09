@@ -25,3 +25,4 @@ files/doom/config.el
 files/spacemacs/init.el
 /files/spacemacs/.spacemacs.env
 /files/omp/config.yml.lock
+*.pyc
