@@ -46,6 +46,12 @@ in
   home.file.".omp/agent/keybindings.yml".source =
     config.lib.file.mkOutOfStoreSymlink "${files}/omp/keybindings.yml";
   home.file.".omp/agent/extensions".source = mergedExtensions;
+  # Whole-directory out-of-store symlink (same precedent as `.omp/plugins`
+  # below) rather than the `mergedExtensions` build-derivation pattern used
+  # for `.omp/agent/extensions` above: this directory has no third-party
+  # package to merge in, so a live-editable directory symlink is simpler
+  # and correct.
+  home.file.".omp/agent/agents".source = config.lib.file.mkOutOfStoreSymlink "${files}/omp/agents";
   home.file.".omp/plugins".source = config.lib.file.mkOutOfStoreSymlink "${files}/omp/plugins";
   home.file.".omp/agent/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${files}/agents/AGENTS.md";

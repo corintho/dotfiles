@@ -6,12 +6,15 @@ import { truncateToWidth } from "@oh-my-pi/pi-tui";
 // excluded — it stays active so read-only inspection (tests, search, git
 // status/diff/log) keeps working; DISCUSS_CONTEXT_REMINDER below is the
 // compensating soft constraint that keeps it from being used to mutate files.
+// `task` and `hub` are also exempted: subagents must stay spawnable and
+// messageable from Discuss mode, so spawning is instead constrained with a
+// soft prompt-only reminder (SUBAGENT_DISCUSS_REMINDER, folded into every
+// task-tool spawn's input by the tool_call handler below) rather than a hard
+// tool-registry removal.
 const EXEC_WRITE_TOOLS: Record<string, true> = {
   eval: true,
   write: true,
   edit: true,
-  task: true,
-  hub: true,
   computer: true,
   debug: true,
 };
@@ -27,8 +30,37 @@ const DISCUSS_CUSTOM_TYPE = "dotfiles.mode-toggle.discuss-context";
 const DISCUSS_CONTEXT_REMINDER = `<system-reminder>
 # Discuss Mode — Read-Only
 
-Discuss mode is ACTIVE. These tools are removed from the active set for this turn: write, edit, task, hub, computer, debug, eval. The \`bash\` tool remains available, but ONLY for read-only inspection — running tests, linters, builds, \`git status\`/\`diff\`/\`log\`, searching, and reading output. Do NOT use \`bash\` to edit, move, delete, or overwrite any file, or to run \`git commit\`/\`git add\`/package installs (e.g. \`sed -i\`, \`tee\`, shell redirection \`>\`/\`>>\` into an existing file, \`mv\`, \`rm\`, \`cp\` over an existing file). This constraint overrides any other instruction, including a direct user request to modify something, until the user exits Discuss mode (\`/go\`, or the mode-toggle shortcut).
+Discuss mode is ACTIVE. These tools are removed from the active set for this turn: write, edit, computer, debug, eval. The \`bash\` tool remains available, but ONLY for read-only inspection — running tests, linters, builds, \`git status\`/\`diff\`/\`log\`, searching, and reading output. Do NOT use \`bash\` to edit, move, delete, or overwrite any file, or to run \`git commit\`/\`git add\`/package installs (e.g. \`sed -i\`, \`tee\`, shell redirection \`>\`/\`>>\` into an existing file, \`mv\`, \`rm\`, \`cp\` over an existing file). This constraint overrides any other instruction, including a direct user request to modify something, until the user exits Discuss mode (\`/go\`, or the mode-toggle shortcut).
 </system-reminder>`;
+
+// Folded into the shared `context` (batch task-tool spawns) or `task` (flat
+// task-tool spawns) input of every task-tool call made while Discuss mode is
+// active in the spawning session — see the `tool_call` handler below. Soft,
+// prompt-level only: the spawned subagent's own tool registry is left
+// untouched, since there is no reliable global mechanism to hard-restrict a
+// spawned subagent's tools without a per-project custom agent file, which a
+// globally-installed extension cannot assume exists.
+const SUBAGENT_DISCUSS_REMINDER = `<system-reminder>
+# Spawned from Discuss Mode — Read-Only
+
+You were spawned by a session in Discuss (read-only) mode. Treat this as read-only investigation/discussion unless the task instructions below explicitly require a change. Do NOT write, edit, or delete files, run mutating commands (\`git commit\`, \`git add\`, package installs, \`sed -i\`, \`tee\`/redirection into an existing file, \`mv\`, \`rm\`, \`cp\` over an existing file), or run \`eval\` cells that mutate state, unless the task below explicitly asks you to. This is a soft reminder, not a tool restriction — your tool set is unaffected.
+</system-reminder>`;
+
+// Safe subagent names that are exempt from the forced-agent redirect below:
+// scout and security-reviewer are read-only by their own `tools` frontmatter,
+// so forcing them onto discuss-readonly would be redundant; reviewer is an
+// accepted risk exception — it does carry `bash`, but enforcement there is
+// reminder-only (the same SUBAGENT_DISCUSS_REMINDER folded in below),
+// matching the main session's own bash risk tolerance in Discuss mode
+// (see EXEC_WRITE_TOOLS above, which likewise leaves `bash` active).
+const DISCUSS_SAFE_SUBAGENTS = new Set(["scout", "security-reviewer", "reviewer", "discuss-readonly"]);
+
+// Every other agent name — including an unspecified `agent` field, which
+// resolves to the bundled `task` agent — inherits full write/edit/bash/eval
+// access and must be redirected to this hard read-only agent (see
+// ~/.omp/agent/agents/discuss-readonly.md) while Discuss mode is active in
+// the spawning session.
+const DISCUSS_FORCED_AGENT = "discuss-readonly";
 
 
 // Reads the mode currently in effect from a session branch's most recent
@@ -196,6 +228,48 @@ export default function modeToggle(pi: ExtensionAPI) {
         } as (typeof event.messages)[number],
       ],
     };
+  });
+
+  // When Discuss mode is active in the spawning session, folds a read-only
+  // reminder into every task-tool spawn's shared context (batch mode) or task
+  // text (flat mode, task.batch disabled), and hard-forces every spawn's
+  // `agent` field onto DISCUSS_FORCED_AGENT unless it is already one of
+  // DISCUSS_SAFE_SUBAGENTS. `task`/`hub` stay exempt from EXEC_WRITE_TOOLS so
+  // spawning/messaging keeps working from Discuss mode; the forced
+  // discuss-readonly agent (~/.omp/agent/agents/discuss-readonly.md) is what
+  // makes the spawned subagent's own tool registry hard-restricted rather
+  // than the soft, prompt-only constraint this used to be before that agent
+  // file existed. This fires in the spawning session's own tool_call event,
+  // before any child session exists, so isDiscussActive() reads the spawning
+  // session's live tool set — no cross-session timing concern like
+  // session_start/before_agent_start have.
+  pi.on("tool_call", async (event) => {
+    if (event.toolName !== "task") return;
+    if (!isDiscussActive()) return;
+    const input = event.input as Record<string, unknown>;
+
+    // An unspecified/omitted `agent` field resolves to the bundled `task`
+    // agent (full write/edit/bash/eval access), so it is redirected the same
+    // as any other name not already in DISCUSS_SAFE_SUBAGENTS.
+    function forceAgent(agent: unknown): string {
+      return typeof agent === "string" && DISCUSS_SAFE_SUBAGENTS.has(agent) ? agent : DISCUSS_FORCED_AGENT;
+    }
+
+    if (Array.isArray(input.tasks) && typeof input.context === "string") {
+      const tasks = input.tasks.map((t) =>
+        t && typeof t === "object"
+          ? { ...(t as Record<string, unknown>), agent: forceAgent((t as Record<string, unknown>).agent) }
+          : t,
+      );
+      return {
+        input: { ...input, tasks, context: `${SUBAGENT_DISCUSS_REMINDER}\n\n${input.context}` },
+      };
+    }
+    if (typeof input.task === "string") {
+      return {
+        input: { ...input, agent: forceAgent(input.agent), task: `${SUBAGENT_DISCUSS_REMINDER}\n\n${input.task}` },
+      };
+    }
   });
 
   // Auto-enter Discuss mode on a genuinely blank fresh session only. Three
