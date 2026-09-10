@@ -33,6 +33,7 @@ in
     ../../modules/home/oh_my_pi.nix
     # ../../modules/home/qtile.nix
     ../../modules/home/rofi.nix
+    ../../modules/home/steam.nix
     ../../modules/home/waybar.nix
     ../../modules/home/nixos
     ../../modules/home/models.nix
