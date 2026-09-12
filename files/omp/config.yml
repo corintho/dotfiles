@@ -7,7 +7,7 @@ symbolPreset: nerd
 composer:
   shape: box
 theme:
-  dark: obsidian
+  dark: dark-gruvbox
 setupVersion: 2
 plan:
   defaultOnStartup: false
