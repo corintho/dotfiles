@@ -1,4 +1,4 @@
 modelRoles:
   default: opencode-zen/big-pickle
   tiny: opencode-zen/big-pickle
-  smol: opencode-zen/hy3-free
+  smol: opencode-zen/big-pickle:auto

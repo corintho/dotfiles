@@ -256,18 +256,38 @@ export default function modeToggle(pi: ExtensionAPI) {
     }
 
     if (Array.isArray(input.tasks) && typeof input.context === "string") {
-      const tasks = input.tasks.map((t) =>
-        t && typeof t === "object"
-          ? { ...(t as Record<string, unknown>), agent: forceAgent((t as Record<string, unknown>).agent) }
-          : t,
-      );
+      const tasks = input.tasks.map((t) => {
+        if (!t || typeof t !== "object") return t;
+        const item = t as Record<string, unknown>;
+        const agent = forceAgent(item.agent);
+        if (agent === DISCUSS_FORCED_AGENT) {
+          // A caller-supplied `tools` field names eval-defined tools
+          // (@tool/tool()); the harness validates it against the spawning
+          // session's eval-tool registry, where built-in names like
+          // read/glob/grep/bash are not registered — the spawn dies with
+          // "Unknown eval tool(s)" before it starts. The forced agent
+          // declares its own built-in tool set in frontmatter, so drop any
+          // caller-supplied `tools` for it (also closes the escape hatch of
+          // explicit discuss-readonly + eval tools).
+          const { tools: _tools, ...rest } = item;
+          return { ...rest, agent };
+        }
+        return { ...item, agent };
+      });
       return {
         input: { ...input, tasks, context: `${SUBAGENT_DISCUSS_REMINDER}\n\n${input.context}` },
       };
     }
     if (typeof input.task === "string") {
+      const agent = forceAgent(input.agent);
+      if (agent === DISCUSS_FORCED_AGENT) {
+        const { tools: _tools, ...rest } = input;
+        return {
+          input: { ...rest, agent, task: `${SUBAGENT_DISCUSS_REMINDER}\n\n${input.task}` },
+        };
+      }
       return {
-        input: { ...input, agent: forceAgent(input.agent), task: `${SUBAGENT_DISCUSS_REMINDER}\n\n${input.task}` },
+        input: { ...input, agent, task: `${SUBAGENT_DISCUSS_REMINDER}\n\n${input.task}` },
       };
     }
   });

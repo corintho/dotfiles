@@ -31,10 +31,7 @@ autolearn:
   enabled: false
 display:
   hideToolActivity: false
-cycleOrder:
-  - smol
-  - slow
-  - default
+cycleOrder: []
 statusLine:
   sessionAccent: false
   transparent: false
