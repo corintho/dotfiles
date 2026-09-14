@@ -13,8 +13,11 @@ let
     path = files;
     name = "dotfiles-files";
   };
+  npmMirror = builtins.getEnv "DOTFILES_NPM_MIRROR";
   pi-llama-swap = pkgs.fetchzip {
-    url = "https://registry.npmjs.org/@danielmeneses/pi-llama-swap/-/pi-llama-swap-0.1.2.tgz";
+    urls =
+      lib.optional (npmMirror != "") "${npmMirror}/@danielmeneses/pi-llama-swap/-/pi-llama-swap-0.1.2.tgz"
+      ++ [ "https://registry.npmjs.org/@danielmeneses/pi-llama-swap/-/pi-llama-swap-0.1.2.tgz" ];
     sha256 = "0wbk556zihw1jngayg89farar1nl7aaai1hiaslv6mzzqfvx1yff";
   };
   mergedExtensions = pkgs.runCommand "omp-extensions" { } ''

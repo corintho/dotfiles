@@ -19,6 +19,9 @@ devenv.local.nix
 result
 /tmp
 
+# Corporate overrides
+nix/corporate.env
+
 # Emacs
 *.elc
 files/doom/config.el

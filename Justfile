@@ -29,18 +29,27 @@ check:
 [group('build')]
 [macos]
 deploy:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  [ -f nix/corporate.env ] && { set -a; source nix/corporate.env; set +a; }
   sudo -E darwin-rebuild switch --flake ./nix --impure
 
 # Standard deploy with extended debug enabled
 [group('build')]
 [macos]
 verbose:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  [ -f nix/corporate.env ] && { set -a; source nix/corporate.env; set +a; }
   sudo -E darwin-rebuild switch --flake ./nix --impure --show-trace --verbose
 
 # Dry run. Makes it easy to catch errors without generating a new profile
 [group('build')]
 [macos]
 check:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  [ -f nix/corporate.env ] && { set -a; source nix/corporate.env; set +a; }
   sudo -E darwin-rebuild build --flake ./nix --impure
 
 # Boot out the Emacs LaunchAgent
