@@ -58,7 +58,7 @@
     };
     # herdr terminal workspace manager for AI coding agents
     herdr = {
-      url = "github:herdrdev/herdr/v0.8.2";
+      url = "github:herdrdev/herdr/v0.9.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Rust toolchain overlay (used to trim herdr's rustup profile)
