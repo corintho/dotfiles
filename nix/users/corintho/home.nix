@@ -296,8 +296,8 @@ in
         v = "q4_0";
       };
       tensorSplit = [
-        2
-        1
+        16
+        7
       ];
       name = "Qwen3.8 27B Ridge 3.7bpw - 256k (empero) (Both)";
       reasoning = true;
