@@ -20,12 +20,6 @@ let
       ++ [ "https://registry.npmjs.org/@danielmeneses/pi-llama-swap/-/pi-llama-swap-0.1.2.tgz" ];
     sha256 = "0wbk556zihw1jngayg89farar1nl7aaai1hiaslv6mzzqfvx1yff";
   };
-  mergedExtensions = pkgs.runCommand "omp-extensions" { } ''
-    mkdir -p $out
-    cp -r ${filesDir}/omp/extensions/* $out/
-    mkdir -p $out/pi-llama-swap
-    cp -r ${pi-llama-swap}/* $out/pi-llama-swap/
-  '';
   models = config.lcars.models or { };
   piLlamaSwapJson = (pkgs.formats.json { }).generate "pi-llama-swap.json" {
     contextOverrides = builtins.mapAttrs (_: model: model.contextSize) models;
@@ -48,12 +42,20 @@ in
     config.lib.file.mkOutOfStoreSymlink "${files}/omp/config.yml";
   home.file.".omp/agent/keybindings.yml".source =
     config.lib.file.mkOutOfStoreSymlink "${files}/omp/keybindings.yml";
-  home.file.".omp/agent/extensions".source = mergedExtensions;
-  # Whole-directory out-of-store symlink (same precedent as `.omp/plugins`
-  # below) rather than the `mergedExtensions` build-derivation pattern used
-  # for `.omp/agent/extensions` above: this directory has no third-party
-  # package to merge in, so a live-editable directory symlink is simpler
-  # and correct.
+  # `.omp/agent/extensions` is no longer a `home.file` entry: herdr
+  # self-installs/updates its own omp integration script inside this
+  # directory at runtime, and a store-backed symlink makes that write
+  # fail with EACCES (errno 13). Instead we ensure a real, writable
+  # directory exists and drop in the extensions this repo owns (the
+  # fetched pi-llama-swap package plus the mode-toggle and opencode-fix
+  # scripts) as out-of-store symlinks; herdr remains free to create/rewrite
+  # its own files alongside them.
+  home.activation.linkOmpExtensions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run mkdir -p "$HOME/.omp/agent/extensions"
+    run ln -sfn "${pi-llama-swap}" "$HOME/.omp/agent/extensions/pi-llama-swap"
+    run ln -sfn "${files}/omp/extensions/mode-toggle.ts" "$HOME/.omp/agent/extensions/mode-toggle.ts"
+    run ln -sfn "${files}/omp/extensions/opencode-fix.ts" "$HOME/.omp/agent/extensions/opencode-fix.ts"
+  '';
   home.file.".omp/agent/agents".source = config.lib.file.mkOutOfStoreSymlink "${files}/omp/agents";
   home.file.".omp/plugins".source = config.lib.file.mkOutOfStoreSymlink "${files}/omp/plugins";
   home.file.".omp/agent/AGENTS.md".source =
