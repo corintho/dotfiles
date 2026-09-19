@@ -1,4 +1,2 @@
 modelRoles:
-  default: opencode-zen/big-pickle
-  tiny: opencode-zen/big-pickle
-  smol: opencode-zen/big-pickle:auto
+  default: cline-pass/cline-free/deepseek-v4.1-flash
