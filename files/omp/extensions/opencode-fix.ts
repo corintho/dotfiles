@@ -1,7 +1,9 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-const OPENCODE_VERSION = "2.0.9";
-const USER_AGENT = `opencode/${OPENCODE_VERSION} ai-sdk/provider-utils/4.0.40 runtime/bun/1.3.14`;
+const OPENCODE_VERSION = "2.0.10";
+const OPENCODE_CHANNEL = "latest";
+const OPENCODE_CLIENT = "cli";
+const USER_AGENT = `opencode/${OPENCODE_CHANNEL}/${OPENCODE_VERSION}/${OPENCODE_CLIENT}`;
 
 // ---------------------------------------------------------------------------
 // Stable session identity
@@ -19,28 +21,15 @@ let opencodeSessionId = "";
 // Fallback id in case a request fires before the first session_start event
 // (session_start always precedes any LLM call, so this is nearly never used).
 const ID_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-let counter = 0;
-let lastTimestamp = 0;
-
-function generateId(prefix: "ses" | "msg", descending: boolean, timestamp = Date.now()): string {
-  if (timestamp !== lastTimestamp) {
-    lastTimestamp = timestamp;
-    counter = 0;
-  }
-  counter++;
-
-  const current = BigInt(timestamp) * 0x1000n + BigInt(counter);
-  const value = descending ? ~current : current;
-  const timeHex = Array.from({ length: 6 }, (_, index) =>
-    Number((value >> BigInt(40 - 8 * index)) & 0xffn)
-      .toString(16)
-      .padStart(2, "0")
-  ).join("");
-
-  const bytes = crypto.getRandomValues(new Uint8Array(14));
-  const rand = Array.from(bytes, (b) => ID_CHARS[b % 62]).join("");
-  return `${prefix}_${timeHex}${rand}`;
-}
+// NOTE: The reference client sends NO per-request id (no x-opencode-request /
+// msg_* anywhere). The old generateId("msg") helper was deleted with the
+// header. sessionIdFromSeed below is the only id generator and matches
+// ses_ + 12 hex + 14 base62.
+//
+// Ground truth is the WORKING binary on this machine:
+// omp-meta/node_modules/@opencode/cli v2.0.10, UA
+// `opencode/latest/2.0.10/cli` (build.ts: --user-agent=opencode/${channel}/${version}/cli,
+// channel "latest" from npm-published artifact). See tmp/opencode-v2.md.
 
 // FNV-1a 64-bit string hash (deterministic).
 function fnv1a(str: string): bigint {
@@ -112,31 +101,33 @@ globalThis.fetch = async function (input: RequestInfo | URL, init?: RequestInit)
     init = init || {};
     const headersToInject: Record<string, string> = {
       "User-Agent": USER_AGENT,
-      "user-agent": USER_AGENT,
-      "x-opencode-client": "cli",
+      "x-session-affinity": opencodeSessionId,
+      "X-Session-Id": opencodeSessionId,
+      "x-opencode-client": OPENCODE_CLIENT,
       "x-opencode-project": "global",
       "x-opencode-session": opencodeSessionId,
-      "x-opencode-request": generateId("msg", false, Date.now()),
     };
 
     // These are the headers we own; our dynamic values must always win.
-    const alwaysOwn = new Set(["user-agent", "x-opencode-session", "x-opencode-request"]);
+    const alwaysOwn: Record<string, true> = {
+      "user-agent": true,
+      "x-session-affinity": true,
+      "x-session-id": true,
+      "x-opencode-session": true,
+    };
 
     if (!init.headers) {
       init.headers = headersToInject;
     } else if (init.headers instanceof Headers) {
       for (const [k, v] of Object.entries(headersToInject)) {
-        if (!init.headers.has(k) || alwaysOwn.has(k.toLowerCase())) {
+        if (!init.headers.has(k) || alwaysOwn[k.toLowerCase()]) {
           init.headers.set(k, v);
         }
       }
     } else if (Array.isArray(init.headers)) {
-      init.headers = init.headers.filter(([k]) => !alwaysOwn.has(k.toLowerCase()));
-      const present = new Set(init.headers.map(([k]) => k.toLowerCase()));
+      init.headers = init.headers.filter(([k]) => !alwaysOwn[k.toLowerCase()]);
       for (const [k, v] of Object.entries(headersToInject)) {
-        if (!present.has(k.toLowerCase())) {
-          init.headers.push([k, v]);
-        }
+        init.headers.push([k, v]);
       }
     } else {
       Object.assign(init.headers, headersToInject);
@@ -191,6 +182,8 @@ export default function (pi: ExtensionAPI) {
     pi.registerProvider?.(p, {
       headers: {
         "User-Agent": USER_AGENT,
+        "x-session-affinity": opencodeSessionId,
+        "X-Session-Id": opencodeSessionId,
         "x-opencode-client": "cli",
         "x-opencode-project": "global",
         "x-opencode-session": opencodeSessionId,

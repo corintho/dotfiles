@@ -27,7 +27,6 @@ in
     };
     settings = {
       share = "disabled";
-      default_agent = "plan";
       enabled_providers = [
         "github-copilot"
         "opencode"

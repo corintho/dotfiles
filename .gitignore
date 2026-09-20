@@ -29,3 +29,4 @@ files/spacemacs/init.el
 /files/spacemacs/.spacemacs.env
 /files/omp/config.yml.lock
 *.pyc
+node_modules

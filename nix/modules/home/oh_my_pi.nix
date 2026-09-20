@@ -54,6 +54,7 @@ in
     run mkdir -p "$HOME/.omp/agent/extensions"
     run ln -sfn "${pi-llama-swap}" "$HOME/.omp/agent/extensions/pi-llama-swap"
     run ln -sfn "${files}/omp/extensions/mode-toggle.ts" "$HOME/.omp/agent/extensions/mode-toggle.ts"
+    run ln -sfn "${files}/omp/extensions/opencode-v2-serve.ts" "$HOME/.omp/agent/extensions/opencode-v2-serve.ts"
     run ln -sfn "${files}/omp/extensions/opencode-fix.ts" "$HOME/.omp/agent/extensions/opencode-fix.ts"
   '';
   home.file.".omp/agent/agents".source = config.lib.file.mkOutOfStoreSymlink "${files}/omp/agents";
