@@ -12,7 +12,17 @@
           "set -x SHELL /run/current-system/sw/bin/bash"
           (lib.mkIf pkgs.stdenv.isDarwin "fish_add_path /opt/homebrew/bin/")
         ];
-        interactiveShellInit = "set -g fish_greeting";
+        interactiveShellInit = ''
+          set -g fish_greeting
+          # Dynamic OPENCODE_API_KEY from the genuine opencode auth store.
+          # Runtime-only: nothing is baked into the store at eval time.
+          if test -z "$OPENCODE_API_KEY"; and test -r $HOME/.local/share/opencode/auth.json
+            set -l _oc_key (python3 -c 'import json,os;print(json.load(open(os.path.expanduser("~/.local/share/opencode/auth.json")))["opencode"]["key"])' 2>/dev/null)
+            if test -n "$_oc_key"
+              set -gx OPENCODE_API_KEY $_oc_key
+            end
+          end
+        '';
         plugins = [
           {
             name = "autopair";

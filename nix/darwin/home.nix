@@ -207,6 +207,15 @@ in
         enable = true;
         highlighters = [ "brackets" ];
       };
+      initExtra = ''
+        # Dynamic OPENCODE_API_KEY from the genuine opencode auth store.
+        # Runtime-only: nothing is baked into the store at eval time.
+        if [[ -z ''${OPENCODE_API_KEY:-} && -r "$HOME/.local/share/opencode/auth.json" ]]; then
+          _oc_key="$(python3 -c 'import json,os;print(json.load(open(os.path.expanduser("~/.local/share/opencode/auth.json")))["opencode"]["key"])' 2>/dev/null)" || true
+          [[ -n "$_oc_key" ]] && export OPENCODE_API_KEY="$_oc_key"
+          unset _oc_key
+        fi
+      '';
     };
     fzf = {
       enable = true;
