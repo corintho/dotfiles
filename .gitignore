@@ -17,7 +17,7 @@ devenv.local.nix
 
 # Nix build output
 result
-/tmp
+tmp
 
 # Corporate overrides
 nix/corporate.env
