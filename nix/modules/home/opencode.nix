@@ -21,7 +21,10 @@ in
 
   programs.opencode = {
     enable = true;
-    package = pkgs.unstable.opencode;
+    package = import ./opencode-cli-package.nix {
+      inherit pkgs;
+      system = pkgs.stdenv.hostPlatform.system;
+    };
     settings = {
       share = "disabled";
       default_agent = "plan";
