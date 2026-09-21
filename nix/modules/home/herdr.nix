@@ -27,6 +27,8 @@
       new_tab = ["prefix+c", "alt+n"]
       previous_tab = ["prefix+p", "alt+left"]
       next_tab = ["prefix+n", "alt+right"]
+      previous_workspace = ["alt+up"]
+      next_workspace = ["alt+down"]
 
       # zellij: `serialize_pane_viewport true` -- replay recent pane screen contents
       # after a full herdr server restart (detach/reattach already preserves
