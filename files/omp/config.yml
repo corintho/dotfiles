@@ -3,6 +3,7 @@ startup:
   checkUpdate: true
 task:
   eager: preferred
+  enableLsp: true
 symbolPreset: nerd
 composer:
   shape: box
@@ -31,7 +32,8 @@ autolearn:
   enabled: false
 display:
   hideToolActivity: false
-cycleOrder: []
+cycleOrder:
+  []
 statusLine:
   sessionAccent: false
   transparent: false
@@ -56,3 +58,13 @@ statusLine:
     time:
       format: 24h
       showSeconds: false
+computer:
+  enabled: true
+generate_image:
+  enabled: true
+checkpoint:
+  enabled: false
+dev:
+  autoqa: false
+  autoqaPush:
+    endpoint: ""
