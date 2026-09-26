@@ -185,7 +185,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    inputs.agenix.packages.${pkgs.system}.default
+    inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
     coreutils-full
     inetutils
     egl-wayland
@@ -198,7 +198,7 @@
     wl-clipboard-rs
     # /nvim
     kitty
-    inputs.zen-browser.packages.${pkgs.system}.default
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     hyprpicker
     # Sound control
     pamixer

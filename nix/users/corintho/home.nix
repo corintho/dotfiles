@@ -519,22 +519,19 @@ in
     ssh = {
       enable = true;
       enableDefaultConfig = false;
-      matchBlocks = {
-        "*" = {
-          forwardAgent = false;
-          setEnv = {
-            TERM = "xterm-256color";
-          };
-          serverAliveInterval = 0;
-          serverAliveCountMax = 3;
-          compression = false;
-          addKeysToAgent = "no";
-          hashKnownHosts = false;
-          userKnownHostsFile = "~/.ssh/known_hosts";
-          controlMaster = "no";
-          controlPath = "~/.ssh/master-%r@%n:%p";
-          controlPersist = null;
+      settings."*" = {
+        AddKeysToAgent = "no";
+        Compression = false;
+        ControlMaster = "no";
+        ControlPath = "~/.ssh/master-%r@%n:%p";
+        ForwardAgent = false;
+        HashKnownHosts = false;
+        ServerAliveCountMax = 3;
+        ServerAliveInterval = 0;
+        SetEnv = {
+          TERM = "xterm-256color";
         };
+        UserKnownHostsFile = "~/.ssh/known_hosts";
       };
       includes = [ "home.conf" ];
     };
@@ -655,7 +652,7 @@ in
         enable = true;
         highlighters = [ "brackets" ];
       };
-      initExtra = ''
+      initContent = ''
         # Dynamic OPENCODE_API_KEY from the genuine opencode auth store.
         # Runtime-only: nothing is baked into the store at eval time.
         if [[ -z ''${OPENCODE_API_KEY:-} && -r "$HOME/.local/share/opencode/auth.json" ]]; then

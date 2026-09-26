@@ -10,9 +10,9 @@
       ghostty = {
         enable = true;
         # For darwin we use the cask
-        package = (if pkgs.stdenv.isDarwin then null else pkgs.unstable.ghostty);
+        package = (if pkgs.stdenv.hostPlatform.isDarwin then null else pkgs.unstable.ghostty);
         settings = {
-          font-size = lib.mkForce (if pkgs.stdenv.isDarwin then 14 else 12);
+          font-size = lib.mkForce (if pkgs.stdenv.hostPlatform.isDarwin then 14 else 12);
           font-family = "FiraCode Nerd Font";
           # Exit without prompt
           confirm-close-surface = false;
@@ -33,7 +33,7 @@
             "alt+8=unbind"
             "alt+9=unbind"
           ]
-          ++ lib.optionals pkgs.stdenv.isDarwin [
+          ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
             # Fix for MacOS keys
             "alt+left=unbind"
             "alt+right=unbind"

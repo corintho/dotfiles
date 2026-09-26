@@ -7,7 +7,8 @@
 }:
 
 let
-  emacsPackage = if pkgs.stdenv.isLinux then pkgs.emacs-unstable-pgtk else pkgs.emacs-unstable;
+  emacsPackage =
+    if pkgs.stdenv.hostPlatform.isLinux then pkgs.emacs-unstable-pgtk else pkgs.emacs-unstable;
 in
 {
   home.packages = with pkgs; [
@@ -47,5 +48,5 @@ in
     client.enable = true;
   };
 
-  fonts.fontconfig.enable = lib.mkIf pkgs.stdenv.isLinux true;
+  fonts.fontconfig.enable = lib.mkIf pkgs.stdenv.hostPlatform.isLinux true;
 }

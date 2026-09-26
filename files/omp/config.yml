@@ -26,8 +26,6 @@ tools:
   approvalMode: yolo
 memory:
   backend: mnemopi
-providers:
-  memoryModel: online
 autolearn:
   enabled: true
   autoContinue: true

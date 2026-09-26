@@ -18,7 +18,7 @@
   # both make it unreliable for a long-lived background process to inherit.
   # Set it directly here so it's always correct regardless of shell state.
   env.PI_CONFIG_FILES =
-    if pkgs.stdenv.isDarwin then
+    if pkgs.stdenv.hostPlatform.isDarwin then
       "${config.devenv.root}/files/omp/omp_darwin_config.yml"
     else
       "${config.devenv.root}/files/omp/omp_nixos_config.yml";

@@ -207,7 +207,7 @@ in
         enable = true;
         highlighters = [ "brackets" ];
       };
-      initExtra = ''
+      initContent = ''
         # Dynamic OPENCODE_API_KEY from the genuine opencode auth store.
         # Runtime-only: nothing is baked into the store at eval time.
         if [[ -z ''${OPENCODE_API_KEY:-} && -r "$HOME/.local/share/opencode/auth.json" ]]; then

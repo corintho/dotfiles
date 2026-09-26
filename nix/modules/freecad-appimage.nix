@@ -14,7 +14,7 @@ let
     url = "https://github.com/FreeCAD/FreeCAD/releases/download/${version}/FreeCAD_${version}-Linux-x86_64-py311.AppImage";
     hash = "sha256-4gBhOEALL6hfouFg6HLQB2frMpZOhQdYMPfhmKOoduE=";
   };
-  appimageContents = appimageTools.extractType2 { inherit pname version src; };
+  appimageContents = appimageTools.extract { inherit pname version src; };
   freecad-desktop = writeText "freecad.desktop" ''
     [Desktop Entry]
     Categories=Engineering;Graphics;

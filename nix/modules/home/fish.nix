@@ -10,7 +10,7 @@
         enable = true;
         shellInit = lib.mkMerge [
           "set -x SHELL /run/current-system/sw/bin/bash"
-          (lib.mkIf pkgs.stdenv.isDarwin "fish_add_path /opt/homebrew/bin/")
+          (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "fish_add_path /opt/homebrew/bin/")
         ];
         interactiveShellInit = ''
           set -g fish_greeting
