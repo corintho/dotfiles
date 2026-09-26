@@ -45,7 +45,20 @@
           useswa = lib.mkOption {
             type = lib.types.bool;
             default = false;
-            description = "Enable sliding-window attention (koboldcpp).";
+            description = ''
+              Enable sliding-window attention. KOBOLDCPP ONLY — this is the one
+              field in this option set that is not engine-agnostic. It is written
+              to the .kcpps launcher config and silently ignored by the llama-swap
+              module, which has no branch for it.
+
+              This is harmless rather than a divergence: llama-server has no
+              "enable SWA" flag at all (only --swa-full, which toggles full-size
+              vs compressed cache). llama.cpp auto-detects SWA from GGUF metadata,
+              e.g. gemma4.attention.sliding_window and gemma4.attention.sliding_window_pattern.
+              So SWA is already active on the llama-swap route whether or not you
+              set this. Set it for KoboldCpp parity; do not expect it to change
+              anything on the llama.cpp route.
+            '';
           };
           kvQuant = lib.mkOption {
             type = lib.types.nullOr (

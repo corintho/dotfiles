@@ -49,7 +49,8 @@ in
               inherit system;
               inherit (final) config;
               overlays = [
-                # Pin llama.cpp to upstream nightly b10581 for Blackwell GDN / NVFP4 support.
+                # Pin llama.cpp to upstream nightly b10581 for Blackwell GDN support
+                # (qwen35 hybrid linear attention: Qwen3.8-27B-Ridge, MiMo-V2.6-Distill).
                 # Override source only; keep nixpkgs' CUDA toolchain/flags to avoid the
                 # known sm_120 codegen bug from newer CUDA.
                 (uFinal: uPrev: {
