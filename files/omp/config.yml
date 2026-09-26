@@ -16,7 +16,7 @@ contextPromotion:
   enabled: true
 hideThinkingBlock: true
 power:
-  sleepPrevention: system
+  sleepPrevention: "off"
 defaultThinkingLevel: auto
 share:
   serverUrl: http://127.0.0.1:0/s
@@ -29,7 +29,8 @@ memory:
 providers:
   memoryModel: online
 autolearn:
-  enabled: false
+  enabled: true
+  autoContinue: true
 display:
   hideToolActivity: false
 cycleOrder:
