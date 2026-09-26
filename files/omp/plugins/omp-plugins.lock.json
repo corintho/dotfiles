@@ -1,4 +1,10 @@
 {
-  "plugins": {},
+  "plugins": {
+    "pi-freeflow": {
+      "version": "1.27.0",
+      "enabledFeatures": null,
+      "enabled": true
+    }
+  },
   "settings": {}
 }

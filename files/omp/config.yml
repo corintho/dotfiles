@@ -31,8 +31,7 @@ autolearn:
   autoContinue: true
 display:
   hideToolActivity: false
-cycleOrder:
-  []
+cycleOrder: []
 statusLine:
   sessionAccent: false
   transparent: false

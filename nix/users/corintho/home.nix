@@ -356,6 +356,7 @@ in
       contextSize = 131072; # 128k, +3.4 GiB headroom — the vision-capable key
       flashAttention = true;
       jinja = true;
+      chatTemplateFile = ../../modules/home/chat-templates/mimo-v2.6-distill-qwen-9b.jinja;
       chatAdapter = "chatml";
       kvQuant = {
         k = "q8_0";
@@ -375,6 +376,7 @@ in
       contextSize = 262144; # 256k native max (max_position_embeddings) — text-only by measurement, see comment block above
       flashAttention = true;
       jinja = true;
+      chatTemplateFile = ../../modules/home/chat-templates/mimo-v2.6-distill-qwen-9b.jinja;
       chatAdapter = "chatml";
       kvQuant = {
         k = "q8_0";

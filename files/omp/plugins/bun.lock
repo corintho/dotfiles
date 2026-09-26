@@ -1,0 +1,15 @@
+{
+  "lockfileVersion": 1,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "omp-plugins",
+      "dependencies": {
+        "pi-freeflow": "^1.27.0",
+      },
+    },
+  },
+  "packages": {
+    "pi-freeflow": ["pi-freeflow@1.27.0", "", {}, "sha512-8tRL0/Imb8WoTLGoBF8XT7+2rM2fSwB3Chf+Tu6WGvCk/2ZKUaniCrMD6E6MsHyC3zjOEuNbou2lqrBVLFJpYw=="],
+  }
+}

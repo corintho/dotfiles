@@ -49,17 +49,17 @@ in
               inherit system;
               inherit (final) config;
               overlays = [
-                # Pin llama.cpp to upstream nightly b10581 for Blackwell GDN support
+                # Pin llama.cpp to upstream nightly b10964 for Blackwell GDN support
                 # (qwen35 hybrid linear attention: Qwen3.8-27B-Ridge, MiMo-V2.6-Distill).
                 # Override source only; keep nixpkgs' CUDA toolchain/flags to avoid the
                 # known sm_120 codegen bug from newer CUDA.
                 (uFinal: uPrev: {
                   llama-cpp = uPrev.llama-cpp.overrideAttrs (old: {
-                    version = "10581";
+                    version = "10964";
                     src = uPrev.fetchFromGitHub {
                       owner = "ggml-org";
                       repo = "llama.cpp";
-                      rev = "b10581";
+                      rev = "b10964";
                       hash = "sha256-/BOx808d4TV/oraX92sarx5VExvxF3sCofIy9h3Akgg==";
                     };
                     npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";

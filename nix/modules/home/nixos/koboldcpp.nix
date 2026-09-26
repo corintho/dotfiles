@@ -55,18 +55,6 @@ let
     };
   };
 
-  # Generate a .adapter.json for models that declare a chatAdapter preset.
-  mkAdapter =
-    name: model:
-    let
-      key = model.chatAdapter or null;
-      preset = if key == null then null else adapterPresets.${key} or null;
-    in
-    if preset == null then
-      null
-    else
-      pkgs.writeText "${sanitize name}.adapter.json" (builtins.toJSON preset);
-
   # Translate the engine-agnostic lcars.models fields into a KoboldCpp
   # .kcpps launcher config. koboldcpp 1.112+ uses --quantkv <type>
   # (f16/bf16/q8_0/q5_1/q4_0); we reuse the lcars.models kvQuant.k value
@@ -91,6 +79,9 @@ let
         // lib.optionalAttrs (model.useswa or false) { useswa = model.useswa; }
         // lib.optionalAttrs (model.kvQuant or null != null) { quantkv = model.kvQuant.k; }
         // lib.optionalAttrs (model.tensorSplit or null != null) { tensor_split = model.tensorSplit; }
+        // lib.optionalAttrs (model.chatAdapter or null != null) {
+          chatcompletionsadapter = adapterPresets.${model.chatAdapter};
+        }
       )
     );
 
@@ -143,10 +134,6 @@ let
       KCPPS="$CFG/$FNAME.kcpps"
       [ -f "$KCPPS" ] || { echo "Config not found: $KCPPS" >&2; exit 1; }
 
-      ADAPTER="$CFG/$FNAME.adapter.json"
-      ADAPTER_ARG=()
-      [ -f "$ADAPTER" ] && ADAPTER_ARG=(--chatcompletionsadapter "$ADAPTER")
-
       # Tensor split ratios must be passed as separate argv tokens, not one
       # glued string (koboldcpp argparse expects `--tensor_split 2 1`). Read the
       # native tensor_split key (the single source of truth, shared with router mode).
@@ -159,12 +146,11 @@ let
       echo "Launching koboldcpp (all GPUs visible; tensor_split pins placement)"
       echo "  model : $ARG"
       echo "  config: $KCPPS"
-      [ -f "$ADAPTER" ] && echo "  adapter: $ADAPTER"
       echo "  URL   : http://127.0.0.1:$PORT   (Ctrl-C to stop)"
       export PYTHONPATH="${
         pkgs.python3.withPackages (ps: [ ps.jinja2 ])
       }/${pkgs.python3.sitePackages}:''${PYTHONPATH:+:$PYTHONPATH}"
-      exec koboldcpp --skiplauncher --usecuda mmq --config "$KCPPS" --host 127.0.0.1 --port "$PORT" "''${ADAPTER_ARG[@]}" "''${TS_ARG[@]}"
+      exec koboldcpp --skiplauncher --usecuda mmq --config "$KCPPS" --host 127.0.0.1 --port "$PORT" "''${TS_ARG[@]}"
     '';
   };
 
@@ -212,20 +198,9 @@ lib.mkIf (models != { }) {
   xdg.configFile = lib.mkMerge (
     [ { "koboldcpp/manifest.json".source = manifest; } ]
     ++ builtins.attrValues (
-      builtins.mapAttrs (
-        name: model:
-        let
-          adapter = mkAdapter name model;
-          extra =
-            if adapter == null then
-              { }
-            else
-              {
-                "koboldcpp/${sanitize name}.adapter.json".source = adapter;
-              };
-        in
-        { "koboldcpp/${sanitize name}.kcpps".source = mkKcpps name model; } // extra
-      ) models
+      builtins.mapAttrs (name: model: {
+        "koboldcpp/${sanitize name}.kcpps".source = mkKcpps name model;
+      }) models
     )
   );
 

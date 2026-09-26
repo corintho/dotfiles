@@ -35,6 +35,10 @@ let
       ++ lib.optionals model.jinja [
         "--jinja"
       ]
+      ++ lib.optionals (model.chatTemplateFile != null) [
+        "--chat-template-file"
+        (toString model.chatTemplateFile)
+      ]
       ++ lib.optionals (model.kvQuant != null) [
         "--cache-type-k"
         model.kvQuant.k

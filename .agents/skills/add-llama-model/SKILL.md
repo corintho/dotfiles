@@ -20,16 +20,13 @@ nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 
 Use the reported VRAM values for all budget calculations. The system has two GPUs — models can be split across both using `tensorSplit` in the model config. If a model fits entirely on the larger GPU alone, `tensorSplit` is still valid for load balancing but not strictly required.
 
-**VRAM calculation methodology** (source: [bmdpat.com/blog/llama-cpp-n-gpu-layers-explained-2026](https://bmdpat.com/blog/llama-cpp-n-gpu-layers-explained-2026)):
-- Get GGUF file size from HF file listing
-- Get layer count from model card (e.g., `config.json` `num_hidden_layers`, or `hf models info` metadata)
 - **Per-layer VRAM = GGUF_file_size / layer_count**
 - **Max GPU layers = (usable_VRAM - KV_cache_headroom) / per_layer_VRAM**
 - For single-GPU fit: compare total weight size against the target GPU's VRAM
 - For multi-GPU: use `tensorSplit` to distribute weights across GPUs; KV cache budget is the total VRAM minus total weights across all GPUs
-- Always specify `-ngl` in `extraArgs` per model (not a global default)
-- `-ngl -1` offloads all layers (same as 999) — use only when model fits entirely in VRAM with headroom
-- `-ngl 0` = CPU-only (slow on this system)
+- Always set `gpuLayers` per model (the dedicated field → `-ngl`); never duplicate a generated flag in `extraArgs`
+- `gpuLayers = -1` offloads all layers — use only when model fits entirely in VRAM with headroom
+- `gpuLayers = 0` = CPU-only (slow on this system)
 
 ## Activation
 
@@ -58,13 +55,13 @@ Validate the selected repo:
 
 From the siblings list, filter `.gguf` files:
 - Exclude: `.BF16.gguf` (too large ~30GB), `UD-IQ1_*.gguf`, `UD-IQ2_*.gguf` (too aggressive)
-- **Record the GGUF file size** (shown in HF file listing) — needed later for `-ngl` calculation
+- **Record the GGUF file size** (shown in HF file listing) — needed later for `gpuLayers` calculation
 - **Consider VRAM budget on the target GPU (query with `nvidia-smi` before recommending):**
-  - **7B models at Q4_K_M** (~5-6 GB) = fits entirely on GPU → `-ngl -1`
+  - **7B models at Q4_K_M** (~5-6 GB) = fits entirely on GPU → `gpuLayers = -1`
   - **14B+ models** (partial offload required):
     - Smaller file size = more layers fit on GPU
-    - The exact `-ngl` value will be calculated in Step 3 after layer count is known
-  - **Flag the VRAM constraint when recommending 14B+ models**: tell user they need `-ngl` in `extraArgs`
+    - The exact `gpuLayers` value will be calculated in Step 3 after layer count is known
+  - **Flag the VRAM constraint when recommending 14B+ models**: tell user to set the dedicated `gpuLayers` field, never an `-ngl` flag in `extraArgs`
 
 Multimodal detection:
 - Check if any sibling filename contains `mmproj` (e.g., `mmproj-gemma-4-E4B-it-Q8_0.gguf`)
@@ -82,32 +79,37 @@ Multimodal: No
 Parse `gguf.chat_template` from Step 1's `hf models info` JSON response:
 
 **Tool calling**:
-- If template contains `<tool_call>` → `tools: true`
-- Add `--jinja` flag for chat template processing
-- Default: `tools: false`
+- If template contains `<tool_call>` → `tools = true`
+- Set `jinja = true` so llama-server processes the chat template (koboldcpp reads the same field)
+- `tools` defaults to `true` in the module; only set it explicitly when the model cannot call tools (`tools = false`)
 
 **Reasoning**:
-- If template contains `<think>` or `reasoning_content` → `reasoning: true`
-- Default: `reasoning: false`
+- If template contains `<think>` or `reasoning_content` → `reasoning = true`
+- Default: `reasoning = false`
 
 **Multimodal**:
-- If mmproj file exists (from Step 2) → add `--mmproj <path>` to cmd
-- Skip `-fa on` for multimodal (not always supported); use `-fa off` if needed
+- If mmproj file exists (from Step 2) → set `mmprojPath`
+- Skip `flashAttention` for multimodal if the loader rejects it (`flashAttention = false`)
 - Model family heuristics: Gemma → multimodal, Llama3.2-Vision → multimodal
 
-**Base flags** (added automatically by the module — do NOT include in `extraArgs`):
-- `-c 0` (no context size limit in llama-swap config)
+**Generated flags** (set dedicated fields — do NOT duplicate them in `extraArgs`):
+- `contextSize` → `--ctx-size`
+- `gpuLayers` → `-ngl`
+- `jinja` → `--jinja`
+- `flashAttention` → `-fa on`
+- `kvQuant` → cache-type flags; other covered fields map the same way
+- `extraArgs` is only for llama-server flags with no dedicated model field.
 
-**Required per-model flag** (always add to `extraArgs`): `-ngl <N>`
+**Required per-model value:** always set `gpuLayers`; calculate it with the formula below.
 
 Calculate using the formula from the article:
 
 1. **Look up layer count** — check the base model card on HF or run `hf models info <base_model>` for `num_hidden_layers` in `config.json`. Common values: 7B = 32, 14B = 40, Gemma 4 E4B = 42, 30B MoE = 48, 70B = 80.
 2. **Per-layer VRAM** = GGUF_file_size_GB / layer_count
 3. **Max GPU layers** = 5.0 GB / per_layer_VRAM (rounded down)
-4. Set `-ngl` to that value. If the model fits entirely in VRAM (file size < ~5 GB after overhead), use `-ngl -1`.
+4. Set `gpuLayers` to that value. If the model fits entirely in VRAM (file size < ~5 GB after overhead), use `gpuLayers = -1`.
 
-Example: 9.16 GB file, 40 layers → 229 MB/layer → 5.0 GB / 0.229 GB = 21.8 → **`-ngl 20`**
+Example: 9.16 GB file, 40 layers → 229 MB/layer → 5.0 GB / 0.229 GB = 21.8 → **`gpuLayers = 20`**
 
 **If chat_template is ambiguous or missing**:
 - Fetch the HF model page with WebFetch
@@ -120,12 +122,12 @@ Inferred configuration:
   Tools: true (detected <tool_call> in chat template)
   Reasoning: false
   Multimodal: no
-  Flags (add to extraArgs): --jinja -fa on
+  Model fields: jinja = true; flashAttention = true
 
-[Confirm] [Edit flags] [Skip and ask me]
+[Confirm] [Edit fields] [Skip and ask me]
 ```
 
-**Reminder:** `-c 0` is added automatically by the module. `-ngl` must be specified in `extraArgs` per model — calculate using the formula above and present the value to the user for confirmation.
+**Reminder:** `contextSize` is emitted as `--ctx-size` by the module. Always set `gpuLayers` per model — calculate using the formula above and present the value to the user for confirmation.
 
 ### Step 4 — Download
 
@@ -177,30 +179,39 @@ Locate the `lcars.models` attribute set and add a new entry with the captured pa
   modelPath = "/Users/<username>/.cache/huggingface/hub/models--unsloth--Qwen3-14B-GGUF/snapshots/<hash>/Qwen3-14B-UD-Q4_K_XL.gguf";
   # mmprojPath is optional, only if multimodal
   mmprojPath = "/Users/<username>/.cache/huggingface/hub/.../mmproj-...gguf";
-  # extraArgs: model-specific flags including -ngl
-  # -ngl calculated: file_size / layers = per_layer → weight_budget / per_layer = max_layers
-  extraArgs = [ "-ngl" "20" "--jinja" "-fa" "on" ];
+  contextSize = 16384;
+  gpuLayers = 20;
+  # gpuLayers calculated: file_size / layers = per_layer → weight_budget / per_layer = max_layers
+  jinja = true;
+  flashAttention = true;
   name = "Qwen3 14B UD Q4_K_XL";
   tools = true;
   reasoning = false;
 };
 ```
 
-**ALWAYS include `-ngl <N>` in `extraArgs`** — calculate using the formula from the Hardware Context section (per-layer VRAM from file size / layer count, then max layers from weight budget / per-layer VRAM). 7B models at Q4 usually fit entirely → `-ngl -1`.
+**Always set `contextSize` and `gpuLayers`** — calculate them with the formulas in Step 3 and the Hardware Context / KV cache sections (file size / layer count for offload, VRAM budget for context). `gpuLayers = -1` only when the whole model fits in VRAM (small quants, e.g. 7B at Q4).
 
 **Field reference:**
 | Field | Required | Description |
 |-------|----------|-------------|
 | `modelPath` | yes | Full path to the GGUF file |
 | `mmprojPath` | no | Multimodal projection file path |
-| `extraArgs` | no | Model-specific llama-server flags (including `-ngl`) |
+| `contextSize` | yes | Context window in tokens (→ `--ctx-size`) |
+| `gpuLayers` | yes | GPU-offloaded layers, `-1` = all (→ `-ngl`) |
+| `jinja` | no (default: false) | Use the Jinja chat template (→ `--jinja`) |
+| `flashAttention` | no (default: false) | Enable flash attention (→ `-fa on`) |
+| `kvQuant` | no | KV cache types `{ k, v }` (→ cache-type flags) |
+| `tensorSplit` | no | Cross-GPU split ratios (→ `--tensor-split` / kobold `tensor_split`) |
+| `useswa` | no | Sliding-window attention, KoboldCpp only |
+| `chatAdapter` | no | KoboldCpp Chat Completions Adapter preset |
+| `chatTemplateFile` | no | Jinja template overriding the GGUF-embedded one (→ `--chat-template-file`); use when the embedded template mis-parses tool calls or drops reasoning |
+| `extraArgs` | no | Raw llama-server flags ONLY when no dedicated field exists |
 | `name` | yes | Human-readable label shown in the coding agent's model list |
 | `tools` | no (default: true) | Tool-calling capability |
 | `reasoning` | no (default: false) | Reasoning capability |
 
-The `-c 0` base flag is added automatically by the module. `-ngl` is NOT a base flag — you must specify it per model.
-
-Validate with `just check` before proceeding to Step 6.
+`tools` and `reasoning` only reach the opencode provider metadata; the local llama-swap route gets them from the template plus a `models.yml` override generated from these same fields. `extraArgs` is the last resort, never the home for a value a dedicated field already expresses.
 
 ### Step 6 — No manual provider edit needed
 
@@ -217,8 +228,8 @@ Confirm Nix syntax is valid and no errors.
 Show user:
 - Model ID and quant selected
 - File size and snapshot path (first 16 chars of hash)
-- Inferred flags used in config
-- Changes made to both `llama-cpp.nix` and `opencode.nix`
+- Inferred fields used in config
+- Changes made to the platform `home.nix` entry (provider lists regenerate automatically)
 - Validation passed ✅
 
 Tell user to run:
@@ -337,15 +348,15 @@ nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader
 Record the baseline VRAM usage on each GPU.
 
 **Step 2 — Start standalone llama-server:**
-Use `hub` to launch a temporary server with the exact flags from the model config:
+Use `hub` to launch a temporary server with the exact flags the module will generate for the model entry:
 ```
 hub start:
   name: ridge-test
   application: llama-server
-  args: ["-m", "<modelPath>", "-ngl", "-1", "-c", "<contextSize>", ...]
+  args: ["-m", "<modelPath>", "-ngl", "<gpuLayers>", "--ctx-size", "<contextSize>", ...]
   ready: { port: <port>, timeout: 120 }
 ```
-Include `--mmproj` if the model has one. Use `-ts <split>` for tensorSplit.
+Add `--mmproj`, `--ts <split>`, `--chat-template-file`, and any `extraArgs` values present. `--jinja` and `--cache-type-*` come from their dedicated fields, never from `extraArgs`.
 
 **Step 3 — Verify loading succeeded:**
 ```bash
@@ -362,13 +373,15 @@ nvidia-smi --query-gpu=index,name,memory.used,memory.total --format=csv,noheader
 ```
 Compare VRAM usage against baseline. The target GPU should show increased usage consistent with the model weights + KV cache. If the wrong GPU shows usage, the `tensorSplit` is misconfigured.
 
-**Step 5 — Test inference:**
+**Step 5 — Test inference, including tool calls when `tools` is true:**
 ```bash
 curl -s http://127.0.0.1:<port>/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{"model": "test", "messages": [{"role": "user", "content": "hi"}], "max_tokens": 50}'
 ```
 A non-empty response confirms the model can generate tokens, not just load weights.
+
+For tool-capable models, follow up with a multi-turn tool test: give the model a tool definition, return a fake tool result referencing the same call shape the server parsed, then force a second call. Inspect `choices[0].message.tool_calls[0].function.arguments` — reject the entry if the arguments contain raw template markers such as `<parameter=` or `</function>`, which means the GGUF-embedded template needs a `chatTemplateFile` override.
 
 **Step 6 — Stop server and report:**
 ```
@@ -418,10 +431,8 @@ Select: 1 (Qwen3-14B-UD-Q4_K_XL.gguf)
 
 🔧 Inferred configuration:
   Tools: true (detected <tool_call> in chat template)
-  Reasoning: false
-  Multimodal: no
-  Flags (add to extraArgs): --jinja -fa on
-  -ngl: 9.16 GB / 40 layers = 229 MB/layer → 5.0 GB / 0.229 GB ≈ 21 layers → -ngl 20
+  Flags (dedicated fields): jinja = true; flashAttention = true
+  gpuLayers: 9.16 GB / 40 layers = 229 MB/layer → 5.0 GB / 0.229 GB ≈ 21 layers → gpuLayers = 20
 
 Confirmed? (y/n) y
 
@@ -433,7 +444,10 @@ Confirmed? (y/n) y
 📝 Updated lcars.models in home.nix:
    + "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
        modelPath = "...";
-extraArgs = [ "-ngl" "20" "--jinja" "-fa" "on" ];
+       contextSize = 16384;
+       gpuLayers = 20;
+       jinja = true;
+       flashAttention = true;
        name = "Qwen3 14B UD Q4_K_XL";
        tools = true;
        reasoning = false;

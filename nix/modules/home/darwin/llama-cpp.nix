@@ -36,6 +36,10 @@ let
       ++ lib.optionals model.jinja [
         "--jinja"
       ]
+      ++ lib.optionals (model.chatTemplateFile != null) [
+        "--chat-template-file"
+        (toString model.chatTemplateFile)
+      ]
       ++ lib.optionals (model.kvQuant != null) [
         "--cache-type-k"
         model.kvQuant.k
@@ -45,6 +49,10 @@ let
       ++ [
         "--ctx-size"
         (toString model.contextSize)
+      ]
+      ++ lib.optionals (model.tensorSplit != null) [
+        "--tensor-split"
+        (lib.concatMapStringsSep "," toString model.tensorSplit)
       ]
       ++ model.extraArgs;
     in

@@ -32,6 +32,11 @@
             default = false;
             description = "Use the model's Jinja chat template (koboldcpp / llama.cpp).";
           };
+          chatTemplateFile = lib.mkOption {
+            type = lib.types.nullOr lib.types.path;
+            default = null;
+            description = "Path to a Jinja template overriding the GGUF-embedded one (llama.cpp --chat-template-file); null = embedded template.";
+          };
           chatAdapter = lib.mkOption {
             type = lib.types.nullOr (
               lib.types.enum [

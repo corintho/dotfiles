@@ -24,6 +24,36 @@ let
   piLlamaSwapJson = (pkgs.formats.json { }).generate "pi-llama-swap.json" {
     contextOverrides = builtins.mapAttrs (_: model: model.contextSize) models;
   };
+  # omp model capability overrides (see home.file below). Derived from
+  # lcars.models so reasoning/tool flags stay single-sourced. Models with
+  # neither capability are filtered out; supportsTools = true is never
+  # emitted (undefined already means allowed).
+  ompModelsYml = (pkgs.formats.yaml { }).generate "omp-models.yml" {
+    providers.llama-swap.modelOverrides = lib.filterAttrs (_: override: override != { }) (
+      builtins.mapAttrs (
+        _: model:
+        lib.optionalAttrs model.reasoning {
+          reasoning = true;
+          thinking = {
+            mode = "effort";
+            efforts = [
+              "minimal"
+              "low"
+              "medium"
+              "high"
+            ];
+            defaultLevel = "medium";
+          };
+          compat = {
+            reasoningContentField = "reasoning_content";
+          };
+        }
+        // lib.optionalAttrs (!model.tools) {
+          supportsTools = false;
+        }
+      ) models
+    );
+  };
 in
 {
   # oh-my-pi ("omp") coding-agent harness. The Home Manager module that
@@ -90,6 +120,10 @@ in
     run ln -sf "${files}/git-hooks/agents-sync-post-commit" "${rootPath}/.git/hooks/post-commit"
   '';
   home.file.".pi/agent/pi-llama-swap.json".source = piLlamaSwapJson;
+  # npm extension hardcodes `reasoning: false` and its 5-key config schema
+  # cannot carry capabilities, so omp modelOverrides (re-applied after
+  # extension registration) is the patch-free channel.
+  home.file.".omp/agent/models.yml".source = ompModelsYml;
   home.sessionVariables = {
     LLAMA_SWAP_PORT = "1234";
   };

@@ -14,6 +14,15 @@ let
     { inherit (model) name tools; } // lib.optionalAttrs model.reasoning { reasoning = true; };
 
   autoModels = lib.mapAttrs mkModel llmModels;
+
+  # Mirror of nix/modules/home/nixos/koboldcpp.nix sanitize. KoboldCpp's router derives
+  # /v1/models ids from the .kcpps filenames in --admindir (basename WITH the .kcpps
+  # extension), so the raw lcars key can never select a model there.
+  sanitize = k: builtins.replaceStrings [ "/" ":" " " "@" ] [ "_" "_" "_" "_" ] k;
+
+  koboldModels = lib.mapAttrs' (
+    name: model: lib.nameValuePair "${sanitize name}.kcpps" (mkModel name model)
+  ) llmModels;
 in
 {
   xdg.configFile."opencode/AGENTS.md".source =
@@ -80,7 +89,7 @@ in
           options = {
             baseURL = "http://127.0.0.1:5001/v1";
           };
-          models = autoModels;
+          models = koboldModels;
         };
       };
       permission = {
