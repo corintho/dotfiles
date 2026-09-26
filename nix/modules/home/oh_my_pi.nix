@@ -38,6 +38,15 @@ in
     package = inputs.omp-nix.packages.${pkgs.stdenv.hostPlatform.system}.default;
   };
 
+  # `bun` on PATH for the TypeScript extensions under
+  # ~/.omp/agent/extensions. NOTE: this is a standalone runtime, not omp's
+  # internal one -- omp ships as a single prebuilt binary with bun compiled
+  # in, so this may well be unused. Remove it if omp turns out to execute
+  # the extensions in-process.
+  home.packages = with pkgs; [
+    unstable.bun
+  ];
+
   home.file.".omp/agent/config.yml".source =
     config.lib.file.mkOutOfStoreSymlink "${files}/omp/config.yml";
   home.file.".omp/agent/keybindings.yml".source =
