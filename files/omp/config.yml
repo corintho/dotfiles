@@ -66,3 +66,11 @@ dev:
   autoqa: false
   autoqaPush:
     endpoint: ""
+compaction:
+  methodOrder:
+    - handoff
+    - soft
+    - shake
+    - remote
+    - snapcompact
+  idleEnabled: false
