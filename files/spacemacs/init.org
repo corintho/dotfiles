@@ -753,6 +753,39 @@ is shown, so you know exactly what to add to init.org.
   ;; Org directory.
   (setq org-directory "~/org/")
 
+  ;; Directory containing archive files.
+  (setq org-archive-location "~/org/archive/%s_archive::")
+
+  ;; Files scanned when building the agenda.
+  (setq org-agenda-files (list org-directory))
+
+  ;; Capture: quick-add tasks/notes to inbox for later refile.
+  (setq org-capture-templates
+        '(("t" "Task" entry (file "~/org/inbox.org")
+           "* TODO %?\n%U\n%a" :empty-lines 1)
+          ("n" "Note" entry (file "~/org/inbox.org")
+           "* %?\n%U" :empty-lines 1)))
+
+  ;; Refile: file inbox items into any agenda file, up to 3 levels deep.
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 3))
+        org-refile-use-outline-path t
+        org-outline-path-complete-in-steps nil)
+
+  ;; Log state-change notes into a drawer instead of cluttering the heading
+  ;; body (every TODO state above uses `!' fast-logging).
+  (setq org-log-into-drawer t)
+
+  ;; Tag contexts for agenda filtering.
+  (setq org-tag-alist '(("@work" . ?w) ("@home" . ?h) ("@errand" . ?e)))
+
+  ;; Custom agenda views.
+  (setq org-agenda-custom-commands
+        '(("d" "Daily Review"
+           ((agenda "" ((org-agenda-span 1)))
+            (todo "PROGRESS" ((org-agenda-overriding-header "In Progress")))
+            (todo "BLOCKED|DELEGATED" ((org-agenda-overriding-header "Waiting")))))
+          ("w" "Weekly Review" agenda "" ((org-agenda-span 'week)))))
+
   ;; org-modern table appearance (only takes effect when the org layer is
   ;; configured with :variables org-enable-modern-support t).
   (with-eval-after-load 'org-modern
