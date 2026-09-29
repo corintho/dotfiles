@@ -55,6 +55,8 @@ in
     unstable.kitty
     unstable.obsidian
     unstable.lazygit
+    bruno
+    bruno-cli
     (pkgs.tesseract.override {
       enableLanguages = [
         "eng"
