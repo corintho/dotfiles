@@ -85,16 +85,17 @@ in
   # self-installs/updates its own omp integration script inside this
   # directory at runtime, and a store-backed symlink makes that write
   # fail with EACCES (errno 13). Instead we ensure a real, writable
-  # directory exists and drop in the extensions this repo owns (the
-  # fetched pi-llama-swap package plus the mode-toggle and opencode-fix
-  # scripts) as out-of-store symlinks; herdr remains free to create/rewrite
+  # directory exists and drop in the extensions this repo owns
+  # as out-of-store symlinks; herdr remains free to create/rewrite
   # its own files alongside them.
   home.activation.linkOmpExtensions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     run mkdir -p "$HOME/.omp/agent/extensions"
     run ln -sfn "${pi-llama-swap}" "$HOME/.omp/agent/extensions/pi-llama-swap"
     run ln -sfn "${files}/omp/extensions/mode-toggle.ts" "$HOME/.omp/agent/extensions/mode-toggle.ts"
     run ln -sfn "${files}/omp/extensions/opencode-v2-serve.ts" "$HOME/.omp/agent/extensions/opencode-v2-serve.ts"
-    run ln -sfn "${files}/omp/extensions/opencode-fix.ts" "$HOME/.omp/agent/extensions/opencode-fix.ts"
+    # Prune dangling links into this repo's extensions dir (ln -sfn never removes
+    # links for extensions deleted from the repo); herdr's own files never match.
+    run find "$HOME/.omp/agent/extensions" -maxdepth 1 -xtype l -lname "${files}/omp/extensions/*" -delete
   '';
   home.file.".omp/agent/agents".source = config.lib.file.mkOutOfStoreSymlink "${files}/omp/agents";
   home.file.".omp/plugins".source = config.lib.file.mkOutOfStoreSymlink "${files}/omp/plugins";
