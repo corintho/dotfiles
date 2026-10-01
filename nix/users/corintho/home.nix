@@ -145,6 +145,7 @@ in
   );
 
   # Local inference models (engine-agnostic: drives llama-swap, koboldcpp, opencode)
+  # tensorSplit [ 1 0 ] pins to the 5060, [ 0 1 ] pins to the 2060.
   lcars.models = {
     "unsloth/gemma-4-E4B-it-GGUF:Q4_K_M" = {
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--gemma-4-E4B-it-GGUF/snapshots/bfc15c382204943c3a8fff0c750b94ae2364d7a3/gemma-4-E4B-it-Q4_K_M.gguf";
@@ -153,10 +154,7 @@ in
       contextSize = 131072; # 128k
       flashAttention = true;
       jinja = true;
-      # KoboldCpp-only. llama-server auto-detects SWA from GGUF metadata
-      # (gemma4.attention.sliding_window = 512, sliding_window_pattern = 5 local :1
-      # global over 42 blocks) and exposes no enable flag, so SWA is already active
-      # on the llama-swap route. This only affects the :5001 .kcpps.
+      # KoboldCpp-only; llama-server auto-detects SWA from GGUF metadata.
       useswa = true;
       kvQuant = {
         k = "q8_0";
@@ -175,10 +173,7 @@ in
       contextSize = 24576; # 24k
       flashAttention = true;
       jinja = true;
-      # KoboldCpp-only. llama-server auto-detects SWA from GGUF metadata
-      # (gemma4.attention.sliding_window = 512, sliding_window_pattern = 5 local :1
-      # global over 42 blocks) and exposes no enable flag, so SWA is already active
-      # on the llama-swap route. This only affects the :5001 .kcpps.
+      # KoboldCpp-only; llama-server auto-detects SWA from GGUF metadata.
       useswa = true;
       kvQuant = {
         k = "q8_0";
@@ -211,20 +206,8 @@ in
         k = "q4_0";
         v = "q4_0";
       };
-      # tensorSplit [ 3 1 ] — the ONLY ratio that loads at 128k. MEASURED 2026-09-26.
-      #   [ 2 1 ] -> FATAL. "allocating 808.35 MiB on device 1: cudaMalloc failed",
-      #              then graph_reserve gives up and the process ABORTS. There is no
-      #              graceful fallback on this path. The previous value here was
-      #              therefore simply broken — this entry did not load at all.
-      #   [ 3 1 ] -> loads. 1x "retrying without pipeline parallelism", so the compute
-      #              buffer is 408.09 MiB/device instead of 808.35. 118-119 tok/s.
-      #   [ 4 1 ] / [ 5 1 ] / [ 6 1 ] -> LOAD FAILED, CUDA0 wants ~3.0 GiB it cannot find.
-      # No ratio yields a clean pipelined load at 128k: 16847 weights + 3456 KV + ~1633
-      # full pipelined compute is ~21.9 GiB, and no division of that leaves BOTH cards
-      # their required contiguous ~810 MiB. 5060 485 MiB free, 2060 2004 MiB free.
-      # To make this entry clean rather than merely working, one of these must give:
-      # drop contextSize to 98304 (frees 864 MiB of KV), or re-quantise to Q4_K_M
-      # (frees ~1.5 GiB, keeps 128k), or accept the unpipelined fallback.
+      # [ 3 1 ] is the only split that loads at 128k; others OOM. Re-measure after
+      # llama.cpp or driver changes.
       tensorSplit = [
         3
         1
@@ -237,24 +220,9 @@ in
       modelPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/Qwen3.8-27B-Ridge-3.7bpw.gguf";
       mmprojPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/mmproj-Qwen3.8-27B-BF16.gguf";
       gpuLayers = -1;
-      contextSize = 131072; # 128k — MEASURED 2026-09-26 on the 5060 Ti (16311 MiB), llama-server b10581, -lv 5. The previous comment here claimed "3.1 GiB available vs 3.5 GiB needed" and predicted failure. Both figures were wrong; the entry loads and answers. Real numbers:
-      #   CUDA0 KV buffer      2304.00 MiB  = 18.0 KiB/token (NOT 28 — see below)
-      #   CUDA0 RS buffer       598.50 MiB  linear-attention recurrent state
-      #   CUDA0 model buffer  10687.38 MiB  weights
-      #   CPU_Mapped model      994.63 MiB  mmproj
-      #   CUDA0 compute        1145.13 MiB
-      #   CUDA_Host compute     533.13 MiB  SPILLED TO HOST
-      #   CUDA_Host output        3.79 MiB
-      #   + CUDA ctx/driver/fragmentation ~= 1045 MiB
-      #   measured total 15784 MiB of 16311 -> ~527 MiB headroom
-      # KV is 18.0 KiB/token because this is qwen35: block_count 65 (blk.64 = MTP,
-      # discarded at load), full_attention_interval 4 -> 16 full-attn layers,
-      # head_count_kv 4, key/value_length 256 => 2*4*256*16 = 32768 elem/token
-      # at q4_0 (0.5625 B/elem). 131072 * 18.0 KiB = 2.25 GiB, comfortably inside.
-      # CAVEAT: a 248 MiB CUDA0 graph buffer still fails cudaMalloc and 533 MiB of
-      # compute lands on the host, so this runs slower than a clean offload. With
-      # ~527 MiB headroom, do NOT raise contextSize here — 256k would need
-      # +2304 MiB of KV. The 256k variant below uses tensorSplit [ 16 7 ] (both GPUs).
+      contextSize = 131072; # 128k
+      # Hybrid (1 in 4 layers full attention) so KV is small, but VRAM headroom is thin:
+      # do not raise contextSize. Some compute spills to host, so decode is slower than a clean offload.
       flashAttention = true;
       jinja = true;
       chatAdapter = "chatml";
@@ -273,7 +241,7 @@ in
       modelPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/Qwen3.8-27B-Ridge-3.7bpw.gguf";
       mmprojPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/mmproj-Qwen3.8-27B-BF16.gguf";
       gpuLayers = -1;
-      contextSize = 131072; # 128k — Q8_0 KV at 128k is 4352 MiB, less than the Q4_0 KV at 256k that strains the 2060 on the 256k entry below. This entry was never under memory pressure, only mistuned.
+      contextSize = 131072; # 128k
       flashAttention = true;
       jinja = true;
       chatAdapter = "chatml";
@@ -281,21 +249,18 @@ in
         k = "q8_0";
         v = "q8_0";
       };
-      # tensorSplit [ 5 1 ] — MEASURED 2026-09-26, llama-server b10581, -lv 5.
-      # Clean (0 pipeline retries, 0 alloc failures) at EVERY ratio 2,1 .. 6,1:
-      #   ratio   CUDA0 model  CUDA1 model  decode tok/s  5060 free  2060 free
-      #   [ 2 1 ]    6645.16     4042.22     20.75/20.46      3799        541  <- was
-      #   [ 3 1 ]    7520.86     3166.52     22.54/22.36      2589       1658
-      #   [ 4 1 ]    7963.81     2723.57     23.97/23.80      1849       2663
-      #   [ 5 1 ]    8252.31     2435.07     24.83/24.67      1535       2983  <- chosen
-      #   [ 6 1 ]    8551.02     2136.37     24.98/24.95       951       3340
-      # +19.7% decode over [ 2 1 ]. tok/s are reasoning-token rates: the model emits
-      # reasoning_content only and hits the 700-token cap with empty content. Valid for
-      # relative comparison (temperature 0, seed 42) but not answer-token rates.
-      # NOTE the 2060 figure under [ 2 1 ]: 541 MiB free against a 506 MiB idle display
-      # baseline is 35 MiB of margin on the card that drives this display. It worked by
-      # luck. Every ratio here is a pure proportion, not a VRAM reservation — see the
-      # MiMo comment block for why --fit-target cannot express this instead.
+      # MTP draft head is in the GGUF; -np 1 is required for it to fit (each extra slot multiplies
+      # the recurrent-state buffer by 1 + n-max). Measured faster on code and prose (2026-10-01).
+      # Trade-off: one request at a time, one cached conversation.
+      extraArgs = [
+        "-np"
+        "1"
+        "--spec-type"
+        "draft-mtp"
+        "--spec-draft-n-max"
+        "2"
+      ];
+      # [ 5 1 ] gave the fastest decode among the ratios that load cleanly.
       tensorSplit = [
         5
         1
@@ -307,7 +272,7 @@ in
       modelPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/Qwen3.8-27B-Ridge-3.7bpw.gguf";
       mmprojPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/mmproj-Qwen3.8-27B-BF16.gguf";
       gpuLayers = -1;
-      contextSize = 262144; # 256k native max — Q4_0 halves per-token KV vs Q8_0; smoke-test to find true limit
+      contextSize = 262144; # native max
       flashAttention = true;
       jinja = true;
       chatAdapter = "chatml";
@@ -315,45 +280,59 @@ in
         k = "q4_0";
         v = "q4_0";
       };
+      # [ 4 1 ] is the only split measured stable at 256k incl. vision input with the default slot
+      # count; [ 16 7 ] OOMs on the 2060 at load, [ 5 1 ] crashes on image input, [ 3 1 ] OOMs at depth.
+      # `-np 1` would free VRAM on both cards (measured) at the cost of one request at a time.
+      # Measured 2026-10-01; re-measure after llama.cpp, driver or display changes.
       tensorSplit = [
-        16
-        7
+        4
+        1
       ];
       name = "Qwen3.8 27B Ridge 3.7bpw - 256k (empero) (Both)";
       reasoning = true;
     };
+    "empero-ai/Qwen3.8-27B-Ridge-GGUF:Ridge-3.7bpw-64k-mtp" = {
+      modelPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/Qwen3.8-27B-Ridge-3.7bpw.gguf";
+      mmprojPath = "${modelsDir}/huggingface/hub/models--empero-ai--Qwen3.8-27B-Ridge-GGUF/snapshots/486faa5f2032ff99bdc8993ade1b8fff13d1464c/mmproj-Qwen3.8-27B-BF16.gguf";
+      gpuLayers = -1;
+      contextSize = 65536;
+      flashAttention = true;
+      jinja = true;
+      chatAdapter = "chatml";
+      kvQuant = {
+        k = "q4_0";
+        v = "q4_0";
+      };
+      # Single-card MTP only fits at this context with q4_0 KV and -np 1 (128k OOMs on the MTP
+      # compute buffer). Measured faster on code and prose (2026-10-01).
+      # Trade-off: one request at a time, one cached conversation.
+      extraArgs = [
+        "-np"
+        "1"
+        "--spec-type"
+        "draft-mtp"
+        "--spec-draft-n-max"
+        "2"
+      ];
+      tensorSplit = [
+        1
+        0
+      ];
+      name = "Qwen3.8 27B Ridge 3.7bpw - 64k MTP (empero) (5060)";
+      reasoning = true;
+    };
 
-    # MiMo-V2.6-Distill-Qwen-9B (bartowski) — Qwen3.5-9B dense distill, arch `qwen35`,
-    # ChatML + <think> reasoning, tool-use trained. NOT a MoE `mimo_v2` model despite
-    # the HF tags; it inherits MiMo's chat template, nothing else.
-    #
-    # Why it fits 256k on one card: only 8 of 32 layers are full attention
-    # (full_attention_interval=4). The other 24 are GDN linear attention with a
-    # constant-size recurrent state, so they cost ~50 MB of f32 regardless of
-    # context. KV is 2 * 4 kv_heads * 256 head_dim * 8 layers = 16384 elem/token
-    #   -> q8_0 = 17.0 KiB/token, f16 = 32.0 KiB/token.
-    # Compare Qwen3.8-27B-Ridge at ~28 KiB/token; this distill is far cheaper.
-    #
-    # 5060 Ti (16311 MiB total) budget — MEASURED, not estimated:
-    #   real overhead (CUDA ctx + compute buffer) is 1.42 GiB, not the ~0.90 GiB
-    #   a naive sum predicts. See the measured table below.
-    #   128k q8_0 + mmproj : 8.890 + 2.125 + 0.855 + 1.42 = 13.29 GiB -> 12854 MiB, loads clean
-    #   256k q8_0         : 8.890 + 4.250          + 1.42 = 14.56 GiB -> 14930 MiB, loads clean
-    #   256k q8_0 + mmproj : 8.890 + 4.250 + 0.855 + 1.42 = 15.42 GiB -> 15782 MiB,
-    #     which leaves too little: the 248 MiB compute buffer FAILS cudaMalloc and
-    #     inference then aborts in launch_fattn (flash_attn_ext_mma_f16_case) with
-    #     "CUDA error: out of memory". VERIFIED FAILURE 2026-09-26 — hence the 256k
-    #     entry below carries NO mmprojPath. Vision lives on the 128k key.
-    # f16 KV is NOT viable at 256k: 8.00 GiB of KV -> 16.89 GiB, hard OOM.
-    #
-    # Single Q8_0 file (8.890 GiB) serves both keys; only contextSize/mmproj differ.
-    # tensorSplit [ 1 0 ] pins to GPU0 (5060) per the Gemma/Ridge convention.
-    # NOTE: no `useswa` — GDN hybrid attention is not sliding-window attention.
+    # MiMo-V2.6-Distill-Qwen-9B (bartowski): Qwen3.5-9B dense distill (arch `qwen35`), ChatML +
+    # <think>. NOT a MoE despite the HF tags; it only inherits MiMo's chat template.
+    # Hybrid GDN: only 1 in 4 layers is full attention, so KV is small and 256k fits on one card.
+    # No `useswa`: GDN is not sliding-window.
+    # One Q8_0 GGUF serves both keys. The 256k key omits mmproj (its warm-up buffer OOMs at 256k);
+    # vision lives on the 128k key. f16 KV does not fit at 256k.
     "bartowski/MiMo-V2.6-Distill-Qwen-9B-GGUF:Q8_0" = {
       modelPath = "${modelsDir}/huggingface/hub/models--bartowski--MiMo-V2.6-Distill-Qwen-9B-GGUF/snapshots/4371da10c84fb26da3592d4cf312d24aa82b7b65/MiMo-V2.6-Distill-Qwen-9B-Q8_0.gguf";
       mmprojPath = "${modelsDir}/huggingface/hub/models--bartowski--MiMo-V2.6-Distill-Qwen-9B-GGUF/snapshots/4371da10c84fb26da3592d4cf312d24aa82b7b65/mmproj-MiMo-V2.6-Distill-Qwen-9B-f16.gguf";
       gpuLayers = -1;
-      contextSize = 131072; # 128k, +3.4 GiB headroom — the vision-capable key
+      contextSize = 131072; # 128k, the vision-capable key
       flashAttention = true;
       jinja = true;
       chatTemplateFile = ../../modules/home/chat-templates/mimo-v2.6-distill-qwen-9b.jinja;
@@ -373,7 +352,7 @@ in
     "bartowski/MiMo-V2.6-Distill-Qwen-9B-GGUF:Q8_0-256k" = {
       modelPath = "${modelsDir}/huggingface/hub/models--bartowski--MiMo-V2.6-Distill-Qwen-9B-GGUF/snapshots/4371da10c84fb26da3592d4cf312d24aa82b7b65/MiMo-V2.6-Distill-Qwen-9B-Q8_0.gguf";
       gpuLayers = -1;
-      contextSize = 262144; # 256k native max (max_position_embeddings) — text-only by measurement, see comment block above
+      contextSize = 262144; # 256k native max; text-only, see comment above
       flashAttention = true;
       jinja = true;
       chatTemplateFile = ../../modules/home/chat-templates/mimo-v2.6-distill-qwen-9b.jinja;
@@ -390,8 +369,6 @@ in
       tools = true;
       reasoning = true;
     };
-
-    # Vision / OCR / GUI (Qwen3-VL, ChatML)
     "Qwen/Qwen3-VL-8B-Instruct:Q4_K_M" = {
       modelPath = "${modelsDir}/huggingface/hub/models--bartowski--Qwen_Qwen3-VL-8B-Instruct-GGUF/snapshots/6398fcccbd940691854d2cffd85b435ed8eee4ca/Qwen_Qwen3-VL-8B-Instruct-Q4_K_M.gguf";
       mmprojPath = "${modelsDir}/huggingface/hub/models--bartowski--Qwen_Qwen3-VL-8B-Instruct-GGUF/snapshots/6398fcccbd940691854d2cffd85b435ed8eee4ca/mmproj-Qwen_Qwen3-VL-8B-Instruct-bf16.gguf";
@@ -406,8 +383,6 @@ in
       };
       name = "Qwen3-VL 8B Instruct Q4_K_M - 32k (Qwen) (Both)";
     };
-
-    # Coding (Qwen2.5-Coder-14B, ChatML) — added alongside the 30B-MoE coder
     "Qwen/Qwen2.5-Coder-14B:Q4_K_M" = {
       modelPath = "${modelsDir}/huggingface/hub/models--bartowski--Qwen2.5-Coder-14B-GGUF/snapshots/0e179a81290a5e9b04bb1b4f1badf79bc880b261/Qwen2.5-Coder-14B-Q4_K_M.gguf";
       gpuLayers = -1;
@@ -421,8 +396,6 @@ in
       };
       name = "Qwen2.5 Coder 14B Q4_K_M - 32k (Qwen) (Both)";
     };
-
-    # Roleplay / creative writing (Llama-based -> native jinja, no chatAdapter)
     "bartowski/writing-roleplay-20k-context-nemo-12b-v1.0:Q4_K_M" = {
       modelPath = "${modelsDir}/huggingface/hub/models--bartowski--writing-roleplay-20k-context-nemo-12b-v1.0-GGUF/snapshots/cecefa746b717ffb42ec31c42fb4faf977cf6ca2/writing-roleplay-20k-context-nemo-12b-v1.0-Q4_K_M.gguf";
       gpuLayers = -1;
@@ -435,8 +408,6 @@ in
       };
       name = "Writing-Roleplay Nemo 12B v1.0 Q4_K_M - 24k (bartowski) (Both)";
     };
-
-    # huihui abliterated ("uncensored") — pinned to GPU1 (2060, 8 GB), tensorSplit [ 0 1 ]
     "huihui/Huihui-Qwen3-8B-abliterated-v2:i1-Q4_K_M" = {
       modelPath = "${modelsDir}/huggingface/hub/models--mradermacher--Huihui-Qwen3-8B-abliterated-v2-i1-GGUF/snapshots/6daf7f7c2a51d6565f78df65e5930ee5f28707e4/Huihui-Qwen3-8B-abliterated-v2.i1-Q4_K_M.gguf";
       gpuLayers = -1;
@@ -445,13 +416,13 @@ in
       jinja = true;
       chatAdapter = "chatml";
       kvQuant = {
-        k = "q4_0"; # fp16 KV @48k = ~6.9 GB -> q4_0 = ~1.8 GB; fits
+        k = "q4_0";
         v = "q4_0";
       };
       tensorSplit = [
         0
         1
-      ]; # pin to GPU1 (2060)
+      ];
       name = "Huihui Qwen3-8B Abliterated v2 (i1 Q4_K_M) - 48k (huihui) (2060)";
       tools = true;
       reasoning = true;
@@ -459,18 +430,18 @@ in
     "huihui/Huihui-Qwen3.5-4B-abliterated:i1-Q4_K_M" = {
       modelPath = "${modelsDir}/huggingface/hub/models--mradermacher--Huihui-Qwen3.5-4B-abliterated-i1-GGUF/snapshots/d9b9a9650c8c52635ab327bb8ceea77bc705e6d7/Huihui-Qwen3.5-4B-abliterated.i1-Q4_K_M.gguf";
       gpuLayers = -1;
-      contextSize = 131072; # 256k OOM'd on GPU1 (8 GB); 131072 is largest that loads
+      contextSize = 131072; # 128k; 256k OOMs on the 2060
       flashAttention = true;
       jinja = true;
       chatAdapter = "chatml";
       kvQuant = {
-        k = "q8_0"; # hybrid: only 8 full-attn layers; q8 KV @256k ~4 GB
+        k = "q8_0"; # hybrid: only 1 in 4 layers is full attention
         v = "q8_0";
       };
       tensorSplit = [
         0
         1
-      ]; # pin to GPU1 (2060)
+      ];
       name = "Huihui Qwen3.5-4B Abliterated (i1 Q4_K_M) - 128k (huihui) (2060)";
       tools = true;
       reasoning = true;
