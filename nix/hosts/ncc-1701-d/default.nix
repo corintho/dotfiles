@@ -163,8 +163,6 @@
     enable = true;
     port = 8083;
   };
-  # Install firefox.
-  programs.firefox.enable = true;
 
   # Enable system wide styling
   stylix = {
