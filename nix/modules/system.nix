@@ -48,19 +48,6 @@
     # Use cachix substituters for faster builds (needed for cuda)
     cachix
 
-    # CUDA packages - available system-wide
-    # Note: These are also inherited by appimage-run for GPU support
-    cudaPackages.cuda_cudart
-    cudaPackages.cuda_nvcc
-    cudaPackages.cudnn
-    cudaPackages.nccl
-
-    # Python ML stack - system-wide PyTorch with CUDA support
-    python312
-    python312Packages.torch-bin # PyTorch with CUDA support (via cudaPackages_13 overlay)
-    python312Packages.numpy
-    python312Packages.cython
-
     # System utilities
     comma
     curl
