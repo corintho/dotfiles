@@ -170,7 +170,7 @@ in
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--gemma-4-E4B-it-GGUF/snapshots/bfc15c382204943c3a8fff0c750b94ae2364d7a3/gemma-4-E4B-it-Q4_K_M.gguf";
       mmprojPath = "${modelsDir}/huggingface/hub/models--unsloth--gemma-4-E4B-it-GGUF/snapshots/bfc15c382204943c3a8fff0c750b94ae2364d7a3/mmproj-BF16.gguf";
       gpuLayers = -1;
-      contextSize = 24576; # 24k
+      contextSize = 65536; # 64k
       flashAttention = true;
       jinja = true;
       # KoboldCpp-only; llama-server auto-detects SWA from GGUF metadata.
@@ -179,11 +179,22 @@ in
         k = "q8_0";
         v = "q8_0";
       };
+      # MTP drafter gives ~+16-20% decode on creative prose at 64k; n-max 1 beat n-max 2 (higher
+      # acceptance, 57-65% vs 43-50%). Costs ~0.5 GB extra 2060 VRAM (~5.5 GB total at 64k, display
+      # included), so do not raise contextSize past ~96k with MTP on.
+      extraArgs = [
+        "--model-draft"
+        "${modelsDir}/huggingface/hub/models--unsloth--gemma-4-E4B-it-GGUF/snapshots/bfc15c382204943c3a8fff0c750b94ae2364d7a3/MTP/mtp-gemma-4-E4B-it-Q8_0.gguf"
+        "--spec-type"
+        "draft-mtp"
+        "--spec-draft-n-max"
+        "1"
+      ];
       tensorSplit = [
         0
         1
       ];
-      name = "Gemma 4 E4B IT Q4_K_M - 24k (unsloth) (2060)";
+      name = "Gemma 4 E4B IT Q4_K_M - 64k (unsloth) (2060)";
     };
     "unsloth/Qwen3-14B-GGUF:UD-Q4_K_XL" = {
       modelPath = "${modelsDir}/huggingface/hub/models--unsloth--Qwen3-14B-GGUF/snapshots/a04a82c4739b3ef5fa6da7d10261db2c67dd1985/Qwen3-14B-UD-Q4_K_XL.gguf";
