@@ -14,7 +14,7 @@ let
   pkgs = import nixpkgs { };
 in
 rec {
-  latest_version = "3.38.4";
+  latest_version = "3.47.6";
   desired_version =
     if (flutter_version == null || flutter_version == "latest") then
       latest_version
@@ -22,55 +22,15 @@ rec {
       flutter_version;
 
   flutter_source =
-    if desired_version == "3.38.4" then
+    if desired_version == "3.47.6" then
+      pkgs.fetchurl {
+        url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.47.6-stable.zip";
+        hash = "sha256-oZRtO2s94VziR9yJZJ35A1zinmtOfr6RkZoliQ6i55o=";
+      }
+    else if desired_version == "3.38.4" then
       pkgs.fetchurl {
         url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.38.4-stable.zip";
         hash = "sha256-JcbMFJb3MGtKd93IBAP5YNAlt/P2bZQ0+ZyiEsuDDD8=";
-      }
-    else if desired_version == "3.29.3" then
-      pkgs.fetchurl {
-        url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.29.3-stable.zip";
-        hash = "sha256-vDriisG6ExeH+Z3EDTv5Ni9D5BHOiqtIx0Q7rN8DxLQ=";
-      }
-    else if desired_version == "3.24.4" then
-      pkgs.fetchurl {
-        url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.24.4-stable.zip";
-        hash = "sha256-SofEuMzDMKEvSSH9RY7xq5wkr3JiHQy78+ZRz5rDYkY=";
-      }
-    else if desired_version == "3.24.2" then
-      pkgs.fetchurl {
-        url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.24.2-stable.zip";
-        hash = "sha256-zmm9TyR2Mzi+zGcl0e2kqNnFPhvrwSl04y0qu5ojxnY=";
-      }
-    else if desired_version == "3.24.0" then
-      pkgs.fetchurl {
-        url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.24.0-stable.zip";
-        hash = "sha256-PEQ5hcnNpfaVmidMrd/rOOEXd/yO2Kaa5wChSF5t0lg=";
-      }
-    else if desired_version == "3.22.2" then
-      pkgs.fetchurl {
-        url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.22.2-stable.zip";
-        hash = "sha256-P7XWSTbisLMvdpPX0jf6nkcIy3AOjJWyx5rAhV5x2xE=";
-      }
-    else if desired_version == "3.22.0" then
-      pkgs.fetchurl {
-        url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.22.0-stable.zip";
-        hash = "sha256-76F64UFThwkYZ/NOJowdGqpx/9h1T+oIjo2VajmNv/E=";
-      }
-    else if desired_version == "3.19.6" then
-      pkgs.fetchurl {
-        url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.19.6-stable.zip";
-        hash = "sha256-TmEUDfSWUr+PweMXUqb6hRj6TwW8bkxrywHI3/bZv48=";
-      }
-    else if desired_version == "3.19.5" then
-      pkgs.fetchurl {
-        url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.19.5-stable.zip";
-        hash = "sha256-HXHsHs2bzt9Xaqp6cUyK/S/Qk028jqCfSx3DF31HX/Q=";
-      }
-    else if desired_version == "3.19.4" then
-      pkgs.fetchurl {
-        url = "https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_3.19.4-stable.zip";
-        hash = "sha256-3WRnvepBcH2fQ70+ZeI+jVEZYJLF1JJQehe2Pd9ew/U=";
       }
     else
       "Unknown flutter version: ${desired_version}";
