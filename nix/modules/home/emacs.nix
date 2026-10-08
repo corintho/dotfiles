@@ -13,11 +13,11 @@ in
 {
   home.packages = with pkgs; [
     emacsPackage
-    # Doom 3 uses nerd-icons; provides the Symbols Nerd Font Mono family
+    # nerd-icons; provides the Symbols Nerd Font Mono family
     nerd-fonts.symbols-only
     # Emacs' fallback font for exotic/absent glyphs
     symbola
-    # Required Doom dependency per getting_started.org
+    # Fast search backend (projectile/helm/consult)
     ripgrep
     # :lang markdown markdown-preview backend
     pandoc
