@@ -102,8 +102,7 @@ Spacemacs loads the generated =init.el= (tangled from this file by
               shell-default-term-shell (executable-find "fish")
               multi-term-program (executable-find "fish"))
        ;; Private layers
-       just-ts
-       project-layout)
+       just-ts)
 
      ;; List of additional packages that will be installed without being wrapped
      ;; in a layer (generally the packages are installed only and should still be
