@@ -48,24 +48,6 @@ in
             unstable = import nixpkgs-unstable {
               inherit system;
               inherit (final) config;
-              overlays = [
-                # Pin llama.cpp to upstream nightly b10964 for Blackwell GDN support
-                # (qwen35 hybrid linear attention: Qwen3.8-27B-Ridge, MiMo-V2.6-Distill).
-                # Override source only; keep nixpkgs' CUDA toolchain/flags to avoid the
-                # known sm_120 codegen bug from newer CUDA.
-                (uFinal: uPrev: {
-                  llama-cpp = uPrev.llama-cpp.overrideAttrs (old: {
-                    version = "10964";
-                    src = uPrev.fetchFromGitHub {
-                      owner = "ggml-org";
-                      repo = "llama.cpp";
-                      rev = "b10964";
-                      hash = "sha256-/BOx808d4TV/oraX92sarx5VExvxF3sCofIy9h3Akgg==";
-                    };
-                    npmDepsHash = "sha256-2Q7XhaLAArmviOLdQsNbYTfdyDE5pW9lR26cRHEVl9k=";
-                  });
-                })
-              ];
             };
           })
           # TODO: Remove once primp upstream fixes pytestFlagsArray deprecation
@@ -82,24 +64,11 @@ in
               };
             };
           })
-          # TODO: Remove once openldap test017-syncreplication-refresh passes in sandbox
-          (final: prev: {
-            openldap = prev.openldap.overrideAttrs (old: {
-              doCheck = false;
-            });
-          })
           # FreeCAD as AppImage (avoids netgen 6.2 API incompatibility at build time)
           (final: prev: {
             freecad = final.callPackage ../modules/freecad-appimage.nix { };
           })
         ];
-
-        # Global packageOverrides for broader coverage
-        nixpkgs.config.packageOverrides = pkgs: {
-          openldap = pkgs.openldap.overrideAttrs (old: {
-            doCheck = false;
-          });
-        };
       }
       inputs.stylix.nixosModules.stylix
       inputs.agenix.nixosModules.default
