@@ -2,6 +2,6 @@
   "name": "omp-plugins",
   "private": true,
   "dependencies": {
-    "pi-freeflow": "^1.27.0"
+    "pi-freeflow": "^1.34.0"
   }
 }
