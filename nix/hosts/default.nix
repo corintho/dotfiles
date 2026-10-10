@@ -48,6 +48,19 @@ in
             unstable = import nixpkgs-unstable {
               inherit system;
               inherit (final) config;
+              overlays = [
+                # Global cudaSupport makes the opencv that mlt builds (opencv4 + ffmpeg_8) a CUDA
+                # build that no binary cache serves (~110 min to compile). krita (from unstable)
+                # takes mlt from kdePackages; nothing here needs CUDA opencv. Scoped to that mlt
+                # so unstable.opencv stays the CUDA build served by cache.nixos-cuda.org.
+                (uFinal: uPrev: {
+                  kdePackages = uPrev.kdePackages.overrideScope (
+                    _kfinal: kprev: {
+                      mlt = kprev.mlt.override { opencv4 = uPrev.opencv4WithoutCuda; };
+                    }
+                  );
+                })
+              ];
             };
           })
           # TODO: Remove once primp upstream fixes pytestFlagsArray deprecation
