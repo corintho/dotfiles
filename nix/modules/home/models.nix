@@ -121,7 +121,7 @@
       each backend (llama.cpp, koboldcpp, ...) translates these fields into
       its own native flags. Each entry automatically generates:
       - A route in llama-swap config (llama.cpp)
-      - A .kcpps launcher config (koboldcpp, launched via kobold-select)
+      - A .kcpps config (koboldcpp, served by kobold-router)
       - A provider model entry in opencode
     '';
   };

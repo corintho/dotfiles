@@ -85,75 +85,6 @@ let
       )
     );
 
-  manifest = pkgs.writeText "koboldcpp-manifest.json" (
-    builtins.toJSON (builtins.mapAttrs (name: _: sanitize name) models)
-  );
-
-  koboldSelect = pkgs.writeShellApplication {
-    name = "kobold-select";
-    runtimeInputs = [
-      koboldcpp
-      pkgs.jq
-      pkgs.fzf
-    ];
-    text = ''
-      set +e
-      CFG="${cfgDir}"
-      MANIFEST="$CFG/manifest.json"
-      PORT=${toString port}
-
-      export LD_PRELOAD="/run/opengl-driver/lib/libcuda.so''${LD_PRELOAD:+:$LD_PRELOAD}"
-
-      [ -f "$MANIFEST" ] || { echo "No koboldcpp models configured (manifest.json missing at $MANIFEST)." >&2; exit 1; }
-
-      pick_model() {
-        if command -v fzf >/dev/null 2>&1; then
-          jq -r 'keys[]' "$MANIFEST" | fzf --prompt="koboldcpp model> "
-        else
-          local keys i k choice
-          keys=$(jq -r 'keys[]' "$MANIFEST")
-          i=1
-          echo "Available koboldcpp models:" >&2
-          echo "$keys" | while read -r k; do echo "  $i) $k" >&2; i=$((i + 1)); done
-          echo "Enter number or model key:" >&2
-          read -r choice
-          if [[ "$choice" =~ ^[0-9]+$ ]]; then
-            echo "$keys" | sed -n "''${choice}p"
-          else
-            echo "$choice"
-          fi
-        fi
-      }
-
-      ARG="''${1:-}"
-      [ -z "$ARG" ] && ARG="$(pick_model)"
-      [ -n "$ARG" ] || { echo "No model selected." >&2; exit 1; }
-
-      FNAME=$(jq -r --arg k "$ARG" '.[$k] // empty' "$MANIFEST")
-      [ -n "$FNAME" ] || FNAME="$ARG"
-      KCPPS="$CFG/$FNAME.kcpps"
-      [ -f "$KCPPS" ] || { echo "Config not found: $KCPPS" >&2; exit 1; }
-
-      # Tensor split ratios must be passed as separate argv tokens, not one
-      # glued string (koboldcpp argparse expects `--tensor_split 2 1`). Read the
-      # native tensor_split key (the single source of truth, shared with router mode).
-      mapfile -t TS_VALS < <(jq -r '.tensor_split // [] | .[]' "$KCPPS")
-      TS_ARG=()
-      if [ ''${#TS_VALS[@]} -gt 0 ]; then
-        TS_ARG=(--tensor_split "''${TS_VALS[@]}")
-      fi
-
-      echo "Launching koboldcpp (all GPUs visible; tensor_split pins placement)"
-      echo "  model : $ARG"
-      echo "  config: $KCPPS"
-      echo "  URL   : http://127.0.0.1:$PORT   (Ctrl-C to stop)"
-      export PYTHONPATH="${
-        pkgs.python3.withPackages (ps: [ ps.jinja2 ])
-      }/${pkgs.python3.sitePackages}:''${PYTHONPATH:+:$PYTHONPATH}"
-      exec koboldcpp --skiplauncher --usecuda mmq --config "$KCPPS" --host 127.0.0.1 --port "$PORT" "''${TS_ARG[@]}"
-    '';
-  };
-
   # Persistent KoboldCpp admin/router instance. This is KoboldCpp's built-in
   # llama-swap-like layer: one always-on process on :5001 that hotswaps
   # between the .kcpps configs in admindir, either by the OpenAI `model` field
@@ -167,8 +98,8 @@ let
       CFG="${cfgDir}"
       PORT=5001
 
-      # Mirror kobold-select's runtime environment so CUDA and Jinja-based chat
-      # templates work for whatever model the router loads on demand.
+      # CUDA and Jinja-based chat templates need this runtime environment for
+      # whatever model the router loads on demand.
       export LD_PRELOAD="/run/opengl-driver/lib/libcuda.so''${LD_PRELOAD:+:$LD_PRELOAD}"
       export PYTHONPATH="${
         pkgs.python3.withPackages (ps: [ ps.jinja2 ])
@@ -189,15 +120,11 @@ in
 lib.mkIf (models != { }) {
   home.packages = [
     koboldcpp
-  ]
-  ++ [
-    koboldSelect
     koboldRouter
   ];
 
   xdg.configFile = lib.mkMerge (
-    [ { "koboldcpp/manifest.json".source = manifest; } ]
-    ++ builtins.attrValues (
+    builtins.attrValues (
       builtins.mapAttrs (name: model: {
         "koboldcpp/${sanitize name}.kcpps".source = mkKcpps name model;
       }) models
