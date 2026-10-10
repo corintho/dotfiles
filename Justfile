@@ -114,10 +114,10 @@ update-brew:
   nix flake update homebrew-xcodesorg --flake ./nix
   brew update
 
-# Update flake lock file, fixing unstable to the specified commit. Remember to redeploy. Look at: https://status.nixos.org/ for the current build status
+# Pin nixpkgs and nixpkgs-unstable to the specified commit. Remember to redeploy. See https://status.nixos.org/ for build status
 [group('maintenance')]
 up-unstable-to hash:
-  nix flake update nixpkgs --override-input nixpkgs github:nixos/nixpkgs/{{hash}} --flake ./nix
+  nix flake update nixpkgs nixpkgs-unstable --override-input nixpkgs github:nixos/nixpkgs/{{hash}} --override-input nixpkgs-unstable github:nixos/nixpkgs/{{hash}} --flake ./nix
 
 # Update spacemacs to the specific commit. Remember to redeploy
 [group('maintenance')]
