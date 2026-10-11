@@ -77,6 +77,14 @@ in
               };
             };
           })
+          # TODO: Remove with the nixpkgs-orca input once orca-slicer from current nixpkgs runs again
+          (final: _prev: {
+            orca-slicer =
+              (import inputs.nixpkgs-orca {
+                inherit system;
+                inherit (final) config;
+              }).orca-slicer;
+          })
           # FreeCAD as AppImage (avoids netgen 6.2 API incompatibility at build time)
           (final: prev: {
             freecad = final.callPackage ../modules/freecad-appimage.nix { };

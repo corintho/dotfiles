@@ -15,6 +15,9 @@
     };
     # Custom pkgs for some modules
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # Pinned for orca-slicer only: the build from later nixpkgs (glibc 2.44, gcc 16) segfaults in
+    # libnvidia-eglcore while rendering plate thumbnails. Remove once a newer build runs again.
+    nixpkgs-orca.url = "github:nixos/nixpkgs/a391f95d4557d685fd8e5dc0d4b1f9271aa2f342";
     # Darwin specific packages
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/master";
