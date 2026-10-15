@@ -1,3 +1,4 @@
 modelRoles:
   default: github-copilot/claude-sonnet-5.5
-  tiny: github-copilot/gpt-5.6-luna:auto
+  tiny: null
+  smol: null

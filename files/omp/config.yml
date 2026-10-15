@@ -31,8 +31,7 @@ autolearn:
   autoContinue: true
 display:
   hideToolActivity: false
-cycleOrder:
-  []
+cycleOrder: []
 statusLine:
   sessionAccent: false
   transparent: false
@@ -84,3 +83,10 @@ followUpMode: all
 stream:
   serverUrl: https://127.0.0.1
 autoResume: true
+modelPresets:
+  work:
+    modelRoles:
+      default: github-copilot/claude-sonnet-5.5
+      tiny: github-copilot/claude-haiku-4.5:auto
+      smol: github-copilot/claude-haiku-4.5:auto
+    defaultThinkingLevel: auto
