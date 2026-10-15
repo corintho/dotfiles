@@ -205,6 +205,10 @@ run = ['layout floating']
 if.app-id = 'com.mitchellh.ghostty'
 run = ['move-node-to-workspace Dev']
 
+[[on-window-detected]]
+if.app-id = 'so.stencil.tern'
+run = ['move-node-to-workspace Dev']
+
 # Emacs (launchd daemon, no CFBundleIdentifier — 'aerospace list-apps' reports
 # NULL-APP-BUNDLE-ID for it) must be matched by app name instead of app-id.
 [[on-window-detected]]
