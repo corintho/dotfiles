@@ -85,12 +85,27 @@ in
         {
           system.primaryUser = username;
 
-          # Make the Spacemacs vars visible to raw Finder/Dock-launched processes
-          # (standalone emacs, emacsclient). home-manager session vars only reach
-          # shells; launchctl setenv here covers the whole launchd user domain.
+          # Make the Spacemacs vars, a Nix-aware PATH and the corporate CA bundle
+          # visible to raw Finder/Dock-launched processes (standalone emacs,
+          # emacsclient, Tern's own git status). home-manager session vars only
+          # reach shells; launchctl setenv here covers the whole launchd user domain.
           launchd.user.envVariables = {
             EMACSDIR = "/Users/${username}/.config/emacs";
             SPACEMACSDIR = "/Users/${username}/.config/spacemacs";
+            PATH = lib.concatStringsSep ":" [
+              "/etc/profiles/per-user/${username}/bin"
+              "/run/current-system/sw/bin"
+              "/nix/var/nix/profiles/default/bin"
+              "/opt/homebrew/bin"
+              "/usr/local/bin"
+              "/usr/bin"
+              "/bin"
+              "/usr/sbin"
+              "/sbin"
+            ];
+            NODE_EXTRA_CA_CERTS = "/etc/ssl/certs/ca-certificates.crt";
+            SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
+            NIX_SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
           };
 
           environment.systemPackages = with pkgs; [

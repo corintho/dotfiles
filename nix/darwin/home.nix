@@ -124,6 +124,23 @@ in
     PI_CONFIG_FILES = "${files}/omp/omp_darwin_config.yml";
   };
 
+  # Tern spawns omp (git-block commit messages) with a filtered environment that
+  # drops home.sessionVariables, so omp fails TLS behind the corporate proxy and
+  # loads the wrong models. Bake both into the wrapper; --set-default keeps an
+  # explicit caller override working.
+  programs.omp.package = lib.mkForce (
+    pkgs.symlinkJoin {
+      name = "omp-wrapped";
+      paths = [ inputs.omp-nix.packages.${pkgs.stdenv.hostPlatform.system}.default ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/omp \
+          --set-default NODE_EXTRA_CA_CERTS /etc/ssl/certs/ca-certificates.crt \
+          --set-default PI_CONFIG_FILES ${files}/omp/omp_darwin_config.yml
+      '';
+    }
+  );
+
   home.activation = {
     installFlutter = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run mkdir -p ${local_flutter_path}
