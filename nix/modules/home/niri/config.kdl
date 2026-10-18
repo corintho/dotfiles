@@ -400,11 +400,12 @@ window-rule {
     match app-id=r#"^kitty$"#
     match app-id=r#"^com.mitchellh.ghostty$"#
     match app-id=r#"^emacs$"#
+    match app-id=r#"^so\.stencil\.tern$"#
     open-on-workspace "Dev"
 }
 
 window-rule {
-    match app-id=r#"^obsidian$"#
+    match app-id=r#"^md\.obsidian\.Obsidian$"#
     match app-id=r#"^Bazecor$"#
     open-on-workspace "Misc"
 }
@@ -412,7 +413,7 @@ window-rule {
 window-rule {
     match app-id=r#"^discord$"#
     match app-id=r#"^org.telegram.desktop$"#
-    match app-id=r#"^Proton Mail$"#
+    match app-id=r#"^proton-mail$"#
     open-on-workspace "cOmms"
 }
 
