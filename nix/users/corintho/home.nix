@@ -38,6 +38,7 @@ in
     ../../modules/home/models.nix
     ../../modules/home/zed.nix
     ../../modules/home/zellij.nix
+    ../../modules/home/tern.nix
   ]
   ++ (lib.optional lcars.shell.fish.enable fishModule);
   home.packages = with pkgs; [

@@ -208,6 +208,24 @@
   programs.nix-ld = {
     enable = true;
     package = pkgs.unstable.nix-ld;
+    # Tern's own .desktop entries exec the raw binary with no LD_LIBRARY_PATH,
+    # and it dlopen()s its graphics, WebKit, PAM and audio stacks. The wrapper
+    # in modules/home/tern.nix covers the launches it controls; this covers
+    # every path that reaches the binary directly (launcher, file manager,
+    # Tern's ~/.local/bin/tern link, a future rewrite of those entries).
+    libraries = with pkgs; [
+      webkitgtk_4_1
+      libwpe
+      libwpe-fdo
+      vulkan-loader
+      libglvnd
+      libxkbcommon
+      libxcb
+      wayland
+      linux-pam
+      libpulseaudio
+      pipewire
+    ];
   };
 
   # Some programs need SUID wrappers, can be configured further or are
