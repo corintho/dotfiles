@@ -82,6 +82,7 @@ Spacemacs loads the generated =init.el= (tangled from this file by
        typescript
        markdown
        nixos
+       dart
        (org :variables org-enable-modern-support t)
        shell-scripts
        lsp
