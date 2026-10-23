@@ -604,11 +604,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1792326829,
-        "narHash": "sha256-uOgGByrUK7qdQIV0dsytcX5zzNxCFmoVEjVfm/xBnSg=",
+        "lastModified": 1792664545,
+        "narHash": "sha256-kglF+uehFqZwyyKpy387MVp1s9URMakZ0+Z9A8aqJ9k=",
         "owner": "can1357",
         "repo": "oh-my-pi",
-        "rev": "58349dc80de381057437818b8354c86826c8fa10",
+        "rev": "0b5c27ab24719c86a5986b95ee55f4e75bc1aaa0",
         "type": "github"
       },
       "original": {
@@ -622,11 +622,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1792291504,
-        "narHash": "sha256-jk9KWMtoFNurc5mrbgO1ZnfNQonQ9jOQ+892IyTR9qc=",
+        "lastModified": 1792638070,
+        "narHash": "sha256-qS1vQz9QrYMMwf4P1ULzbU1RX902Zda1um9uV/x7dvM=",
         "owner": "yuxqiu",
         "repo": "omp-nix",
-        "rev": "cc6d47a5c1109cf04286aba32b8cc96d37f241e6",
+        "rev": "e314b6021e4536f51195b40ff697c966e03b07dc",
         "type": "github"
       },
       "original": {
