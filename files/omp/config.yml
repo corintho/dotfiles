@@ -90,3 +90,11 @@ modelPresets:
       tiny: github-copilot/claude-haiku-4.5:auto
       smol: github-copilot/claude-haiku-4.5:auto
     defaultThinkingLevel: auto
+  free:
+    modelRoles:
+      default: freeflow/big-pickle
+    defaultThinkingLevel: auto
+  local:
+    modelRoles:
+      default: llama-swap/empero-ai/Qwen3.8-27B-Ridge-GGUF:Ridge-3.7bpw-q4max
+    defaultThinkingLevel: auto
