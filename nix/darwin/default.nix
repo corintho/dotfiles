@@ -155,6 +155,7 @@ in
               "ghostty"
               "git-credential-manager"
               "raycast"
+              "zen"
             ];
             masApps = {
               "Apple Configurator" = 1037126344;
