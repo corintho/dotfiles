@@ -95,13 +95,13 @@ main() {
   while IFS= read -r line || [[ -n "${line}" ]]; do
     if [[ "${line}" =~ ^[[:space:]]*-[[:space:]]*name:[[:space:]]*(.+)$ ]]; then
       name="${BASH_REMATCH[1]}"
-      # Strip surrounding quotes if present
-      name="${name#\"}"
-      name="${name%\"}"
+      # Strip surrounding single or double quotes if present
+      name="${name#[\"\']}"
+      name="${name%[\"\']}"
     elif [[ "${line}" =~ ^[[:space:]]*filename:[[:space:]]*(.+)$ ]]; then
       filename="${BASH_REMATCH[1]}"
-      filename="${filename#\"}"
-      filename="${filename%\"}"
+      filename="${filename#[\"\']}"
+      filename="${filename%[\"\']}"
 
       src="${profile_ext_dir}/${filename}"
       dst="${SMB_DEST}/${filename}"

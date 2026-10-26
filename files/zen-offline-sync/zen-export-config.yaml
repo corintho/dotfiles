@@ -12,3 +12,5 @@
   filename: vpn@proton.ch.xpi
 - name: Proton Pass
   filename: 78272b6fa58f4a1abaac99321d503a20@proton.me.xpi
+- name: Firefox Multi-Account Containers
+  filename: "@testpilot-containers.xpi"
