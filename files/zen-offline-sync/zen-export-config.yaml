@@ -1,0 +1,12 @@
+- name: AdGuard AdBlocker
+  filename: adguardadblocker@adguard.com.xpi
+- name: Obsidian Clipper
+  filename: clipper@obsidian.md.xpi
+- name: Enhancer for YouTube
+  filename: enhancerforyoutube@maximerf.addons.mozilla.org.xpi
+- name: SponsorBlocker
+  filename: sponsorBlocker@ajay.app.xpi
+- name: uBlock Origin
+  filename: uBlock0@raymondhill.net.xpi
+- name: Proton VPN
+  filename: vpn@proton.ch.xpi

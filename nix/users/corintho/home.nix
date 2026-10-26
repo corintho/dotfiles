@@ -39,6 +39,7 @@ in
     ../../modules/home/zed.nix
     ../../modules/home/zellij.nix
     ../../modules/home/tern.nix
+    ../../modules/home/zen-offline-sync.nix
   ]
   ++ (lib.optional lcars.shell.fish.enable fishModule);
   home.packages = with pkgs; [
