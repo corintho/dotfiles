@@ -5,13 +5,18 @@
     "": {
       "name": "omp-plugins",
       "dependencies": {
+        "@danielmeneses/pi-llama-swap": "^0.1.3",
         "pi-freeflow": "^1.43.0",
       },
     },
   },
   "packages": {
+    "@danielmeneses/pi-llama-swap": ["@danielmeneses/pi-llama-swap@0.1.3", "", { "dependencies": { "undici-types": "^6.21.0" } }, "sha512-qCj75r5JS1gdnE5WdhUl4a9wZBN2waODhKZLg8D1soTZmUppdKAfNamNTqAsDLvqGWkCq/UQYvhKlVM/69ZFhQ=="],
+
     "pi-freeflow": ["pi-freeflow@1.43.0", "", { "dependencies": { "undici": "7.30.1" } }, "sha512-mr07s7JEONos4j97SyOX6PVbu+EHA0vfe5HGNzeVZf+UFJalbPTOE8QZbu6GA8o8C50f3BvuzsumTd5jPWu+IA=="],
 
     "undici": ["undici@7.30.1", "", {}, "sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg=="],
+
+    "undici-types": ["undici-types@6.29.1", "", {}, "sha512-8ewZRMhr1pEZVOUITV/cBrtH8iz6juS76jNqam5zXA1LQuTjM5CcidoAEIp8u+3OJc7EWKfMhW7CBD2xJJVh4A=="],
   }
 }

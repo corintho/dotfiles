@@ -2,6 +2,7 @@
   "name": "omp-plugins",
   "private": true,
   "dependencies": {
+    "@danielmeneses/pi-llama-swap": "^0.1.3",
     "pi-freeflow": "^1.43.0"
   }
 }

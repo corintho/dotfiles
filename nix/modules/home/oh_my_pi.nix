@@ -13,13 +13,6 @@ let
     path = files;
     name = "dotfiles-files";
   };
-  npmMirror = builtins.getEnv "DOTFILES_NPM_MIRROR";
-  pi-llama-swap = pkgs.fetchzip {
-    urls =
-      lib.optional (npmMirror != "") "${npmMirror}/@danielmeneses/pi-llama-swap/-/pi-llama-swap-0.1.2.tgz"
-      ++ [ "https://registry.npmjs.org/@danielmeneses/pi-llama-swap/-/pi-llama-swap-0.1.2.tgz" ];
-    sha256 = "0wbk556zihw1jngayg89farar1nl7aaai1hiaslv6mzzqfvx1yff";
-  };
   models = config.lcars.models or { };
   piLlamaSwapJson = (pkgs.formats.json { }).generate "pi-llama-swap.json" {
     contextOverrides = builtins.mapAttrs (_: model: model.contextSize) models;
@@ -90,7 +83,6 @@ in
   # its own files alongside them.
   home.activation.linkOmpExtensions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     run mkdir -p "$HOME/.omp/agent/extensions"
-    run ln -sfn "${pi-llama-swap}" "$HOME/.omp/agent/extensions/pi-llama-swap"
     run ln -sfn "${files}/omp/extensions/mode-toggle.ts" "$HOME/.omp/agent/extensions/mode-toggle.ts"
     run ln -sfn "${files}/omp/extensions/opencode-v2-serve.ts" "$HOME/.omp/agent/extensions/opencode-v2-serve.ts"
     # Prune dangling links into this repo's extensions dir (ln -sfn never removes
