@@ -136,14 +136,32 @@ up-secrets:
 up-secrets:
   nix flake update secrets --flake ./nix
 
-# Update omp to the latest commits, commit changes and redeploy
+# Update omp to the latest commits and plugins, commit changes and redeploy
 [group('maintenance')]
-up-omp: check-git-status omp-update omp-commit deploy
+up-omp: check-git-status omp-update omp-plugins-update omp-commit deploy
 
 # Update omp flake inputs (harness + prebuilt binary) to the latest commits
 [private]
 omp-update:
   nix flake update omp omp-nix --flake ./nix
+
+# Upgrade every npm-installed omp plugin in the repo-owned plugin root
+[private]
+omp-plugins-update:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  # omp writes plugin state through ~/.omp/plugins; it must be the repo symlink
+  # or the upgrade lands outside git and omp-commit has nothing to record.
+  if [ "$(readlink -f "$HOME/.omp/plugins")" != "$PWD/files/omp/plugins" ]; then
+    echo "ERROR: ~/.omp/plugins is not linked to $PWD/files/omp/plugins. Run 'just deploy' first." >&2
+    exit 1
+  fi
+  # Bare `omp plugin upgrade` only covers marketplace plugins; name each npm dep.
+  while IFS= read -r plugin; do
+    [ -n "$plugin" ] || continue
+    echo "Upgrading omp plugin: ${plugin}"
+    omp plugin upgrade "${plugin}"
+  done < <(jq -r '.dependencies // {} | keys[]' files/omp/plugins/package.json)
 
 # Commit after updating omp
 [private]

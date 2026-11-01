@@ -5,12 +5,12 @@
     "": {
       "name": "omp-plugins",
       "dependencies": {
-        "pi-freeflow": "^1.42.1",
+        "pi-freeflow": "^1.43.0",
       },
     },
   },
   "packages": {
-    "pi-freeflow": ["pi-freeflow@1.42.1", "", { "dependencies": { "undici": "7.30.1" } }, "sha512-QDWOOFPsptDrYZR721ZDf4MpSdpZtmfnK7KfUGANqryZq//826uky8ar1/DDumMe4cu4keQAaDO3ZlDPY+nUNA=="],
+    "pi-freeflow": ["pi-freeflow@1.43.0", "", { "dependencies": { "undici": "7.30.1" } }, "sha512-mr07s7JEONos4j97SyOX6PVbu+EHA0vfe5HGNzeVZf+UFJalbPTOE8QZbu6GA8o8C50f3BvuzsumTd5jPWu+IA=="],
 
     "undici": ["undici@7.30.1", "", {}, "sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg=="],
   }
