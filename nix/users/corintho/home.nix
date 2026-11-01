@@ -242,6 +242,15 @@ in
         k = "q4_0";
         v = "q4_0";
       };
+      # `-np 1` drops the per-slot recurrent-state buffer; trade-off: one request at a time and one
+      # cached conversation.
+      # `--no-mmproj-offload`: the ~888 MiB mmproj encoder OOMs/crashes on the 5060 (build 11429).
+      # Image encoding runs on the CPU, slower.
+      extraArgs = [
+        "--no-mmproj-offload"
+        "-np"
+        "1"
+      ];
       tensorSplit = [
         1
         0
@@ -264,7 +273,10 @@ in
       # MTP draft head is in the GGUF; -np 1 is required for it to fit (each extra slot multiplies
       # the recurrent-state buffer by 1 + n-max). Measured faster on code and prose (2026-10-01).
       # Trade-off: one request at a time, one cached conversation.
+      # `--no-mmproj-offload`: the ~888 MiB mmproj encoder OOMs/crashes on the 5060 (build 11429).
+      # Image encoding runs on the CPU, slower.
       extraArgs = [
+        "--no-mmproj-offload"
         "-np"
         "1"
         "--spec-type"
@@ -292,9 +304,17 @@ in
         k = "q4_0";
         v = "q4_0";
       };
-      # [ 4 1 ] is the only split measured stable at 256k incl. vision input with the default slot
-      # count; [ 16 7 ] OOMs on the 2060 at load, [ 5 1 ] crashes on image input, [ 3 1 ] OOMs at depth.
-      # `-np 1` would free VRAM on both cards (measured) at the cost of one request at a time.
+      # The mmproj encoder (~888 MiB) OOMed on the 5060 at load (llama.cpp build 11429); keep it
+      # off the GPU. Vision still works, image encoding runs on the CPU and is slower.
+      # `-np 1` frees VRAM on both cards (measured) at the cost of one request at a time and one
+      # cached conversation.
+      extraArgs = [
+        "--no-mmproj-offload"
+        "-np"
+        "1"
+      ];
+      # [ 4 1 ] was measured stable at 256k incl. vision input (mmproj on GPU, default slot count);
+      # [ 16 7 ] OOMs on the 2060 at load, [ 5 1 ] crashes on image input, [ 3 1 ] OOMs at depth.
       # Measured 2026-10-01; re-measure after llama.cpp, driver or display changes.
       tensorSplit = [
         4
@@ -318,7 +338,10 @@ in
       # Single-card MTP only fits at this context with q4_0 KV and -np 1 (128k OOMs on the MTP
       # compute buffer). Measured faster on code and prose (2026-10-01).
       # Trade-off: one request at a time, one cached conversation.
+      # `--no-mmproj-offload`: the ~888 MiB mmproj encoder OOMs/crashes on the 5060 (build 11429).
+      # Image encoding runs on the CPU, slower.
       extraArgs = [
+        "--no-mmproj-offload"
         "-np"
         "1"
         "--spec-type"
