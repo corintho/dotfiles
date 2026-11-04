@@ -1,7 +1,7 @@
 {
   "plugins": {
     "pi-freeflow": {
-      "version": "1.43.0",
+      "version": "1.44.1",
       "enabledFeatures": null,
       "enabled": true
     },
