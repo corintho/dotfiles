@@ -9,7 +9,7 @@ composer:
   shape: box
 theme:
   dark: dark-gruvbox
-setupVersion: 2
+setupVersion: 3
 plan:
   defaultOnStartup: false
 contextPromotion:
