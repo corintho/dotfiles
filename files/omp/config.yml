@@ -8,7 +8,7 @@ symbolPreset: nerd
 composer:
   shape: box
 theme:
-  dark: dark-gruvbox
+  dark: dark-aurora
 setupVersion: 3
 plan:
   defaultOnStartup: false
