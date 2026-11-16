@@ -263,7 +263,8 @@ Spacemacs loads the generated =init.el= (tangled from this file by
      ;; package can be defined with `:package', or a theme can be defined with
      ;; `:location' to download the theme package, refer the themes section in
      ;; DOCUMENTATION.org for the full theme specifications.
-     dotspacemacs-themes '(spacemacs-dark
+     dotspacemacs-themes '((doom-aurora :package doom-themes)
+                           spacemacs-dark
                            doom-gruvbox
                            spacemacs-light)
 
@@ -637,6 +638,10 @@ Spacemacs loads the generated =init.el= (tangled from this file by
   configuration.
   It is mostly for variables that should be set before packages are loaded.
   If you are unsure, try setting them in `dotspacemacs/user-config' first."
+    ;; Local themes live in ./themes (e.g. doom-aurora); must be on the load
+    ;; path before `spacemacs/load-default-theme' runs.
+    (add-to-list 'custom-theme-load-path
+                 (expand-file-name "themes" dotspacemacs-directory))
     ;; Route `M-x customize' output to a dedicated file outside the
     ;; version-controlled dotfile. Otherwise customize appends to
     ;; `dotspacemacs/emacs-custom-settings' in this tracked init.el.
