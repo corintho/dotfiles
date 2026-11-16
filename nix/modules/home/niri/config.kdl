@@ -221,11 +221,6 @@ layout {
         //
         // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
 
-        //FIXME: This is already generated for an include file, but that funcnionlity is not available yet
-        active-color "#88bbff"
-        active-gradient from="#88bbff" to="#2255ff" angle=90
-        inactive-color "#848ab9"
-        inactive-gradient from="#a2a2b9" to="#848ab9" angle=90
     }
 
     // You can also add a border. It's similar to the focus ring, but always visible.
@@ -299,8 +294,8 @@ layout {
     }
 }
 
-//FIXME: Not yet possible, need to wait for the next release
-// include "layout_colors.kdl"
+// Stylix-generated focus-ring colors (see nix/modules/home/niri.nix); must come after `layout`
+include "layout_colors.kdl"
 
 // Add lines like this to spawn processes at startup.
 // Note that running niri as a session supports xdg-desktop-autostart,

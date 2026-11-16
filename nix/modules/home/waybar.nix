@@ -18,8 +18,14 @@
     ];
 
     home.file = {
-      ".config/waybar/config.jsonc" = {
-        source = "${files}/waybar/config.jsonc";
+      # Pango markup in the config cannot read GTK CSS colors, so inject them here.
+      # `files` is a plain string; `/. +` turns it into a path so Nix copies it into the store.
+      ".config/waybar/config.jsonc".source = pkgs.replaceVars (/. + "${files}/waybar/config.jsonc") {
+        calMonths = config.lib.stylix.colors.withHashtag.base06;
+        calWeekdays = config.lib.stylix.colors.withHashtag.base0A;
+        calToday = config.lib.stylix.colors.withHashtag.base08;
+        netDown = config.lib.stylix.colors.withHashtag.base0C;
+        netUp = config.lib.stylix.colors.withHashtag.base0A;
       };
       ".config/waybar/style.css" = {
         source = "${files}/waybar/style.css";
@@ -34,8 +40,8 @@
 
           /* Workspace buttons */
           @define-color wbar-bg ${config.lib.stylix.colors.withHashtag.base02};
-          @define-color bar-active ${config.lib.stylix.colors.withHashtag.base0B};
-          @define-color bar-active-other ${config.lib.stylix.colors.withHashtag.base0D};
+          @define-color bar-active ${config.lib.stylix.colors.withHashtag.base0E};
+          @define-color bar-active-other ${config.lib.stylix.colors.withHashtag.base0C};
           @define-color bar-other ${config.lib.stylix.colors.withHashtag.base09};
 
           /* Current workspace button */

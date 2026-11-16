@@ -123,9 +123,9 @@
       "on-scroll": 1,
       "on-click-right": "mode",
       "format": {
-        "months": "<span color='#ffead3'><b>{}</b></span>",
-        "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
-        "today": "<span color='#ff6699'><b>{}</b></span>",
+        "months": "<span color='@calMonths@'><b>{}</b></span>",
+        "weekdays": "<span color='@calWeekdays@'><b>{}</b></span>",
+        "today": "<span color='@calToday@'><b>{}</b></span>",
       },
     },
     "actions": {
@@ -189,7 +189,7 @@
     "format-linked": "󰈀 {ifname} (No IP)",
     "format-disconnected": "󰖪 ",
     "tooltip-format-disconnected": "Disconnected",
-    "format-alt": "<span foreground='#99ffdd'> {bandwidthDownBytes}</span> <span foreground='#ffcc66'> {bandwidthUpBytes}</span>",
+    "format-alt": "<span foreground='@netDown@'> {bandwidthDownBytes}</span> <span foreground='@netUp@'> {bandwidthUpBytes}</span>",
     "interval": 2,
   },
   "pulseaudio": {
