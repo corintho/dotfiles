@@ -143,7 +143,7 @@ to_entries[] |
 select(.key | 
 test("temp[0-9]+_input")) | 
 .value | floor))°C") | 
-join("\\n\t")' <<<"$sensors_json")"
+join("\\n\\t")' <<<"$sensors_json")"
 
 if [ -n "${CPUINFO_TEMPERATURE_ID}" ]; then
     temperature=$(grep -oP "(?<=${CPUINFO_TEMPERATURE_ID}: )\d+" <<<"${cpu_temps}")
