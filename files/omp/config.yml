@@ -73,7 +73,8 @@ compaction:
     - shake
     - remote
     - snapcompact
-  idleEnabled: false
+  idleEnabled: true
+  idleTimeoutSeconds: 3600
 browser:
   relay: true
 vault:
