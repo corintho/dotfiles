@@ -1,6 +1,5 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import type { Component } from "@oh-my-pi/pi-tui";
-import { truncateToWidth } from "@oh-my-pi/pi-tui";
+import { truncate } from "@oh-my-pi/pi-tui/text/width";
 
 // Tools removed from the active set in Discuss mode. `bash` is intentionally
 // excluded — it stays active so read-only inspection (tests, search, git
@@ -76,6 +75,9 @@ const MODE_WIDGET_KEY = "mode-toggle";
 
 export default function modeToggle(pi: ExtensionAPI) {
   let prevMode = "none";
+  // Captured from the widget factory. A rows-object widget repaints only when
+  // the host redraws it, so every tool-set change must call requestRender().
+  let widgetUi: { requestRender(): void } | undefined;
 
   // Single source of truth for Discuss/Execute: derived live from which
   // EXEC_WRITE_TOOLS-listed tools are currently missing from the active set.
@@ -99,7 +101,11 @@ export default function modeToggle(pi: ExtensionAPI) {
   // Registered once in session_start below; isDiscussActive() is queried
   // fresh inside render(), so no re-registration or explicit re-sync is
   // needed after /discuss, /execute, or the Tab shortcut.
-  function modeStatusWidget(_ui: unknown, theme: { fg(name: string, text: string): string }): Component {
+  function modeStatusWidget(
+    ui: { requestRender(): void },
+    theme: { fg(name: string, text: string): string },
+  ): { render(width: number): readonly string[] } {
+    widgetUi = ui;
     const MODE_ICON = "\uf2d2"; // icon.plan (nerd preset)
     return {
       render(width: number): readonly string[] {
@@ -107,7 +113,7 @@ export default function modeToggle(pi: ExtensionAPI) {
         const label = discuss
           ? theme.fg("warning", `${MODE_ICON} Discuss`)
           : theme.fg("accent", `${MODE_ICON} Execute`);
-        return [truncateToWidth(label, width)];
+        return [truncate(label, width)];
       },
     };
   }
@@ -117,13 +123,14 @@ export default function modeToggle(pi: ExtensionAPI) {
   // only mutates the active tool set.
   // Returns true when a state change occurred, false when none of
   // EXEC_WRITE_TOOLS were active to begin with.
-  function switchToDiscuss(): boolean {
+  async function switchToDiscuss(): Promise<boolean> {
     const active = pi.getActiveTools();
     const toRemove = active.filter((n) => EXEC_WRITE_TOOLS[n]);
     if (toRemove.length === 0) {
       return false;
     }
-    pi.setActiveTools(active.filter((n) => !EXEC_WRITE_TOOLS[n]));
+    await pi.setActiveTools(active.filter((n) => !EXEC_WRITE_TOOLS[n]));
+    widgetUi?.requestRender();
     return true;
   }
 
@@ -133,7 +140,7 @@ export default function modeToggle(pi: ExtensionAPI) {
   // plan-mode restrictions, process restart with restricted state) alike,
   // with no separate removal list that could fall out of sync.
   // Returns true when tools were added, false when none were missing.
-  function switchToExecute(): boolean {
+  async function switchToExecute(): Promise<boolean> {
     const current = pi.getActiveTools();
     const missing = pi
       .getAllTools()
@@ -142,7 +149,8 @@ export default function modeToggle(pi: ExtensionAPI) {
     if (missing.length === 0) {
       return false;
     }
-    pi.setActiveTools([...new Set([...current, ...missing])]);
+    await pi.setActiveTools([...new Set([...current, ...missing])]);
+    widgetUi?.requestRender();
     return true;
   }
   // Mutually exclusive with native Plan Mode — the two are separate
@@ -187,9 +195,9 @@ export default function modeToggle(pi: ExtensionAPI) {
     // interactive session this extension is meant to track.
     if (!ctx.hasUI) return;
     const currentMode = currentModeFromBranch(ctx.sessionManager.getBranch());
-    if (currentMode === "plan" && prevMode !== "plan" && switchToExecute()) {
+    if (currentMode === "plan" && prevMode !== "plan" && (await switchToExecute())) {
       ctx.ui.notify("Plan mode — Discuss lifted, write/exec tools available", "info");
-    } else if (prevMode === "plan" && currentMode === "none" && switchToExecute()) {
+    } else if (prevMode === "plan" && currentMode === "none" && (await switchToExecute())) {
       ctx.ui.notify("Plan approved — Execute mode", "info");
     }
     prevMode = currentMode;
@@ -334,7 +342,7 @@ export default function modeToggle(pi: ExtensionAPI) {
       // be reset (process restart) or harness-restricted (plan approval into
       // a new session) — switchToExecute() restores exec tools in either case,
       // or is a no-op (returns false) if they're already present.
-      switchToExecute();
+      await switchToExecute();
       return;
     }
     if (initialMode !== "none") {
@@ -345,8 +353,8 @@ export default function modeToggle(pi: ExtensionAPI) {
     }
 
     // Defer one tick so the tool registry is populated before we query it.
-    ctx.setTimeout(() => {
-      if (!switchToDiscuss()) return; // No exec/write tools present; widget already reflects that.
+    ctx.setTimeout(async () => {
+      if (!(await switchToDiscuss())) return; // No exec/write tools present; widget already reflects that.
       ctx.ui.notify("Discuss mode", "info");
     }, 0);
   });
@@ -358,7 +366,7 @@ export default function modeToggle(pi: ExtensionAPI) {
         ctx.ui.notify("Plan mode is active — Discuss mode is unavailable until it exits", "info");
         return;
       }
-      if (!switchToDiscuss()) {
+      if (!(await switchToDiscuss())) {
         ctx.ui.notify(
           isDiscussActive() ? "Already in Discuss mode" : "No write/exec tools active to disable",
           "info",
@@ -372,7 +380,7 @@ export default function modeToggle(pi: ExtensionAPI) {
   pi.registerCommand("execute", {
     description: "Execute mode: restore tools disabled by /discuss",
     handler: async (_args, ctx) => {
-      if (!switchToExecute()) {
+      if (!(await switchToExecute())) {
         ctx.ui.notify("Already in Execute mode", "info");
         return;
       }
@@ -384,14 +392,14 @@ export default function modeToggle(pi: ExtensionAPI) {
     description: "Toggle Discuss/Execute mode",
     handler: async (_ctx) => {
       if (isDiscussActive()) {
-        if (switchToExecute()) _ctx.ui.notify("Execute mode — tools restored", "info");
+        if (await switchToExecute()) _ctx.ui.notify("Execute mode — tools restored", "info");
         return;
       }
       if (currentModeFromBranch(_ctx.sessionManager.getBranch()) === "plan") {
         _ctx.ui.notify("Plan mode is active — Discuss mode is unavailable until it exits", "info");
         return;
       }
-      if (switchToDiscuss()) _ctx.ui.notify("Discuss mode — write/exec tools off, bash read-only", "info");
+      if (await switchToDiscuss()) _ctx.ui.notify("Discuss mode — write/exec tools off, bash read-only", "info");
     },
   });
 }
